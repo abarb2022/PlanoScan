@@ -1,11 +1,10 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "feedback")
@@ -16,29 +15,29 @@ import java.util.UUID;
 @Builder
 public class Feedback {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "score_id", nullable = false)
-    private Score score;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "score_id", nullable = false)
+  private Score score;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "evaluator_id", nullable = false)
-    private User evaluator;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "evaluator_id", nullable = false)
+  private User evaluator;
 
-    @Column(name = "corrected_score")
-    private Float correctedScore;
+  @Column(name = "corrected_score")
+  private Float correctedScore;
 
-    @Column(columnDefinition = "text")
-    private String notes;
+  @Column(columnDefinition = "text")
+  private String notes;
 
-    @Column(name = "used_for_training", nullable = false)
-    @Builder.Default
-    private boolean usedForTraining = false;
+  @Column(name = "used_for_training", nullable = false)
+  @Builder.Default
+  private boolean usedForTraining = false;
 
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+  @CreationTimestamp
+  @Column(name = "created_at", updatable = false)
+  private LocalDateTime createdAt;
 }
