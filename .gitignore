@@ -1,0 +1,36 @@
+# Node
+node_modules/
+dist/
+.npm
+
+# IntelliJ IDEA / JetBrains
+.idea/
+*.iws
+*.iml
+*.ipr
+*.meta
+
+# Gradle / Spring Boot build artifacts
+planoScan/.gradle/
+planoScan/build/
+planoScan/out/
+planoScan/bin/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# VS Code
+.vscode/
+
+# Vite / frontend build output
+client/dist/

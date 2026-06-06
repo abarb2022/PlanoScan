@@ -1,0 +1,175 @@
+/* ── Dialog backdrop ──────────────────────────────────────────── */
+.dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 12, 20, 0.55);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    animation: backdrop-in 0.18s ease;
+}
+
+@keyframes backdrop-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ── Dialog panel ─────────────────────────────────────────────── */
+.dialog {
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #e2e4ea);
+    border-radius: 14px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.08);
+    width: 100%;
+    max-width: 440px;
+    padding: 28px 32px 24px;
+    animation: dialog-in 0.22s cubic-bezier(0.34, 1.36, 0.64, 1);
+}
+
+@keyframes dialog-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Header ───────────────────────────────────────────────────── */
+.dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.dialog-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary, #0f1117);
+    margin: 0;
+}
+
+.dialog-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-muted, #8b8fa8);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+}
+
+.dialog-close:hover {
+    background: var(--hover-bg, #f1f2f6);
+    color: var(--text-primary, #0f1117);
+}
+
+/* ── Error banner ─────────────────────────────────────────────── */
+.dialog-error {
+    background: #fff1f1;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+}
+
+/* ── Form fields ──────────────────────────────────────────────── */
+.dialog-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.dialog-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.dialog-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted, #8b8fa8);
+}
+
+.dialog-input,
+.dialog-textarea {
+    background: var(--input-bg, #f7f8fa);
+    border: 1.5px solid var(--border, #e2e4ea);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.92rem;
+    color: var(--text-primary, #0f1117);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    font-family: inherit;
+    resize: none;
+}
+
+.dialog-input:focus,
+.dialog-textarea:focus {
+    border-color: var(--accent, #4f6ef7);
+    box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.12);
+    background: #fff;
+}
+
+/* ── Actions ──────────────────────────────────────────────────── */
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 4px;
+}
+
+/* Shared button base — used by dialog AND Stores page */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s, transform 0.1s;
+}
+
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary {
+    background: var(--accent, #4f6ef7);
+    color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--accent-hover, #3a57e0);
+}
+
+.btn-ghost {
+    background: var(--hover-bg, #f1f2f6);
+    color: var(--text-secondary, #4a4e6a);
+}
+
+.btn-ghost:hover:not(:disabled) {
+    background: var(--border, #e2e4ea);
+}
+
+.btn-danger {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: #fecaca;
+}
