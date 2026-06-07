@@ -1,5 +1,8 @@
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8081";
+  (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
+  "http://localhost:8081";
+
+const AUTH_TOKEN_KEY = "planoscan_auth_token";
 
 type ApiErrorResponse = {
   code: string;
@@ -23,12 +26,9 @@ function buildHeaders(headers?: HeadersInit): Headers {
   const requestHeaders = new Headers(headers);
   requestHeaders.set("Content-Type", "application/json");
 
-  const token =
-    localStorage.getItem("jwtToken") || localStorage.getItem("token");
+  const token = localStorage.getItem(AUTH_TOKEN_KEY);
   if (token) {
     requestHeaders.set("Authorization", `Bearer ${token}`);
-  } else {
-    requestHeaders.set("Authorization", `Basic ${btoa("admin:admin")}`);
   }
 
   return requestHeaders;
@@ -54,10 +54,7 @@ export async function apiRequest<T>(
       const error = (await response.json()) as ApiErrorResponse;
       throw new ApiError(error);
     } catch (err) {
-      if (err instanceof ApiError) {
-        throw err;
-      }
-
+      if (err instanceof ApiError) throw err;
       throw new ApiError(fallbackError);
     }
   }

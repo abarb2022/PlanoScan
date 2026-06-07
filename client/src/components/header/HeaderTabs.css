@@ -1,13 +1,14 @@
 .header-tabs {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   flex: 0 0 58px;
   height: 58px;
   padding: 0 40px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   box-sizing: border-box;
-  font-family: 'DM Sans', 'Geist', system-ui, sans-serif;
+  font-family: "DM Sans", "Geist", system-ui, sans-serif;
 }
 
 .header-tabs__nav {
@@ -37,6 +38,23 @@
 .header-tabs__tab--active {
   background: rgba(79, 110, 247, 0.1);
   color: var(--accent);
+}
+
+.header-tabs__logout {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  min-height: 34px;
+  padding: 0 14px;
+}
+
+.header-tabs__logout:hover {
+  background: var(--hover-bg);
+  color: var(--text-primary);
 }
 
 @media (max-width: 720px) {

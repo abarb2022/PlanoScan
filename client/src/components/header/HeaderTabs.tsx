@@ -1,22 +1,34 @@
 import "./HeaderTabs.css";
 
-const tabs = [
-  {
-    id: "stores",
-    label: "Stores",
-  },
-];
+interface Props {
+  onLogout?: () => void;
+}
 
-export default function HeaderTabs() {
+const tabs = [{ id: "stores", label: "Stores" }];
+
+export default function HeaderTabs({ onLogout }: Props) {
   return (
     <header className="header-tabs" aria-label="Primary navigation">
       <nav className="header-tabs__nav">
         {tabs.map((tab) => (
-          <button key={tab.id} className="header-tabs__tab header-tabs__tab--active" type="button">
+          <button
+            key={tab.id}
+            className="header-tabs__tab header-tabs__tab--active"
+            type="button"
+          >
             {tab.label}
           </button>
         ))}
       </nav>
+      {onLogout && (
+        <button
+          className="header-tabs__logout"
+          onClick={onLogout}
+          type="button"
+        >
+          Sign out
+        </button>
+      )}
     </header>
   );
 }

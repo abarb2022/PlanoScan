@@ -1,8 +1,8 @@
 export type Store = {
-  id: number;
+  id: string;
   name: string;
   address: string | null;
-  companyId: number;
+  companyId: string;
   companyName: string;
   createdAt: string | null;
 };
@@ -16,7 +16,7 @@ export type StoreForm = {
 export type StoreRequest = {
   name: string;
   address: string;
-  companyId: number;
+  companyId: string;
 };
 
 export type StorePageResponse = {

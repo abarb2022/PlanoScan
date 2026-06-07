@@ -15,7 +15,7 @@ export function getStores(query: StoreQuery): Promise<StorePageResponse> {
   });
 
   if (query.companyId?.trim()) {
-    params.set("companyId", query.companyId?.trim());
+    params.set("companyId", query.companyId.trim());
   }
 
   return apiRequest<StorePageResponse>(`${STORE_URL}?${params.toString()}`);
@@ -28,13 +28,13 @@ export function createStore(store: StoreRequest): Promise<Store> {
   });
 }
 
-export function updateStore(id: number, store: StoreRequest): Promise<Store> {
+export function updateStore(id: string, store: StoreRequest): Promise<Store> {
   return apiRequest<Store>(`${STORE_URL}/${id}`, {
     method: "PUT",
     body: JSON.stringify(store),
   });
 }
 
-export function deleteStore(id: number): Promise<null> {
+export function deleteStore(id: string): Promise<null> {
   return apiRequest<null>(`${STORE_URL}/${id}`, { method: "DELETE" });
 }
