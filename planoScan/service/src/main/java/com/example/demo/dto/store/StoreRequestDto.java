@@ -14,9 +14,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StoreRequestDto {
 
-  @NotBlank(message = "Store name is required") private String name;
+    @NotBlank(message = "Store name is required")
+    private String name;
 
-  private String address;
+    private String address;
 
-  @NotNull(message = "Company ID is required") private UUID companyId;
+    @NotNull(message = "Company ID is required")
+    private UUID companyId;
+
 }
