@@ -20,8 +20,7 @@ public class User {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Column(nullable = false)
-  private String name;
+  @Column private String name;
 
   @Column(nullable = false, unique = true)
   private String email;
@@ -34,7 +33,7 @@ public class User {
   private Role role;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "company_id", nullable = false)
+  @JoinColumn(name = "company_id")
   private Company company;
 
   @CreationTimestamp
