@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class StoreResponseDto {
 
-  private UUID id;
-  private String name;
-  private String address;
-  private UUID companyId;
-  private String companyName;
-  private LocalDateTime createdAt;
+    private UUID id;
+    private String name;
+    private String address;
+    private UUID companyId;
+    private String companyName;
+    private LocalDateTime createdAt;
 }
