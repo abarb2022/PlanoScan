@@ -44,12 +44,24 @@ public class User {
   @OneToMany(mappedBy = "rep", fetch = FetchType.LAZY)
   private List<Submission> submissions;
 
-  @OneToMany(mappedBy = "evaluator", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "manager", fetch = FetchType.LAZY)
   private List<Feedback> feedbacks;
+
+  @OneToMany(mappedBy = "assignee", fetch = FetchType.LAZY)
+  private List<StoreAssignmentRule> assignmentRules;
+
+  @OneToMany(mappedBy = "assignedBy", fetch = FetchType.LAZY)
+  private List<StoreAssignmentRule> createdAssignmentRules;
+
+  @OneToMany(mappedBy = "assignee", fetch = FetchType.LAZY)
+  private List<StoreAssignment> assignments;
+
+  @OneToMany(mappedBy = "assignedBy", fetch = FetchType.LAZY)
+  private List<StoreAssignment> createdAssignments;
 
   public enum Role {
     REP,
-    EVALUATOR,
+    MANAGER,
     ADMIN
   }
 }
