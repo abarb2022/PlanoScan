@@ -38,4 +38,10 @@ public class Store {
 
   @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
   private List<Submission> submissions;
+
+  @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
+  private List<StoreAssignmentRule> assignmentRules;
+
+  @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
+  private List<StoreAssignment> assignments;
 }
