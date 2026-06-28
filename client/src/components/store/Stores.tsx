@@ -6,6 +6,7 @@ import {
   updateStore,
 } from "../../services/storeService";
 import type { Store, StorePageResponse, StoreRequest } from "../../types/store";
+import ConfirmDialog from "../common/ConfirmDialog";
 import StoreDialog from "./StoreDialog";
 import "./Stores.css";
 
@@ -23,6 +24,7 @@ export default function Stores() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingStore, setEditingStore] = useState<Store | null>(null);
+  const [confirmStore, setConfirmStore] = useState<Store | null>(null);
 
   useEffect(() => {
     loadStores();
@@ -74,15 +76,18 @@ export default function Stores() {
   }
 
   async function handleDelete(store: Store) {
-    if (!confirm(`Delete "${store.name}"? This cannot be undone.`)) return;
+    setConfirmStore(store);
+  }
+
+  async function confirmDelete() {
+    if (!confirmStore) return;
+    const store = confirmStore;
+    setConfirmStore(null);
     try {
       await deleteStore(store.id);
       const isLastOnPage = stores.length === 1 && page > 0;
-      if (isLastOnPage) {
-        setPage((p) => p - 1);
-      } else {
-        await loadStores();
-      }
+      if (isLastOnPage) setPage((p) => p - 1);
+      else await loadStores();
     } catch {
       setError("Failed to delete store.");
     }
@@ -226,6 +231,14 @@ export default function Stores() {
         editingStore={editingStore}
         onClose={closeDialog}
         onSubmit={handleSave}
+      />
+
+      <ConfirmDialog
+        open={confirmStore !== null}
+        title="Delete Store"
+        message={`Are you sure you want to delete "${confirmStore?.name}"? This cannot be undone.`}
+        onConfirm={confirmDelete}
+        onCancel={() => setConfirmStore(null)}
       />
     </div>
   );

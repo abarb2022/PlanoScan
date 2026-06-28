@@ -28,13 +28,17 @@ public class SecurityConfig {
   private final CustomAccessDeniedHandler accessDeniedHandler;
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    return http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+  public SecurityFilterChain filterChain(
+      HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
+    return http.cors(cors -> cors.configurationSource(corsConfigurationSource))
         .csrf(csrf -> csrf.disable())
         .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers("/planoscan/auth/**").permitAll().anyRequest().authenticated())
+                auth.requestMatchers("/planoscan/auth/login", "/planoscan/auth/register")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .exceptionHandling(
             ex ->
                 ex.authenticationEntryPoint(authEntryPoint)

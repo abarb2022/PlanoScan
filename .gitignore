@@ -44,3 +44,9 @@ application-local.properties
 demo/src/frontend/node_modules/
 demo/src/frontend/dist/
 demo/src/frontend/tsconfig.tsbuildinfo
+
+### Frontend (client/) ###
+client/node_modules/
+client/dist/
+client/.vite/
+client/tsconfig.tsbuildinfo

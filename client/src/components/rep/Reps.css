@@ -1,0 +1,68 @@
+.reps-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 24px 40px 20px;
+  overflow: hidden;
+  background: var(--surface-alt);
+  box-sizing: border-box;
+  font-family: "DM Sans", "Geist", system-ui, sans-serif;
+}
+
+.rep-avatar {
+  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%) !important;
+}
+
+.store-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.store-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  background: rgba(124, 58, 237, 0.1);
+  color: #7c3aed;
+  white-space: nowrap;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.store-pill--more {
+  background: var(--border);
+  color: var(--text-muted);
+}
+
+.no-stores-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.icon-btn-manage {
+  background: rgba(124, 58, 237, 0.1);
+  border: 1.5px solid rgba(124, 58, 237, 0.25);
+  border-radius: 9px;
+  padding: 9px 13px;
+  cursor: pointer;
+  color: #7c3aed;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.icon-btn-manage:hover {
+  background: rgba(124, 58, 237, 0.18);
+  border-color: rgba(124, 58, 237, 0.5);
+  transform: scale(1.05);
+}
+
+.reps-page .row-actions {
+  opacity: 1;
+}

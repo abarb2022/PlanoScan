@@ -11,6 +11,7 @@ export interface RegisterPayload extends LoginPayload {
 
 export interface AuthSession {
   token: string;
+  mustChangePassword: boolean;
 }
 
 export interface AuthUser {
