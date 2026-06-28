@@ -24,8 +24,8 @@ public class Feedback {
   private Score score;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "evaluator_id", nullable = false)
-  private User evaluator;
+  @JoinColumn(name = "manager_id", nullable = false)
+  private User manager;
 
   @Column(name = "corrected_score")
   private Float correctedScore;
