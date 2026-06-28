@@ -5,6 +5,7 @@ import { getUserFromToken, isTokenExpired } from "../utils/jwt";
 
 export function useAuth() {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [mustChangePassword, setMustChangePassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -12,9 +13,11 @@ export function useAuth() {
     const token = authService.getToken();
     if (!token || isTokenExpired(token)) {
       authService.clearToken();
+      authService.clearMustChangePassword();
       return;
     }
     setUser(getUserFromToken(token));
+    setMustChangePassword(authService.getMustChangePassword());
   }, []);
 
   async function login(payload: LoginPayload): Promise<void> {
@@ -23,7 +26,9 @@ export function useAuth() {
     try {
       const response = await authService.login(payload);
       authService.saveToken(response.token);
+      authService.saveMustChangePassword(response.mustChangePassword);
       setUser(getUserFromToken(response.token));
+      setMustChangePassword(response.mustChangePassword);
     } catch (currentError) {
       if (currentError instanceof ApiError) {
         setError(currentError.message);
@@ -35,10 +40,21 @@ export function useAuth() {
     }
   }
 
-  function logout() {
-    authService.clearToken();
-    setUser(null);
+  async function changePassword(
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    await authService.changePassword(currentPassword, newPassword);
+    authService.clearMustChangePassword();
+    setMustChangePassword(false);
   }
 
-  return { error, isSubmitting, login, logout, user };
+  function logout() {
+    authService.clearToken();
+    authService.clearMustChangePassword();
+    setUser(null);
+    setMustChangePassword(false);
+  }
+
+  return { error, isSubmitting, login, logout, changePassword, mustChangePassword, user };
 }
