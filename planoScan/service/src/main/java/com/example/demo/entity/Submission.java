@@ -31,6 +31,10 @@ public class Submission {
   @JoinColumn(name = "planogram_id", nullable = false)
   private Planogram planogram;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "assignment_id")
+  private StoreAssignment assignment;
+
   @Column(name = "photo_url", nullable = false)
   private String photoUrl;
 
