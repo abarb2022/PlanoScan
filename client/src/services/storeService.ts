@@ -4,9 +4,12 @@ import type {
   StorePageResponse,
   StoreQuery,
   StoreRequest,
+  RepAssignmentPageResponse,
+  RepAssignmentQuery,
 } from "../types/store";
 
 const STORE_URL = "/api/admin/stores";
+const REP_ASSIGNMENTS_URL = "/api/rep/assignments";
 
 export function getStores(query: StoreQuery): Promise<StorePageResponse> {
   const params = new URLSearchParams({
@@ -37,4 +40,20 @@ export function updateStore(id: string, store: StoreRequest): Promise<Store> {
 
 export function deleteStore(id: string): Promise<null> {
   return apiRequest<null>(`${STORE_URL}/${id}`, { method: "DELETE" });
+}
+
+export function getRepAssignments(
+  query: RepAssignmentQuery,
+): Promise<RepAssignmentPageResponse> {
+  const params = new URLSearchParams({
+    tab: query.tab,
+    date: query.date,
+    status: query.status,
+    page: String(query.page),
+    size: String(query.size),
+  });
+
+  return apiRequest<RepAssignmentPageResponse>(
+    `${REP_ASSIGNMENTS_URL}?${params.toString()}`,
+  );
 }
