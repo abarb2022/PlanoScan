@@ -394,45 +394,71 @@
 .rep-filters {
   display: flex;
   align-items: flex-end;
-  gap: 10px;
-  padding: 12px;
-  background: var(--surface);
+  gap: 16px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(79, 110, 247, 0.02) 0%, rgba(79, 110, 247, 0) 100%);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
+  flex-wrap: wrap;
 }
 
 .filter-field {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
+  flex: 0 1 auto;
+  min-width: 160px;
 }
 
 .filter-field span {
   color: var(--text-muted);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 800;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
+.filter-field input,
 .filter-field select {
-  min-width: 150px;
-  height: 36px;
-  padding: 0 32px 0 10px;
+  min-height: 36px;
+  padding: 8px 12px;
   border: 1.5px solid var(--border);
   border-radius: var(--radius-md);
-  background: var(--surface-alt);
+  background: var(--surface);
   color: var(--text-primary);
   cursor: pointer;
   font: inherit;
   font-size: 0.86rem;
-  font-weight: 600;
+  font-weight: 500;
   outline: none;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background 0.2s;
 }
 
+.filter-field input::placeholder {
+  color: var(--text-muted);
+}
+
+.filter-field input:focus,
 .filter-field select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.12);
   background: var(--surface);
+}
+
+.filter-field input:hover,
+.filter-field select:hover {
+  border-color: #ccc;
+  background: var(--surface);
+}
+
+.rep-filters .btn-ghost {
+  align-self: flex-end;
+  padding: 8px 14px;
+  font-size: 0.84rem;
+  height: 36px;
 }
 
 .rep-table-wrapper {

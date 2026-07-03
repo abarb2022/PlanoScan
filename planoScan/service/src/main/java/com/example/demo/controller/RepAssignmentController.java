@@ -27,9 +27,10 @@ public class RepAssignmentController {
       @RequestParam(name = "tab", defaultValue = "active") String tab,
       @RequestParam(name = "date", defaultValue = "all") String date,
       @RequestParam(name = "status", defaultValue = "all") String status,
+      @RequestParam(name = "storeName", defaultValue = "") String storeName,
       @RequestParam(name = "page", defaultValue = "0") int page,
       @RequestParam(name = "size", defaultValue = "20") int size) {
     return ResponseEntity.ok(
-        repAssignmentService.getAssignments(principal.getName(), tab, date, status, page, size));
+        repAssignmentService.getAssignments(principal.getName(), tab, date, status, storeName, page, size));
   }
 }

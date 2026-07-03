@@ -53,6 +53,10 @@ export function getRepAssignments(
     size: String(query.size),
   });
 
+  if (query.storeName?.trim()) {
+    params.set("storeName", query.storeName.trim());
+  }
+
   return apiRequest<RepAssignmentPageResponse>(
     `${REP_ASSIGNMENTS_URL}?${params.toString()}`,
   );
