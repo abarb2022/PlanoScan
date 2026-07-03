@@ -41,6 +41,10 @@ HELP.md
 .env
 application-local.properties
 
+client/node_modules/
+client/dist/
+client/tsconfig.tsbuildinfo
+
 demo/src/frontend/node_modules/
 demo/src/frontend/dist/
 demo/src/frontend/tsconfig.tsbuildinfo
