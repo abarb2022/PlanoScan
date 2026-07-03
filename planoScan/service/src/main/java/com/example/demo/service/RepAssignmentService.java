@@ -41,7 +41,7 @@ public class RepAssignmentService {
 
   @Transactional(readOnly = true)
   public RepAssignmentPageResponseDto getAssignments(
-      String repEmail, String tab, String date, String status, int page, int size) {
+      String repEmail, String tab, String date, String status, String storeName, int page, int size) {
     LocalDate today = LocalDate.now();
 
     Specification<StoreAssignment> filter =
@@ -50,7 +50,8 @@ public class RepAssignmentService {
             StoreAssignmentSpecifications.notCancelled(),
             StoreAssignmentSpecifications.matchesTab(tab),
             StoreAssignmentSpecifications.matchesDate(date, today),
-            StoreAssignmentSpecifications.matchesStatus(status));
+            StoreAssignmentSpecifications.matchesStatus(status),
+            StoreAssignmentSpecifications.storeNameContains(storeName));
 
     Pageable pageable =
         PageRequest.of(

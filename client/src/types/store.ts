@@ -66,6 +66,8 @@ export type RepAssignmentQuery = {
   tab: RepAssignmentTab;
   date: RepDateFilter;
   status: RepStatusFilter;
+  company?: string;
+  storeName?: string;
   page: number;
   size: number;
 };

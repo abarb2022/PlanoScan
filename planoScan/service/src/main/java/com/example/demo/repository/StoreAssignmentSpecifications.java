@@ -67,6 +67,15 @@ public final class StoreAssignmentSpecifications {
     };
   }
 
+  public static Specification<StoreAssignment> storeNameContains(String storeName) {
+    if (storeName == null || storeName.trim().isBlank()) {
+      return (root, query, cb) -> cb.conjunction();
+    }
+    String searchTerm = "%" + storeName.trim().toLowerCase() + "%";
+    return (root, query, cb) ->
+        cb.like(cb.lower(root.get("store").get("name")), searchTerm);
+  }
+
   private static Predicate isDueToday(Root<StoreAssignment> root, CriteriaBuilder cb) {
     return cb.equal(root.get("status"), StoreAssignment.Status.ASSIGNED);
   }
