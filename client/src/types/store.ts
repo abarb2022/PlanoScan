@@ -31,3 +31,50 @@ export type StoreQuery = {
   size: number;
   companyId?: string;
 };
+
+export type RepAssignmentStatus =
+  | "DUE_TODAY"
+  | "SUBMITTED"
+  | "NEEDS_REVIEW"
+  | "MISSED"
+  | "CANCELLED";
+
+export type RepDateFilter = "all" | "today" | "yesterday" | "older";
+export type RepStatusFilter = "all" | RepAssignmentStatus;
+export type RepAssignmentTab = "active" | "history";
+
+export type RepSubmission = {
+  id: string;
+  submittedAt: string;
+  status: "Pending" | "Processing" | "Scored" | "Reviewed";
+  score?: string | null;
+  photoName: string;
+};
+
+export type RepStoreAssignment = {
+  id: string;
+  store: Pick<Store, "id" | "name" | "address" | "companyName">;
+  assignmentDate: string;
+  dueWindow: string;
+  status: RepAssignmentStatus;
+  planogram: string;
+  lastSubmittedAt?: string | null;
+  submissions: RepSubmission[];
+};
+
+export type RepAssignmentQuery = {
+  tab: RepAssignmentTab;
+  date: RepDateFilter;
+  status: RepStatusFilter;
+  company?: string;
+  storeName?: string;
+  page: number;
+  size: number;
+};
+
+export type RepAssignmentPageResponse = {
+  content: RepStoreAssignment[];
+  totalPages: number;
+  totalElements: number;
+  currentPage: number;
+};
