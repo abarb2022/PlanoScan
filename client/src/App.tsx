@@ -1,21 +1,39 @@
-import { useAuth } from "./hooks/useAuth";
+import { useState } from "react";
 import { AuthPage } from "./components/auth/AuthPage";
-import HeaderTabs from "./components/header/HeaderTabs";
+import ChangePasswordModal from "./components/auth/ChangePasswordModal";
+import HeaderTabs, { type TabId } from "./components/header/HeaderTabs";
+import Reps from "./components/rep/Reps";
 import Stores from "./components/store/Stores";
+import { useAuth } from "./hooks/useAuth";
 
 function App() {
-  const { user, login, logout, error, isSubmitting } = useAuth();
+  const { user, login, logout, changePassword, mustChangePassword, error, isSubmitting } =
+    useAuth();
+  const [activeTab, setActiveTab] = useState<TabId>("stores");
 
   if (!user) {
+    return <AuthPage onLogin={login} error={error} isSubmitting={isSubmitting} />;
+  }
+
+  if (mustChangePassword) {
     return (
-      <AuthPage onLogin={login} error={error} isSubmitting={isSubmitting} />
+      <ChangePasswordModal
+        onSave={changePassword}
+        onLogout={logout}
+      />
     );
   }
 
   return (
     <div className="app-shell">
-      <HeaderTabs onLogout={logout} />
-      <Stores userRole={user.role} />
+      <HeaderTabs
+        activeTab={activeTab}
+        role={user.role}
+        onTabChange={setActiveTab}
+        onLogout={logout}
+      />
+      {activeTab === "stores" && <Stores userRole={user.role}/>}
+      {activeTab === "reps" && <Reps />}
     </div>
   );
 }
