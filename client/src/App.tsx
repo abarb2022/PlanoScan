@@ -15,7 +15,7 @@ function App() {
   return (
     <div className="app-shell">
       <HeaderTabs onLogout={logout} />
-      <Stores />
+      <Stores userRole={user.role} />
     </div>
   );
 }
