@@ -18,7 +18,9 @@ import org.hibernate.annotations.CreationTimestamp;
     },
     indexes = {
       @Index(name = "idx_store_assignments_store", columnList = "store_id"),
-      @Index(name = "idx_store_assignments_assignee_date", columnList = "assignee_id, assignment_date"),
+      @Index(
+          name = "idx_store_assignments_assignee_date",
+          columnList = "assignee_id, assignment_date"),
       @Index(name = "idx_store_assignments_status", columnList = "status")
     })
 @Getter
@@ -60,8 +62,8 @@ public class StoreAssignment {
   @Column(name = "created_at", updatable = false)
   private LocalDateTime createdAt;
 
-//  @Column(name = "completed_at")
-//  private LocalDateTime completedAt;
+  //  @Column(name = "completed_at")
+  //  private LocalDateTime completedAt;
 
   @Column(name = "cancelled_at")
   private LocalDateTime cancelledAt;
