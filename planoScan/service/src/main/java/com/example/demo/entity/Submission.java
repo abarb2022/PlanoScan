@@ -7,7 +7,11 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
-@Table(name = "submissions")
+@Table(
+    name = "submissions",
+    indexes = {
+      @Index(name = "idx_submissions_assignment_status", columnList = "assignment_id, status")
+    })
 @Getter
 @Setter
 @NoArgsConstructor
