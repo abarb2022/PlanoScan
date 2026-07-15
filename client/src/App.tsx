@@ -32,7 +32,7 @@ function App() {
         onTabChange={setActiveTab}
         onLogout={logout}
       />
-      {activeTab === "stores" && <Stores />}
+      {activeTab === "stores" && <Stores userRole={user.role}/>}
       {activeTab === "reps" && <Reps />}
     </div>
   );
