@@ -17,4 +17,6 @@ public class RepSubmissionResponseDto {
   private String status;
   private String score;
   private String photoName;
+  private String photoUrl;
+  private String planogramName;
 }

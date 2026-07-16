@@ -1,7 +1,14 @@
+import { useEffect, useState } from "react";
+import { submitAssignment } from "../../services/storeService";
 import type {
   RepAssignmentStatus,
   RepStoreAssignment,
 } from "../../types/store";
+import { useEscapeKey } from "../../hooks/useEscapeKey";
+import { dismissOnBackdropClick } from "../../utils/dom";
+import PhotoUploadPanel from "./PhotoUploadPanel";
+import SubmissionsPanel from "./SubmissionsPanel";
+import PhotoLightbox from "./PhotoLightbox";
 
 const ASSIGNMENT_STATUS_LABELS: Record<RepAssignmentStatus, string> = {
   DUE_TODAY: "Due today",
@@ -21,26 +28,78 @@ function assignmentStatusClass(status: RepAssignmentStatus) {
 
 export default function AssignmentDetail({
   assignment,
+  onSubmitted,
 }: {
   assignment: RepStoreAssignment;
+  onSubmitted: (updated: RepStoreAssignment) => void;
 }) {
   const canSubmit = assignment.status === "DUE_TODAY";
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [viewingPhoto, setViewingPhoto] = useState<{
+    url: string;
+    name: string;
+  } | null>(null);
 
-  return (
-    <aside className="assignment-detail" aria-label="Assignment details">
+  useEffect(() => {
+    setSelectedFiles([]);
+    setError("");
+  }, [assignment.id]);
+
+  useEscapeKey(() => setIsFullscreen(false), isFullscreen);
+  const handleBackdropClick = dismissOnBackdropClick(() =>
+    setIsFullscreen(false),
+  );
+
+  const submitHint =
+    canSubmit && !submitting && selectedFiles.length === 0
+      ? "Choose at least one photo to enable submission."
+      : null;
+
+  async function handleSubmit() {
+    if (selectedFiles.length === 0) return;
+    setSubmitting(true);
+    setError("");
+    try {
+      const updated = await submitAssignment(assignment.id, selectedFiles);
+      onSubmitted(updated);
+      setSelectedFiles([]);
+      setIsFullscreen(false);
+    } catch {
+      setError("Failed to submit assignment.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const content = (
+    <>
       <div className="assignment-detail-header">
         <div>
           <p className="detail-eyebrow">{assignment.assignmentDate}</p>
           <h2>{assignment.store.name}</h2>
           <p>{assignment.store.address}</p>
         </div>
-        <span
-          className={`status-badge status-${assignmentStatusClass(
-            assignment.status,
-          )}`}
-        >
-          {assignmentStatusLabel(assignment.status)}
-        </span>
+        <div className="assignment-detail-header-actions">
+          <span
+            className={`status-badge status-${assignmentStatusClass(
+              assignment.status,
+            )}`}
+          >
+            {assignmentStatusLabel(assignment.status)}
+          </span>
+          <button
+            className="assignment-expand-btn"
+            type="button"
+            onClick={() => setIsFullscreen((prev) => !prev)}
+            aria-label={isFullscreen ? "Exit fullscreen" : "Expand fullscreen"}
+            title={isFullscreen ? "Exit fullscreen" : "Expand fullscreen"}
+          >
+            {isFullscreen ? "⤡" : "⤢"}
+          </button>
+        </div>
       </div>
 
       <div className="detail-grid">
@@ -52,68 +111,53 @@ export default function AssignmentDetail({
           <span>Due window</span>
           <strong>{assignment.dueWindow}</strong>
         </div>
-        <div>
-          <span>Planogram</span>
-          <strong>{assignment.planogram}</strong>
-        </div>
-        <div>
-          <span>Assignment ID</span>
-          <strong>#{assignment.id.replace("assignment-", "")}</strong>
-        </div>
       </div>
 
-      <div className="upload-panel">
-        <div className="upload-panel__header">
-          <div>
-            <h3>Photo submission</h3>
-            <p>upload photo for the selected assignment.</p>
-          </div>
-          <span className="upload-pill">1 photo</span>
-        </div>
-        <div className="upload-dropzone">
-          <div className="upload-dropzone__icon" aria-hidden="true">
-            ↑
-          </div>
-          <div className="upload-dropzone__copy">
-            <strong>Drop a shelf photo here</strong>
-            <span>PNG, JPG, or HEIC. One file per submission.</span>
-          </div>
-          <label className={`upload-action ${!canSubmit ? "is-disabled" : ""}`}>
-            Upload photo
-            <input disabled={!canSubmit} type="file" accept="image/*" />
-          </label>
-        </div>
-        <div className="upload-actions">
-          <button className="btn btn-primary" disabled={!canSubmit} type="button">
-            Submit assignment
-          </button>
-        </div>
-      </div>
+      <PhotoUploadPanel
+        canSubmit={canSubmit}
+        submitting={submitting}
+        error={error}
+        selectedFiles={selectedFiles}
+        onFilesChange={setSelectedFiles}
+        onViewPhoto={setViewingPhoto}
+        onSubmit={handleSubmit}
+        submitHint={submitHint}
+      />
 
-      <div className="submissions-panel">
-        <div className="panel-title-row">
-          <h3>Submissions</h3>
-          <span>{assignment.submissions.length}</span>
-        </div>
-        {assignment.submissions.length === 0 ? (
-          <p className="empty-note">No submissions have been made yet.</p>
-        ) : (
-          <div className="submission-list">
-            {assignment.submissions.map((submission) => (
-              <div className="submission-item" key={submission.id}>
-                <div>
-                  <strong>{submission.photoName}</strong>
-                  <span>{submission.submittedAt}</span>
-                </div>
-                <div className="submission-meta">
-                  <span>{submission.status}</span>
-                  {submission.score && <strong>{submission.score}</strong>}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+      <SubmissionsPanel
+        submissions={assignment.submissions}
+        onViewPhoto={setViewingPhoto}
+      />
+
+      {viewingPhoto && (
+        <PhotoLightbox
+          url={viewingPhoto.url}
+          name={viewingPhoto.name}
+          onClose={() => setViewingPhoto(null)}
+        />
+      )}
+    </>
+  );
+
+  if (isFullscreen) {
+    return (
+      <div
+        className="dialog-backdrop assignment-fullscreen-backdrop"
+        onClick={handleBackdropClick}
+      >
+        <aside
+          className="assignment-detail assignment-detail-fullscreen"
+          aria-label="Assignment details"
+        >
+          {content}
+        </aside>
       </div>
+    );
+  }
+
+  return (
+    <aside className="assignment-detail" aria-label="Assignment details">
+      {content}
     </aside>
   );
 }

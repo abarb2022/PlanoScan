@@ -34,7 +34,10 @@ public class SecurityConfig {
         .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers("/planoscan/auth/**").permitAll().anyRequest().authenticated())
+                auth.requestMatchers("/planoscan/auth/**", "/uploads/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .exceptionHandling(
             ex ->
                 ex.authenticationEntryPoint(authEntryPoint)

@@ -12,6 +12,9 @@ public enum ErrorCode {
     UNAUTHENTICATED(HttpStatus.UNAUTHORIZED, "You are not authenticated. Please login first."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "You do not have permission to access."),
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "Invalid request"),
+    ASSIGNMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Assignment was not found"),
+    ASSIGNMENT_ALREADY_SUBMITTED(HttpStatus.CONFLICT, "This assignment has already been submitted"),
+    ASSIGNMENT_NOT_SUBMITTABLE(HttpStatus.CONFLICT, "This assignment is no longer accepting submissions"),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
 
     private final HttpStatus status;
