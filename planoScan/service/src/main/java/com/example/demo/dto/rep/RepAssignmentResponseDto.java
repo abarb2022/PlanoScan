@@ -18,7 +18,6 @@ public class RepAssignmentResponseDto {
   private String assignmentDate;
   private String dueWindow;
   private String status;
-  private String planogram;
   private String lastSubmittedAt;
   private List<RepSubmissionResponseDto> submissions;
 }

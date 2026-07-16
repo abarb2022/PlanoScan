@@ -6,6 +6,7 @@ import type {
   StoreRequest,
   RepAssignmentPageResponse,
   RepAssignmentQuery,
+  RepStoreAssignment,
 } from "../types/store";
 
 const STORE_URL = "/api/admin/stores";
@@ -40,6 +41,22 @@ export function updateStore(id: string, store: StoreRequest): Promise<Store> {
 
 export function deleteStore(id: string): Promise<null> {
   return apiRequest<null>(`${STORE_URL}/${id}`, { method: "DELETE" });
+}
+
+export function submitAssignment(
+  assignmentId: string,
+  photos: File[],
+): Promise<RepStoreAssignment> {
+  const formData = new FormData();
+  photos.forEach((photo) => formData.append("photos", photo));
+
+  return apiRequest<RepStoreAssignment>(
+    `${REP_ASSIGNMENTS_URL}/${assignmentId}/submissions`,
+    {
+      method: "POST",
+      body: formData,
+    },
+  );
 }
 
 export function getRepAssignments(

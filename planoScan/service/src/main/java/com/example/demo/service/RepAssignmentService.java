@@ -5,14 +5,21 @@ import com.example.demo.dto.rep.RepAssignmentPageResponseDto;
 import com.example.demo.dto.rep.RepAssignmentResponseDto;
 import com.example.demo.dto.rep.RepAssignmentStoreDto;
 import com.example.demo.dto.rep.RepSubmissionResponseDto;
+import com.example.demo.entity.Planogram;
 import com.example.demo.entity.Score;
 import com.example.demo.entity.StoreAssignment;
 import com.example.demo.entity.Submission;
+import com.example.demo.exception.ErrorCode;
+import com.example.demo.exception.ServerException;
+import com.example.demo.repository.PlanogramRepository;
 import com.example.demo.repository.StoreAssignmentRepository;
 import com.example.demo.repository.StoreAssignmentSpecifications;
+import com.example.demo.repository.SubmissionRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +34,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -35,9 +43,13 @@ public class RepAssignmentService {
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM d");
   private static final DateTimeFormatter SUBMISSION_FORMATTER =
       DateTimeFormatter.ofPattern("MMM d, HH:mm");
+  private static final DateTimeFormatter DUE_TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a");
   private static final int MAX_PAGE_SIZE = 100;
 
   private final StoreAssignmentRepository assignmentRepository;
+  private final PlanogramRepository planogramRepository;
+  private final SubmissionRepository submissionRepository;
+  private final PhotoStorage photoStorage;
 
   @Transactional(readOnly = true)
   public RepAssignmentPageResponseDto getAssignments(
@@ -72,6 +84,77 @@ public class RepAssignmentService {
         content, matchingPage.getTotalPages(), matchingPage.getTotalElements(), matchingPage.getNumber());
   }
 
+  @Transactional
+  public RepAssignmentResponseDto createSubmission(
+      String repEmail, UUID assignmentId, List<MultipartFile> photos) {
+    if (photos == null || photos.isEmpty()) {
+      throw new ServerException(ErrorCode.VALIDATION_ERROR);
+    }
+
+    StoreAssignment assignment =
+        assignmentRepository
+            .findById(assignmentId)
+            .orElseThrow(() -> new ServerException(ErrorCode.ASSIGNMENT_NOT_FOUND));
+
+    if (!assignment.getAssignee().getEmail().equalsIgnoreCase(repEmail)) {
+      throw new ServerException(ErrorCode.ACCESS_DENIED);
+    }
+
+    if (assignment.getStatus() == StoreAssignment.Status.COMPLETED) {
+      throw new ServerException(ErrorCode.ASSIGNMENT_ALREADY_SUBMITTED);
+    }
+
+    if (assignment.getStatus() != StoreAssignment.Status.ASSIGNED) {
+      throw new ServerException(ErrorCode.ASSIGNMENT_NOT_SUBMITTABLE);
+    }
+
+    LocalDate today = LocalDate.now();
+    boolean multiplePhotos = photos.size() > 1;
+
+    // The uploaded photo *is* the planogram record: there is no admin-curated catalog to pick
+    // from, so submitting a photo creates the planogram for it on the spot. Each photo in a
+    // batch gets its own planogram + submission, since a submission is exactly one photo.
+    List<String> photoUrls = new ArrayList<>();
+    List<Planogram> planograms = new ArrayList<>();
+    for (int i = 0; i < photos.size(); i++) {
+      String photoUrl = photoStorage.store(photos.get(i), "submissions");
+      String label =
+          assignment.getStore().getName()
+              + " — "
+              + today.format(DATE_FORMATTER)
+              + (multiplePhotos ? " (" + (i + 1) + ")" : "");
+
+      photoUrls.add(photoUrl);
+      planograms.add(
+          Planogram.builder()
+              .company(assignment.getStore().getCompany())
+              .name(label)
+              .referenceImageUrl(photoUrl)
+              .isActive(true)
+              .validFrom(today)
+              .build());
+    }
+
+    List<Planogram> savedPlanograms = planogramRepository.saveAll(planograms);
+    List<Submission> submissions = new ArrayList<>();
+    for (int i = 0; i < savedPlanograms.size(); i++) {
+      submissions.add(
+          Submission.builder()
+              .rep(assignment.getAssignee())
+              .store(assignment.getStore())
+              .planogram(savedPlanograms.get(i))
+              .assignment(assignment)
+              .photoUrl(photoUrls.get(i))
+              .build());
+    }
+    submissionRepository.saveAll(submissions);
+
+    assignment.setStatus(StoreAssignment.Status.COMPLETED);
+    StoreAssignment saved = assignmentRepository.save(assignment);
+
+    return toDto(assignmentRepository.findByIdIn(List.of(saved.getId())).get(0), today);
+  }
+
   private RepAssignmentResponseDto toDto(StoreAssignment assignment, LocalDate today) {
     List<Submission> sortedSubmissions = sortedSubmissions(assignment);
     Submission latestSubmission = sortedSubmissions.isEmpty() ? null : sortedSubmissions.get(0);
@@ -86,10 +169,8 @@ public class RepAssignmentService {
                 .companyName(assignment.getStore().getCompany().getName())
                 .build())
         .assignmentDate(formatAssignmentDate(assignment.getAssignmentDate(), today))
-        .dueWindow("All day")
+        .dueWindow(formatDueWindow(assignment.getDueTime()))
         .status(deriveStatus(assignment).apiValue())
-        .planogram(
-            latestSubmission == null ? "No submission yet" : latestSubmission.getPlanogram().getName())
         .lastSubmittedAt(
             latestSubmission == null
                 ? null
@@ -108,6 +189,9 @@ public class RepAssignmentService {
         .status(formatSubmissionStatus(submission.getStatus()))
         .score(formatScore(submission.getScore()))
         .photoName(photoName(submission.getPhotoUrl()))
+        .photoUrl(submission.getPhotoUrl())
+        .planogramName(
+            submission.getPlanogram() == null ? null : submission.getPlanogram().getName())
         .build();
   }
 
@@ -180,6 +264,10 @@ public class RepAssignmentService {
     float value = score.getOverallScore();
     float percentage = value <= 1 ? value * 100 : value;
     return Math.round(percentage) + "%";
+  }
+
+  private String formatDueWindow(LocalTime dueTime) {
+    return dueTime == null ? "All day" : "Due by " + dueTime.format(DUE_TIME_FORMATTER);
   }
 
   private String photoName(String photoUrl) {
