@@ -1,7 +1,9 @@
+import type { Company } from "../../types/manager";
 import type { UserRole } from "../../types/auth";
+import CompanySelect from "./CompanySelect";
 import "./HeaderTabs.css";
 
-export type TabId = "stores" | "reps";
+export type TabId = "stores" | "reps" | "managers" | "companies";
 
 interface Tab {
   id: TabId;
@@ -12,6 +14,8 @@ interface Tab {
 const TABS: Tab[] = [
   { id: "stores", label: "Stores", roles: ["ADMIN", "MANAGER", "REP"] },
   { id: "reps", label: "Reps", roles: ["ADMIN", "MANAGER"] },
+  { id: "managers", label: "Managers", roles: ["ADMIN"] },
+  { id: "companies", label: "Companies", roles: ["ADMIN"] },
 ];
 
 interface Props {
@@ -19,10 +23,22 @@ interface Props {
   role?: UserRole;
   onTabChange: (tab: TabId) => void;
   onLogout?: () => void;
+  companies?: Company[];
+  selectedCompanyId?: string | null;
+  onCompanyChange?: (id: string | null) => void;
 }
 
-export default function HeaderTabs({ activeTab, role, onTabChange, onLogout }: Props) {
+export default function HeaderTabs({
+  activeTab,
+  role,
+  onTabChange,
+  onLogout,
+  companies,
+  selectedCompanyId,
+  onCompanyChange,
+}: Props) {
   const visibleTabs = TABS.filter((t) => !role || t.roles.includes(role));
+  const showCompanyFilter = role === "ADMIN" && companies && companies.length > 0;
 
   return (
     <header className="header-tabs" aria-label="Primary navigation">
@@ -38,11 +54,21 @@ export default function HeaderTabs({ activeTab, role, onTabChange, onLogout }: P
           </button>
         ))}
       </nav>
-      {onLogout && (
-        <button className="header-tabs__logout" onClick={onLogout} type="button">
-          Sign out
-        </button>
-      )}
+
+      <div className="header-tabs__right">
+        {showCompanyFilter && (
+          <CompanySelect
+            companies={companies!}
+            value={selectedCompanyId ?? null}
+            onChange={(id) => onCompanyChange?.(id)}
+          />
+        )}
+        {onLogout && (
+          <button className="header-tabs__logout" onClick={onLogout} type="button">
+            Sign out
+          </button>
+        )}
+      </div>
     </header>
   );
 }

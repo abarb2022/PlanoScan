@@ -14,6 +14,8 @@ public interface StoreRepository extends JpaRepository<Store, UUID> {
 
   Page<Store> findByCompanyId(UUID companyId, Pageable pageable);
 
+  boolean existsByCompanyId(UUID companyId);
+
   boolean existsByNameAndCompanyId(String name, UUID companyId);
 
   boolean existsByNameAndCompanyIdAndIdNot(String name, UUID companyId, UUID id);

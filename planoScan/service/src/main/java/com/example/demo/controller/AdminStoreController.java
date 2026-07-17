@@ -33,8 +33,9 @@ public class AdminStoreController {
   public ResponseEntity<StorePageResponseDto> getAllStores(
       @RequestParam(name = "page", defaultValue = "0") int page,
       @RequestParam(name = "size", defaultValue = "20") int size,
-      @RequestParam(name = "companyId", required = false) UUID companyId) {
-    return ResponseEntity.ok(storeService.getAllStores(page, size, companyId));
+      @RequestParam(name = "companyId", required = false) UUID companyId,
+      Authentication auth) {
+    return ResponseEntity.ok(storeService.getAllStores(page, size, companyId, auth.getName()));
   }
 
   @GetMapping("/{id}")

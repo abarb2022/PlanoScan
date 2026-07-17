@@ -2,17 +2,29 @@ import { useEffect, useState } from "react";
 import { AuthPage } from "./components/auth/AuthPage";
 import ChangePasswordModal from "./components/auth/ChangePasswordModal";
 import HeaderTabs, { type TabId } from "./components/header/HeaderTabs";
+import Companies from "./components/company/Companies";
+import Managers from "./components/manager/Managers";
 import Reps from "./components/rep/Reps";
 import Stores from "./components/store/Stores";
 import { useAuth } from "./hooks/useAuth";
+import { getCompanies } from "./services/companyService";
+import type { Company } from "./types/manager";
 
 function App() {
   const { user, login, logout, changePassword, mustChangePassword, error, isSubmitting } =
     useAuth();
   const [activeTab, setActiveTab] = useState<TabId>("stores");
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
 
   useEffect(() => {
     setActiveTab("stores");
+    setSelectedCompanyId(null);
+    if (user?.role === "ADMIN") {
+      getCompanies().then(setCompanies).catch(() => setCompanies([]));
+    } else {
+      setCompanies([]);
+    }
   }, [user]);
 
   if (!user) {
@@ -35,9 +47,14 @@ function App() {
         role={user.role}
         onTabChange={setActiveTab}
         onLogout={logout}
+        companies={companies}
+        selectedCompanyId={selectedCompanyId}
+        onCompanyChange={setSelectedCompanyId}
       />
-      {activeTab === "stores" && <Stores userRole={user.role}/>}
-      {activeTab === "reps" && <Reps />}
+      {activeTab === "stores" && <Stores userRole={user.role} companyId={selectedCompanyId} />}
+      {activeTab === "reps" && <Reps companyId={selectedCompanyId} />}
+      {activeTab === "managers" && <Managers companyId={selectedCompanyId} />}
+      {activeTab === "companies" && <Companies />}
     </div>
   );
 }

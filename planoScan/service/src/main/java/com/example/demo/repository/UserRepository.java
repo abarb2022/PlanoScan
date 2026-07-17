@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository extends JpaRepository<User, UUID> {
   Optional<User> findByEmail(String email);
 
+  boolean existsByCompanyId(UUID companyId);
+
   Page<User> findByRole(User.Role role, Pageable pageable);
 
   Page<User> findByCompanyIdAndRole(UUID companyId, User.Role role, Pageable pageable);
