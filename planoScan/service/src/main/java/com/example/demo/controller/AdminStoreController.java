@@ -10,20 +10,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin/stores")
 @CrossOrigin(origins = {"http://127.0.0.1:5173", "http://localhost:5173"})
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')") // entire controller is admin-only
+@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
 public class AdminStoreController {
 
   private final StoreService storeService;
 
   @PostMapping
-  public ResponseEntity<StoreResponseDto> createStore(@Valid @RequestBody StoreRequestDto dto) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(storeService.createStore(dto));
+  public ResponseEntity<StoreResponseDto> createStore(
+      @Valid @RequestBody StoreRequestDto dto, Authentication auth) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(storeService.createStore(dto, auth.getName()));
   }
 
   @GetMapping
@@ -41,8 +44,10 @@ public class AdminStoreController {
 
   @PutMapping("/{id}")
   public ResponseEntity<StoreResponseDto> updateStore(
-      @PathVariable(name = "id") UUID id, @Valid @RequestBody StoreRequestDto dto) {
-    return ResponseEntity.ok(storeService.updateStore(id, dto));
+      @PathVariable(name = "id") UUID id,
+      @Valid @RequestBody StoreRequestDto dto,
+      Authentication auth) {
+    return ResponseEntity.ok(storeService.updateStore(id, dto, auth.getName()));
   }
 
   @DeleteMapping("/{id}")

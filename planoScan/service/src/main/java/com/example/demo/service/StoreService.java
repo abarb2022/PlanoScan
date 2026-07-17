@@ -5,10 +5,12 @@ import com.example.demo.dto.store.StoreRequestDto;
 import com.example.demo.dto.store.StoreResponseDto;
 import com.example.demo.entity.Company;
 import com.example.demo.entity.Store;
+import com.example.demo.entity.User;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.exception.ServerException;
 import com.example.demo.repository.CompanyRepository;
 import com.example.demo.repository.StoreRepository;
+import com.example.demo.repository.UserRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,15 +26,14 @@ public class StoreService {
 
   private final StoreRepository storeRepository;
   private final CompanyRepository companyRepository;
+  private final UserRepository userRepository;
 
   @Transactional
-  public StoreResponseDto createStore(StoreRequestDto dto) {
-    Company company =
-        companyRepository
-            .findById(dto.getCompanyId())
-            .orElseThrow(() -> new ServerException(ErrorCode.COMPANY_NOT_FOUND));
+  public StoreResponseDto createStore(StoreRequestDto dto, String currentUserEmail) {
+    User currentUser = getCurrentUser(currentUserEmail);
+    Company company = resolveCompany(currentUser, dto.getCompanyId());
 
-    if (storeRepository.existsByNameAndCompanyId(dto.getName(), dto.getCompanyId())) {
+    if (storeRepository.existsByNameAndCompanyId(dto.getName(), company.getId())) {
       throw new ServerException(ErrorCode.STORE_ALREADY_EXISTS);
     }
 
@@ -66,18 +67,16 @@ public class StoreService {
   }
 
   @Transactional
-  public StoreResponseDto updateStore(UUID id, StoreRequestDto dto) {
+  public StoreResponseDto updateStore(UUID id, StoreRequestDto dto, String currentUserEmail) {
     Store store =
         storeRepository
             .findById(id)
             .orElseThrow(() -> new ServerException(ErrorCode.STORE_NOT_FOUND));
 
-    Company company =
-        companyRepository
-            .findById(dto.getCompanyId())
-            .orElseThrow(() -> new ServerException(ErrorCode.COMPANY_NOT_FOUND));
+    User currentUser = getCurrentUser(currentUserEmail);
+    Company company = resolveCompany(currentUser, dto.getCompanyId());
 
-    if (storeRepository.existsByNameAndCompanyIdAndIdNot(dto.getName(), dto.getCompanyId(), id)) {
+    if (storeRepository.existsByNameAndCompanyIdAndIdNot(dto.getName(), company.getId(), id)) {
       throw new ServerException(ErrorCode.STORE_ALREADY_EXISTS);
     }
 
@@ -93,6 +92,25 @@ public class StoreService {
       throw new ServerException(ErrorCode.STORE_NOT_FOUND);
     }
     storeRepository.deleteById(id);
+  }
+
+  private User getCurrentUser(String email) {
+    return userRepository
+        .findByEmail(email)
+        .orElseThrow(() -> new ServerException(ErrorCode.USER_NOT_FOUND));
+  }
+
+  private Company resolveCompany(User currentUser, UUID companyId) {
+    if (currentUser.getRole() == User.Role.ADMIN && companyId != null) {
+      return companyRepository
+          .findById(companyId)
+          .orElseThrow(() -> new ServerException(ErrorCode.COMPANY_NOT_FOUND));
+    }
+    Company company = currentUser.getCompany();
+    if (company == null) {
+      throw new ServerException(ErrorCode.COMPANY_NOT_FOUND);
+    }
+    return company;
   }
 
   private StoreResponseDto toDto(Store store) {

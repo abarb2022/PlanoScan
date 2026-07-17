@@ -10,7 +10,7 @@ interface Tab {
 }
 
 const TABS: Tab[] = [
-  { id: "stores", label: "Stores", roles: ["ADMIN", "MANAGER"] },
+  { id: "stores", label: "Stores", roles: ["ADMIN", "MANAGER", "REP"] },
   { id: "reps", label: "Reps", roles: ["ADMIN", "MANAGER"] },
 ];
 
