@@ -23,6 +23,25 @@ public interface StoreAssignmentRepository
   @Query("DELETE FROM StoreAssignment a WHERE a.assignee.id = :assigneeId")
   void deleteAllByAssigneeId(@Param("assigneeId") UUID assigneeId);
 
+  boolean existsByRuleIdAndAssignmentDate(UUID ruleId, LocalDate assignmentDate);
+
+  @Modifying
+  @Query(
+      "UPDATE StoreAssignment a SET a.status = com.example.demo.entity.StoreAssignment.Status.CANCELLED"
+          + " WHERE a.rule.id = :ruleId AND a.status = com.example.demo.entity.StoreAssignment.Status.ASSIGNED")
+  void cancelAssignedByRuleId(@Param("ruleId") UUID ruleId);
+
+  @Modifying
+  @Query("UPDATE StoreAssignment a SET a.rule = null WHERE a.rule.id = :ruleId")
+  void detachFromRule(@Param("ruleId") UUID ruleId);
+
+  @Modifying
+  @Query(
+      "UPDATE StoreAssignment a SET a.status = com.example.demo.entity.StoreAssignment.Status.MISSED"
+          + " WHERE a.assignee.id = :repId AND a.assignmentDate < :today"
+          + " AND a.status = com.example.demo.entity.StoreAssignment.Status.ASSIGNED")
+  void markMissedForRep(@Param("repId") UUID repId, @Param("today") LocalDate today);
+
   @EntityGraph(
       attributePaths = {
         "store",

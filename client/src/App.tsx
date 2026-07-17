@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AuthPage } from "./components/auth/AuthPage";
 import ChangePasswordModal from "./components/auth/ChangePasswordModal";
 import HeaderTabs, { type TabId } from "./components/header/HeaderTabs";
@@ -10,6 +10,10 @@ function App() {
   const { user, login, logout, changePassword, mustChangePassword, error, isSubmitting } =
     useAuth();
   const [activeTab, setActiveTab] = useState<TabId>("stores");
+
+  useEffect(() => {
+    setActiveTab("stores");
+  }, [user]);
 
   if (!user) {
     return <AuthPage onLogin={login} error={error} isSubmitting={isSubmitting} />;

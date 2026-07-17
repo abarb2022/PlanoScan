@@ -1,7 +1,6 @@
 package com.example.demo.dto.store;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,5 +17,5 @@ public class StoreRequestDto {
 
   private String address;
 
-  @NotNull(message = "Company ID is required") private UUID companyId;
+  private UUID companyId;
 }
