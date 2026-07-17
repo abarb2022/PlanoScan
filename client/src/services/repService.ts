@@ -2,10 +2,10 @@ import { apiRequest } from "./apiClient";
 import type { Rep, RepPageResponse, RepRequest } from "../types/rep";
 import type { Store } from "../types/store";
 
-export function getReps(page = 0, size = 5): Promise<RepPageResponse> {
-  return apiRequest<RepPageResponse>(
-    `/api/manager/reps?page=${page}&size=${size}`,
-  );
+export function getReps(page = 0, size = 5, companyId?: string | null): Promise<RepPageResponse> {
+  const params = new URLSearchParams({ page: String(page), size: String(size) });
+  if (companyId) params.set("companyId", companyId);
+  return apiRequest<RepPageResponse>(`/api/manager/reps?${params.toString()}`);
 }
 
 export function createRep(req: RepRequest): Promise<Rep> {

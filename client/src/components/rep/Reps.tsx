@@ -14,7 +14,11 @@ import "./Reps.css";
 
 const PAGE_SIZE = 5;
 
-export default function Reps() {
+interface Props {
+  companyId?: string | null;
+}
+
+export default function Reps({ companyId }: Props) {
   const [reps, setReps] = useState<Rep[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -28,14 +32,18 @@ export default function Reps() {
   const [confirmRep, setConfirmRep] = useState<Rep | null>(null);
 
   useEffect(() => {
+    setPage(0);
+  }, [companyId]);
+
+  useEffect(() => {
     load();
-  }, [page]);
+  }, [page, companyId]);
 
   async function load() {
     try {
       setLoading(true);
       setError("");
-      const res: RepPageResponse = await getReps(page, PAGE_SIZE);
+      const res: RepPageResponse = await getReps(page, PAGE_SIZE, companyId);
       setReps(res.content);
       setTotalPages(res.totalPages);
       setTotalElements(res.totalElements);
@@ -170,11 +178,13 @@ export default function Reps() {
                         title="Manage store assignments"
                         onClick={() => setAssignmentsRep(rep)}
                       >
-                        <svg width="20" height="20" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5"/>
-                          <rect x="8" y="1" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5"/>
-                          <rect x="1" y="8" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5"/>
-                          <rect x="8" y="8" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.5"/>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect x="1.5" y="2.5" width="4" height="4" rx="1" stroke="currentColor" strokeWidth="1.5"/>
+                          <path d="M8 4.5h8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                          <rect x="1.5" y="7" width="4" height="4" rx="1" stroke="currentColor" strokeWidth="1.5"/>
+                          <path d="M8 9h8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                          <rect x="1.5" y="11.5" width="4" height="4" rx="1" stroke="currentColor" strokeWidth="1.5"/>
+                          <path d="M8 13.5h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
                         </svg>
                       </button>
                       <button

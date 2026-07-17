@@ -40,6 +40,13 @@
   color: var(--accent);
 }
 
+.header-tabs__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
 .header-tabs__logout {
   background: transparent;
   border: 1px solid var(--border);

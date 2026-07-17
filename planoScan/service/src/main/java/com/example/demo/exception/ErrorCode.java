@@ -19,7 +19,10 @@ public enum ErrorCode {
   INVALID_CURRENT_PASSWORD(HttpStatus.UNAUTHORIZED, "Current password is incorrect"),
   REP_HAS_SUBMISSIONS(HttpStatus.CONFLICT, "Cannot delete rep with existing submissions"),
   DUPLICATE_ASSIGNMENT_RULE(
-      HttpStatus.CONFLICT, "A rule for this store, rep and day already exists");
+      HttpStatus.CONFLICT, "A rule for this store, rep and day already exists"),
+  MANAGER_NOT_FOUND(HttpStatus.NOT_FOUND, "Manager was not found"),
+  COMPANY_ALREADY_EXISTS(HttpStatus.CONFLICT, "A company with this name already exists"),
+  COMPANY_HAS_DEPENDENTS(HttpStatus.CONFLICT, "Cannot delete company that has managers, reps, or stores");
 
   private final HttpStatus status;
   private final String message;
