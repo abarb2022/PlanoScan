@@ -299,7 +299,13 @@ export default function RepStores() {
         </section>
 
         {selectedAssignment && (
-          <AssignmentDetail assignment={selectedAssignment} />
+          <AssignmentDetail
+            assignment={selectedAssignment}
+            onSubmitted={() => {
+              loadAssignments();
+              loadActiveAssignmentCount();
+            }}
+          />
         )}
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import type { Store, StoreRequest } from "../../types/store";
+import { dismissOnBackdropClick } from "../../utils/dom";
 import "./StoreDialog.css";
 
 interface StoreForm {
@@ -71,9 +72,7 @@ export default function StoreDialog({
     }
   }
 
-  function handleBackdropClick(e: React.MouseEvent<HTMLDivElement>) {
-    if (e.target === e.currentTarget) onClose();
-  }
+  const handleBackdropClick = dismissOnBackdropClick(onClose);
 
   if (!open) return null;
 

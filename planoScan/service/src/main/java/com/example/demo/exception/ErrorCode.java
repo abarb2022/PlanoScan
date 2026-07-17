@@ -22,6 +22,9 @@ public enum ErrorCode {
       HttpStatus.CONFLICT, "A rule for this store, rep and day already exists"),
   MANAGER_NOT_FOUND(HttpStatus.NOT_FOUND, "Manager was not found"),
   COMPANY_ALREADY_EXISTS(HttpStatus.CONFLICT, "A company with this name already exists"),
+  ASSIGNMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Assignment was not found"),
+  ASSIGNMENT_ALREADY_SUBMITTED(HttpStatus.CONFLICT, "This assignment has already been submitted"),
+  ASSIGNMENT_NOT_SUBMITTABLE(HttpStatus.CONFLICT, "This assignment is no longer accepting submissions"),
   COMPANY_HAS_DEPENDENTS(HttpStatus.CONFLICT, "Cannot delete company that has managers, reps, or stores");
 
   private final HttpStatus status;

@@ -2,6 +2,8 @@
 :root {
   --accent: #4f6ef7;
   --accent-hover: #3a57e0;
+  --accent-camera: #7c3aed;
+  --accent-camera-hover: #6b21e0;
   --surface: #ffffff;
   --surface-alt: #f7f8fa;
   --border: #e2e4ea;
@@ -396,7 +398,11 @@
   align-items: flex-end;
   gap: 16px;
   padding: 16px;
-  background: linear-gradient(135deg, rgba(79, 110, 247, 0.02) 0%, rgba(79, 110, 247, 0) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(79, 110, 247, 0.02) 0%,
+    rgba(79, 110, 247, 0) 100%
+  );
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   flex-wrap: wrap;
@@ -554,6 +560,100 @@
   font-size: 0.84rem;
 }
 
+.assignment-detail-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.assignment-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-alt);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+
+.assignment-expand-btn:hover {
+  background: var(--hover-bg, #f1f2f6);
+  color: var(--text-primary);
+}
+
+/* .assignment-fullscreen-backdrop, .photo-lightbox-backdrop and .camera-modal-backdrop
+   (further below) are used together with the shared `.dialog-backdrop` class from
+   StoreDialog.css and only override its padding/z-index/opacity deltas. */
+.assignment-fullscreen-backdrop {
+  padding: 32px;
+  box-sizing: border-box;
+}
+
+.assignment-detail-fullscreen {
+  width: 100%;
+  max-width: 720px;
+  max-height: 100%;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+}
+
+.photo-lightbox-backdrop {
+  background: rgba(10, 12, 20, 0.75);
+  padding: 32px;
+  box-sizing: border-box;
+  z-index: 200;
+}
+
+.photo-lightbox {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: min(90vw, 720px);
+  max-height: 90vh;
+}
+
+.photo-lightbox img {
+  max-width: 100%;
+  max-height: 80vh;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  object-fit: contain;
+}
+
+.photo-lightbox__caption {
+  margin: 0;
+  color: #fff;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.photo-lightbox__close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
 .detail-eyebrow {
   color: var(--accent) !important;
   font-size: 0.75rem !important;
@@ -629,86 +729,260 @@
   white-space: nowrap;
 }
 
-.upload-dropzone {
+.upload-error {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 0.82rem;
+}
+
+.upload-hint {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  text-align: right;
+}
+
+.upload-options {
   display: grid;
-  grid-template-columns: 64px minmax(0, 1fr) auto;
-  gap: 14px;
-  align-items: center;
-  min-height: 132px;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.upload-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 150px;
   padding: 18px;
   border: 1.5px dashed #b7bed0;
   border-radius: calc(var(--radius-lg) + 2px);
   background: var(--surface-alt);
+  transition:
+    border-color 0.15s,
+    background 0.15s,
+    box-shadow 0.15s;
 }
 
-.upload-dropzone__icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 18px;
-  background: #eef3ff;
-  color: var(--accent);
+.upload-option--camera {
+  border-style: solid;
+  border-color: var(--border);
+  background: var(--surface);
+}
+
+.upload-option--upload.is-dragover {
+  border-color: var(--accent);
+  background: rgba(79, 110, 247, 0.08);
+  box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.12);
+}
+
+.upload-option--camera:hover {
+  border-color: var(--accent-camera);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.upload-option.is-disabled {
+  opacity: 0.55;
+}
+
+.upload-option__icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 13px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  font-weight: 800;
 }
 
-.upload-dropzone__copy {
+.upload-option--upload .upload-option__icon {
+  background: #eef3ff;
+  color: var(--accent);
+}
+
+.upload-option--camera .upload-option__icon {
+  background: rgba(124, 58, 237, 0.1);
+  color: var(--accent-camera);
+}
+
+.upload-option__body {
+  flex: 1;
   min-width: 0;
 }
 
-.upload-dropzone__copy strong {
+.upload-selected-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 10px;
+}
+
+.upload-selected-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.upload-selected-preview {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.upload-selected-item img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-alt);
+  transition: opacity 0.1s;
+}
+
+.upload-selected-preview:hover img {
+  opacity: 0.85;
+}
+
+.upload-selected-name {
+  color: var(--text-primary);
+  font-size: 0.74rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upload-selected-size {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.upload-selected-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(10, 12, 20, 0.6);
+  color: #fff;
+  font-size: 0.68rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.upload-selected-remove:hover {
+  background: #b91c1c;
+}
+
+.upload-option__body strong {
   display: block;
   color: var(--text-primary);
-  font-size: 0.98rem;
+  font-size: 0.94rem;
   font-weight: 800;
   line-height: 1.25;
 }
 
-.upload-dropzone__copy span {
+.upload-option__body span {
   display: block;
-  margin-top: 6px;
+  margin-top: 4px;
   color: var(--text-muted);
-  font-size: 0.84rem;
+  font-size: 0.8rem;
   line-height: 1.4;
 }
 
-.upload-action {
+.upload-option__action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
+  min-height: 36px;
   padding: 0 14px;
+  border: none;
   border-radius: 999px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 800;
   cursor: pointer;
   white-space: nowrap;
+  font-family: inherit;
   transition:
     background 0.15s,
     opacity 0.15s,
     transform 0.1s;
 }
 
-.upload-action:hover {
+.upload-option--upload .upload-option__action {
+  background: var(--accent);
+  color: #fff;
+}
+
+.upload-option--upload .upload-option__action:hover {
   background: var(--accent-hover);
 }
 
-.upload-action:active {
+.upload-option--camera .upload-option__action {
+  background: var(--accent-camera);
+  color: #fff;
+}
+
+.upload-option--camera .upload-option__action:hover {
+  background: var(--accent-camera-hover);
+}
+
+.upload-option__action:active {
   transform: scale(0.98);
 }
 
-.upload-action input {
+.upload-option__action input {
   display: none;
 }
 
-.upload-action.is-disabled {
-  opacity: 0.45;
+.upload-option__action.is-disabled,
+.upload-option__action:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
+}
+
+.camera-modal-backdrop {
+  background: rgba(10, 12, 20, 0.75);
+  padding: 32px;
+  box-sizing: border-box;
+  z-index: 200;
+}
+
+.camera-modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 560px;
+  padding: 16px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+}
+
+.camera-modal__video {
+  width: 100%;
+  max-height: 70vh;
+  border-radius: var(--radius-md);
+  background: #000;
+  object-fit: contain;
+}
+
+.camera-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  width: 100%;
 }
 
 .upload-actions {
@@ -767,9 +1041,47 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  width: 100%;
   padding: 10px;
   background: var(--surface-alt);
+  border: 1px solid transparent;
   border-radius: var(--radius-md);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.submission-item:hover,
+.submission-item:focus-visible {
+  background: var(--surface);
+  border-color: var(--accent);
+}
+
+.submission-item__main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.submission-thumb {
+  flex-shrink: 0;
+  display: block;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.submission-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .submission-item strong,
@@ -788,6 +1100,17 @@
   margin-top: 2px;
 }
 
+.submission-planogram {
+  display: inline-flex !important;
+  margin-top: 4px !important;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(79, 110, 247, 0.1);
+  color: var(--accent);
+  font-size: 0.72rem !important;
+  font-weight: 700;
+}
+
 .submission-meta {
   text-align: right;
   flex-shrink: 0;
@@ -795,6 +1118,37 @@
 
 .submission-meta strong {
   color: #047857;
+}
+
+.submission-status-badge {
+  display: inline-flex !important;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem !important;
+  font-weight: 800;
+  margin-top: 0 !important;
+  white-space: nowrap;
+}
+
+.submission-status-pending {
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.submission-status-processing {
+  background: rgba(79, 110, 247, 0.12);
+  color: var(--accent);
+}
+
+.submission-status-scored {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+.submission-status-reviewed {
+  background: #f5f3ff;
+  color: #6d28d9;
 }
 
 @media (max-width: 980px) {
@@ -843,7 +1197,7 @@
   }
 
   .detail-grid,
-  .upload-dropzone {
+  .upload-options {
     grid-template-columns: 1fr;
   }
 
@@ -854,10 +1208,6 @@
 
   .filter-field select {
     width: 100%;
-  }
-
-  .upload-dropzone {
-    justify-items: start;
   }
 
   .upload-actions {
