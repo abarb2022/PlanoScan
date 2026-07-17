@@ -23,8 +23,14 @@ public class User {
   @Column(nullable = false)
   private String name;
 
+  @Column
+  private String surname;
+
   @Column(nullable = false, unique = true)
   private String email;
+
+  @Column
+  private String phone;
 
   @Column(name = "password_hash", nullable = false)
   private String passwordHash;
@@ -58,6 +64,10 @@ public class User {
 
   @OneToMany(mappedBy = "assignedBy", fetch = FetchType.LAZY)
   private List<StoreAssignment> createdAssignments;
+
+  @Column(name = "must_change_password", nullable = false)
+  @Builder.Default
+  private boolean mustChangePassword = false;
 
   public enum Role {
     REP,

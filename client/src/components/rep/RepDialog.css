@@ -1,0 +1,10 @@
+.rep-dialog-hint {
+  background: rgba(79, 110, 247, 0.07);
+  border: 1px solid rgba(79, 110, 247, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}

@@ -6,7 +6,6 @@ import "./StoreDialog.css";
 interface StoreForm {
   name: string;
   address: string;
-  companyId: string;
 }
 
 interface Props {
@@ -16,13 +15,12 @@ interface Props {
   onSubmit: (req: StoreRequest) => Promise<void>;
 }
 
-const emptyForm: StoreForm = { name: "", address: "", companyId: "" };
+const emptyForm: StoreForm = { name: "", address: "" };
 
 function toRequest(form: StoreForm): StoreRequest {
   return {
     name: form.name.trim(),
     address: form.address.trim(),
-    companyId: form.companyId.trim(),
   };
 }
 
@@ -44,7 +42,6 @@ export default function StoreDialog({
           ? {
               name: editingStore.name,
               address: editingStore.address ?? "",
-              companyId: editingStore.companyId,
             }
           : emptyForm,
       );
@@ -114,17 +111,6 @@ export default function StoreDialog({
               onChange={(e) => updateField("address", e.target.value)}
               placeholder="Full street address"
               rows={3}
-            />
-          </div>
-
-          <div className="dialog-field">
-            <label className="dialog-label">Company ID</label>
-            <input
-              className="dialog-input"
-              value={form.companyId}
-              onChange={(e) => updateField("companyId", e.target.value)}
-              placeholder="e.g. 550e8400-e29b-41d4-a716-446655440000"
-              required
             />
           </div>
 
