@@ -7,6 +7,7 @@ import com.example.demo.entity.StoreAssignmentRule;
 import com.example.demo.entity.User;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.exception.ServerException;
+import com.example.demo.repository.StoreAssignmentRepository;
 import com.example.demo.repository.StoreAssignmentRuleRepository;
 import com.example.demo.repository.StoreRepository;
 import com.example.demo.repository.UserRepository;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class StoreAssignmentRuleService {
 
   private final StoreAssignmentRuleRepository ruleRepository;
+  private final StoreAssignmentRepository assignmentRepository;
   private final StoreRepository storeRepository;
   private final UserRepository userRepository;
 
@@ -84,6 +86,8 @@ public class StoreAssignmentRuleService {
     if (!ruleRepository.existsById(id)) {
       throw new ServerException(ErrorCode.ASSIGNMENT_RULE_NOT_FOUND);
     }
+    assignmentRepository.cancelAssignedByRuleId(id);
+    assignmentRepository.detachFromRule(id);
     ruleRepository.deleteById(id);
   }
 
