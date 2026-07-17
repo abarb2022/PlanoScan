@@ -1,7 +1,8 @@
-package com.example.demo.dto.rep;
+package com.example.demo.dto.manager;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RepRequestDto {
+public class ManagerRequestDto {
   @NotBlank(message = "Name is required") private String name;
 
   private String surname;
@@ -19,5 +20,5 @@ public class RepRequestDto {
 
   private String phone;
 
-  private UUID companyId;
+  @NotNull(message = "Company is required") private UUID companyId;
 }

@@ -35,8 +35,9 @@ public class RepController {
   public ResponseEntity<RepPageResponseDto> getReps(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "20") int size,
+      @RequestParam(required = false) UUID companyId,
       Authentication auth) {
-    return ResponseEntity.ok(repService.getReps(page, size, auth.getName()));
+    return ResponseEntity.ok(repService.getReps(page, size, companyId, auth.getName()));
   }
 
   @GetMapping("/{id}")
