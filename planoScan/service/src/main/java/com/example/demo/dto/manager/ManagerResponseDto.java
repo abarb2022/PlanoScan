@@ -1,7 +1,6 @@
-package com.example.demo.dto.rep;
+package com.example.demo.dto.manager;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RepResponseDto {
+public class ManagerResponseDto {
   private UUID id;
   private String name;
   private String surname;
@@ -21,13 +20,4 @@ public class RepResponseDto {
   private UUID companyId;
   private String companyName;
   private LocalDateTime createdAt;
-  private List<AssignedStoreSummary> assignedStores;
-
-  @Data
-  @AllArgsConstructor
-  @NoArgsConstructor
-  public static class AssignedStoreSummary {
-    private UUID id;
-    private String name;
-  }
 }

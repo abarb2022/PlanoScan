@@ -44,11 +44,18 @@ public class StoreService {
   }
 
   @Transactional(readOnly = true)
-  public StorePageResponseDto getAllStores(int page, int size, UUID companyId) {
+  public StorePageResponseDto getAllStores(int page, int size, UUID companyId, String currentUserEmail) {
+    User currentUser = getCurrentUser(currentUserEmail);
+
+    UUID effectiveCompanyId =
+        currentUser.getRole() == User.Role.ADMIN
+            ? companyId
+            : currentUser.getCompany().getId();
+
     Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
     Page<Store> result =
-        (companyId != null)
-            ? storeRepository.findByCompanyId(companyId, pageable)
+        (effectiveCompanyId != null)
+            ? storeRepository.findByCompanyId(effectiveCompanyId, pageable)
             : storeRepository.findAll(pageable);
 
     return new StorePageResponseDto(

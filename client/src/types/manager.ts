@@ -1,9 +1,4 @@
-export interface AssignedStoreSummary {
-  id: string;
-  name: string;
-}
-
-export interface Rep {
+export interface Manager {
   id: string;
   name: string;
   surname: string | null;
@@ -12,20 +7,25 @@ export interface Rep {
   companyId: string;
   companyName: string;
   createdAt: string | null;
-  assignedStores: AssignedStoreSummary[];
 }
 
-export interface RepRequest {
+export interface ManagerRequest {
   name: string;
   surname?: string;
   email: string;
   phone?: string;
-  companyId?: string;
+  companyId: string;
 }
 
-export interface RepPageResponse {
-  content: Rep[];
+export interface ManagerPageResponse {
+  content: Manager[];
   totalPages: number;
   totalElements: number;
   currentPage: number;
+}
+
+export interface Company {
+  id: string;
+  name: string;
+  createdAt: string | null;
 }

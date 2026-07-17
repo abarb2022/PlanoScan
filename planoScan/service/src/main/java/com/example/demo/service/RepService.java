@@ -60,7 +60,9 @@ public class RepService {
     User rep =
         User.builder()
             .name(dto.getName())
+            .surname(dto.getSurname())
             .email(dto.getEmail())
+            .phone(dto.getPhone())
             .passwordHash(passwordEncoder.encode(tempPassword))
             .role(User.Role.REP)
             .company(company)
@@ -71,15 +73,19 @@ public class RepService {
   }
 
   @Transactional(readOnly = true)
-  public RepPageResponseDto getReps(int page, int size, String currentUserEmail) {
+  public RepPageResponseDto getReps(int page, int size, UUID companyId, String currentUserEmail) {
     User currentUser = getCurrentUser(currentUserEmail);
     Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
-    Page<User> result =
-        currentUser.getRole() == User.Role.ADMIN
-            ? userRepository.findByRole(User.Role.REP, pageable)
-            : userRepository.findByCompanyIdAndRole(
-                currentUser.getCompany().getId(), User.Role.REP, pageable);
+    Page<User> result;
+    if (currentUser.getRole() == User.Role.ADMIN) {
+      result = companyId != null
+          ? userRepository.findByCompanyIdAndRole(companyId, User.Role.REP, pageable)
+          : userRepository.findByRole(User.Role.REP, pageable);
+    } else {
+      result = userRepository.findByCompanyIdAndRole(
+          currentUser.getCompany().getId(), User.Role.REP, pageable);
+    }
 
     List<UUID> repIds = result.getContent().stream().map(User::getId).toList();
     Map<UUID, List<RepResponseDto.AssignedStoreSummary>> storesByRep =
@@ -128,7 +134,9 @@ public class RepService {
     }
 
     rep.setName(dto.getName());
+    rep.setSurname(dto.getSurname());
     rep.setEmail(dto.getEmail());
+    rep.setPhone(dto.getPhone());
     return toDto(userRepository.save(rep));
   }
 
@@ -209,7 +217,9 @@ public class RepService {
     return RepResponseDto.builder()
         .id(user.getId())
         .name(user.getName())
+        .surname(user.getSurname())
         .email(user.getEmail())
+        .phone(user.getPhone())
         .companyId(user.getCompany().getId())
         .companyName(user.getCompany().getName())
         .createdAt(user.getCreatedAt())

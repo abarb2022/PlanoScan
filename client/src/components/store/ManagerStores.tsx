@@ -10,12 +10,15 @@ import StoreDialog from "./StoreDialog";
 
 const PAGE_SIZE = 5;
 
-export default function ManagerStores() {
+interface Props {
+  companyId?: string | null;
+}
+
+export default function ManagerStores({ companyId }: Props) {
   const [stores, setStores] = useState<Store[]>([]);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
-  const [companyFilter, setCompanyFilter] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -24,8 +27,12 @@ export default function ManagerStores() {
   const [editingStore, setEditingStore] = useState<Store | null>(null);
 
   useEffect(() => {
+    setPage(0);
+  }, [companyId]);
+
+  useEffect(() => {
     loadStores();
-  }, [page, companyFilter]);
+  }, [page, companyId]);
 
   async function loadStores() {
     try {
@@ -34,7 +41,7 @@ export default function ManagerStores() {
       const res: StorePageResponse = await getStores({
         page,
         size: PAGE_SIZE,
-        companyId: companyFilter,
+        companyId: companyId ?? "",
       });
       setStores(res.content);
       setTotalPages(res.totalPages);
@@ -100,19 +107,6 @@ export default function ManagerStores() {
         </div>
 
         <div className="toolbar-right">
-          <div className="search-wrapper">
-            <span className="search-icon">⌕</span>
-            <input
-              className="search-input"
-              placeholder="Filter by company ID…"
-              value={companyFilter}
-              onChange={(e) => {
-                setCompanyFilter(e.target.value);
-                setPage(0);
-              }}
-            />
-          </div>
-
           <button className="btn btn-primary" onClick={openCreate}>
             <span>＋</span> Add Store
           </button>
