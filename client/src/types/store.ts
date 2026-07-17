@@ -48,6 +48,8 @@ export type RepSubmission = {
   status: "Pending" | "Processing" | "Scored" | "Reviewed";
   score?: string | null;
   photoName: string;
+  photoUrl: string;
+  planogramName?: string | null;
 };
 
 export type RepStoreAssignment = {
@@ -56,7 +58,6 @@ export type RepStoreAssignment = {
   assignmentDate: string;
   dueWindow: string;
   status: RepAssignmentStatus;
-  planogram: string;
   lastSubmittedAt?: string | null;
   submissions: RepSubmission[];
 };

@@ -4,6 +4,13 @@ const API_BASE_URL =
 
 const AUTH_TOKEN_KEY = "planoscan_auth_token";
 
+export function resolveAssetUrl(path: string): string {
+  if (/^https?:\/\//i.test(path)) {
+    return path;
+  }
+  return `${API_BASE_URL}${path}`;
+}
+
 type ApiErrorResponse = {
   code: string;
   message: string;
@@ -22,9 +29,14 @@ export class ApiError extends Error {
   }
 }
 
-function buildHeaders(headers?: HeadersInit): Headers {
+function buildHeaders(
+  headers: HeadersInit | undefined,
+  isFormData: boolean,
+): Headers {
   const requestHeaders = new Headers(headers);
-  requestHeaders.set("Content-Type", "application/json");
+  if (!isFormData) {
+    requestHeaders.set("Content-Type", "application/json");
+  }
 
   const token = localStorage.getItem(AUTH_TOKEN_KEY);
   if (token) {
@@ -38,9 +50,10 @@ export async function apiRequest<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  const isFormData = options.body instanceof FormData;
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
-    headers: buildHeaders(options.headers),
+    headers: buildHeaders(options.headers, isFormData),
   });
 
   if (!response.ok) {

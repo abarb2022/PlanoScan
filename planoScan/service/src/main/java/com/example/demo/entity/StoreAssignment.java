@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.*;
@@ -52,6 +53,9 @@ public class StoreAssignment {
 
   @Column(name = "assignment_date", nullable = false)
   private LocalDate assignmentDate;
+
+  @Column(name = "due_time")
+  private LocalTime dueTime;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)

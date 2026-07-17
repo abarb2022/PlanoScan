@@ -1,10 +1,9 @@
 package com.example.demo.repository;
 
-import com.example.demo.entity.Submission;
+import com.example.demo.entity.Planogram;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-public interface SubmissionRepository extends JpaRepository<Submission, UUID> {
-  boolean existsByRepId(UUID repId);
-}
+@Repository
+public interface PlanogramRepository extends JpaRepository<Planogram, UUID> {}
