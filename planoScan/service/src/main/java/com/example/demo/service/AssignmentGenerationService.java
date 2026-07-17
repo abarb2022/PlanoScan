@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.StoreAssignment;
 import com.example.demo.entity.StoreAssignmentRule;
 import com.example.demo.entity.User;
 import com.example.demo.exception.ErrorCode;
@@ -41,16 +40,12 @@ public class AssignmentGenerationService {
             .toList();
 
     for (StoreAssignmentRule rule : activeRules) {
-      if (!assignmentRepository.existsByRuleIdAndAssignmentDate(rule.getId(), today)) {
-        assignmentRepository.save(
-            StoreAssignment.builder()
-                .rule(rule)
-                .store(rule.getStore())
-                .assignee(rep)
-                .assignedBy(rule.getAssignedBy())
-                .assignmentDate(today)
-                .build());
-      }
+      assignmentRepository.insertIfAbsent(
+          rule.getId(),
+          rule.getStore().getId(),
+          rep.getId(),
+          rule.getAssignedBy().getId(),
+          today);
     }
   }
 }
