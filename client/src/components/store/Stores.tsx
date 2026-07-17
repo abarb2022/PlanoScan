@@ -4,13 +4,14 @@ import RepStores from "./RepStores";
 import "./Stores.css";
 
 interface StoresProps {
-  userRole?: UserRole;
+    userRole?: UserRole;
+    companyId?: string | null;
 }
 
-export default function Stores({ userRole }: StoresProps) {
-  if (userRole === "REP") {
-    return <RepStores />;
-  }
+export default function Stores({ userRole, companyId }: StoresProps) {
+    if (userRole === "REP") {
+        return <RepStores />;
+    }
 
-  return <ManagerStores />;
+    return <ManagerStores companyId={companyId} />;
 }

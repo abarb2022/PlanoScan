@@ -197,3 +197,15 @@
 .btn-danger:hover:not(:disabled) {
   background: #fecaca;
 }
+
+/* ── Confirm dialog ───────────────────────────────────────────── */
+.confirm-dialog {
+  max-width: 380px;
+}
+
+.confirm-message {
+  font-size: 0.92rem;
+  color: var(--text-secondary, #4a4e6a);
+  margin: -8px 0 24px;
+  line-height: 1.5;
+}

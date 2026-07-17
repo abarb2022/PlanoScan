@@ -1,0 +1,155 @@
+.asd-dialog {
+  max-width: 500px;
+}
+
+.asd-rep-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: -12px 0 16px;
+}
+
+.asd-rep-label strong {
+  color: var(--text-primary);
+}
+
+.asd-dropdown {
+  position: relative;
+}
+
+.asd-dropdown-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.asd-dropdown-trigger--open {
+  border-color: var(--accent, #4f6ef7);
+  box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.12);
+  background: #fff;
+}
+
+.asd-dropdown-placeholder {
+  color: var(--text-muted, #8b8fa8);
+}
+
+.asd-dropdown-arrow {
+  flex-shrink: 0;
+  color: var(--text-muted, #8b8fa8);
+  transition: transform 0.15s;
+}
+
+.asd-dropdown-trigger--open .asd-dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.asd-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--surface, #fff);
+  border: 1.5px solid var(--border, #e2e4ea);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.06);
+  z-index: 200;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.asd-dropdown-option {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.1s;
+}
+
+.asd-dropdown-option:hover {
+  background: var(--hover-bg, #f1f2f6);
+}
+
+.asd-dropdown-option--selected {
+  background: rgba(79, 110, 247, 0.08);
+}
+
+.asd-dropdown-option--selected .asd-option-name {
+  color: var(--accent, #4f6ef7);
+}
+
+.asd-option-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary, #0f1117);
+}
+
+.asd-option-address {
+  font-size: 0.78rem;
+  color: var(--text-muted, #8b8fa8);
+}
+
+.asd-days {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.asd-day-btn {
+  min-width: 44px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.12s,
+    border-color 0.12s,
+    color 0.12s;
+  font-family: inherit;
+}
+
+.asd-day-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.asd-day-btn--on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.asd-day-btn--on:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #fff;
+}
+
+.asd-dates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.asd-optional {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}

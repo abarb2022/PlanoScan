@@ -16,7 +16,6 @@ export type StoreForm = {
 export type StoreRequest = {
   name: string;
   address: string;
-  companyId: string;
 };
 
 export type StorePageResponse = {
