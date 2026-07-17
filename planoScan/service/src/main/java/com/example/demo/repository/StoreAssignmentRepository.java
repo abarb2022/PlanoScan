@@ -23,7 +23,20 @@ public interface StoreAssignmentRepository
   @Query("DELETE FROM StoreAssignment a WHERE a.assignee.id = :assigneeId")
   void deleteAllByAssigneeId(@Param("assigneeId") UUID assigneeId);
 
-  boolean existsByRuleIdAndAssignmentDate(UUID ruleId, LocalDate assignmentDate);
+  @Modifying
+  @Query(
+      value =
+          "INSERT INTO store_assignments"
+              + " (id, rule_id, store_id, assignee_id, assigned_by_user_id, assignment_date, status, created_at)"
+              + " VALUES (gen_random_uuid(), :ruleId, :storeId, :assigneeId, :assignedById, :assignmentDate, 'ASSIGNED', now())"
+              + " ON CONFLICT (rule_id, assignment_date) DO NOTHING",
+      nativeQuery = true)
+  void insertIfAbsent(
+      @Param("ruleId") UUID ruleId,
+      @Param("storeId") UUID storeId,
+      @Param("assigneeId") UUID assigneeId,
+      @Param("assignedById") UUID assignedById,
+      @Param("assignmentDate") LocalDate assignmentDate);
 
   @Modifying
   @Query(
