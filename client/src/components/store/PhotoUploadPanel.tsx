@@ -8,6 +8,57 @@ function formatFileSize(bytes: number): string {
   return `${(kb / 1024).toFixed(1)} MB`;
 }
 
+function isHeic(file: File): boolean {
+  const type = file.type.toLowerCase();
+  if (type === "image/heic" || type === "image/heif") return true;
+  return !type && /\.hei[cf]$/i.test(file.name);
+}
+
+function convertHeicToPng(file: File): Promise<File> {
+  return new Promise((resolve) => {
+    const objectUrl = URL.createObjectURL(file);
+    const img = new Image();
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        URL.revokeObjectURL(objectUrl);
+        resolve(file);
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0);
+      canvas.toBlob(
+        (blob) => {
+          URL.revokeObjectURL(objectUrl);
+          if (!blob) {
+            resolve(file);
+            return;
+          }
+          resolve(
+            new File(
+              [blob],
+              file.name.replace(/\.\w+$/, "") + ".png",
+              { type: "image/png" },
+            ),
+          );
+        },
+        "image/png",
+      );
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(file);
+    };
+
+    img.src = objectUrl;
+  });
+}
+
 export default function PhotoUploadPanel({
   canSubmit,
   submitting,
@@ -40,18 +91,22 @@ export default function PhotoUploadPanel({
     return () => next.forEach((preview) => URL.revokeObjectURL(preview.url));
   }, [selectedFiles]);
 
-  function addFiles(files: FileList | null) {
-    const picked = Array.from(files ?? []).filter((file) =>
-      file.type.startsWith("image/"),
+  async function addFiles(files: FileList | null) {
+    const picked = Array.from(files ?? []).filter(
+      (file) => file.type.startsWith("image/") || isHeic(file),
     );
-    if (picked.length > 0) {
-      onFilesChange([...selectedFiles, ...picked]);
-    }
+    if (picked.length === 0) return;
+
+    const converted = await Promise.all(
+      picked.map((file) => (isHeic(file) ? convertHeicToPng(file) : file)),
+    );
+    onFilesChange([...selectedFiles, ...converted]);
   }
 
   function handleFilesChange(e: React.ChangeEvent<HTMLInputElement>) {
-    addFiles(e.target.files);
+    const files = e.target.files;
     e.target.value = "";
+    void addFiles(files);
   }
 
   function removeSelectedFile(index: number) {
@@ -82,7 +137,7 @@ export default function PhotoUploadPanel({
     e.preventDefault();
     setIsDraggingOver(false);
     if (!canSubmit) return;
-    addFiles(e.dataTransfer.files);
+    void addFiles(e.dataTransfer.files);
   }
 
   return (

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ApiError } from "../../services/apiClient";
 import { submitAssignment } from "../../services/storeService";
 import type {
   RepAssignmentStatus,
@@ -67,8 +68,14 @@ export default function AssignmentDetail({
       onSubmitted(updated);
       setSelectedFiles([]);
       setIsFullscreen(false);
-    } catch {
-      setError("Failed to submit assignment.");
+    } catch (err) {
+      if (err instanceof ApiError && err.code === "VALIDATION_ERROR") {
+        setError(
+          "One or more photos couldn't be uploaded — try a JPEG or PNG photo, or use the in-app camera.",
+        );
+      } else {
+        setError("Failed to submit assignment.");
+      }
     } finally {
       setSubmitting(false);
     }
