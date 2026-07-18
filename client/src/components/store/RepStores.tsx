@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { getRepAssignments } from "../../services/storeService";
 import type {
   RepAssignmentStatus,
@@ -8,8 +8,6 @@ import type {
   RepStoreAssignment,
 } from "../../types/store";
 import AssignmentDetail from "./AssignmentDetail";
-
-const REP_PAGE_SIZE = 5;
 
 const ASSIGNMENT_STATUS_LABELS: Record<RepAssignmentStatus, string> = {
   DUE_TODAY: "Due today",
@@ -34,18 +32,24 @@ function assignmentStatusClass(status: RepAssignmentStatus) {
   return status.toLowerCase().replace(/_/g, "-");
 }
 
-export default function RepStores() {
+export default function RepStores({
+  activeTab,
+}: {
+  activeTab: RepAssignmentTab;
+}) {
   const [assignments, setAssignments] = useState<RepStoreAssignment[]>([]);
   const [selectedId, setSelectedId] = useState("");
-  const [activeTab, setActiveTab] = useState<RepAssignmentTab>("active");
   const [dateFilter, setDateFilter] = useState<RepDateFilter>("all");
   const [statusFilter, setStatusFilter] = useState<RepStatusFilter>("all");
   const [storeNameFilter, setStoreNameFilter] = useState("");
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState<number | null>(null);
   const [totalPages, setTotalPages] = useState(0);
   const [activeAssignmentCount, setActiveAssignmentCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const tableWrapperRef = useRef<HTMLDivElement>(null);
+  const measureRowRef = useRef<HTMLTableRowElement>(null);
   const selectedAssignment =
     assignments.find((assignment) => assignment.id === selectedId) ??
     assignments[0];
@@ -53,11 +57,40 @@ export default function RepStores() {
 
   useEffect(() => {
     setPage(0);
-  }, [activeTab, dateFilter, statusFilter, storeNameFilter]);
+  }, [activeTab, dateFilter, statusFilter, storeNameFilter, pageSize]);
 
   useEffect(() => {
-    loadAssignments();
-  }, [activeTab, dateFilter, statusFilter, storeNameFilter, page]);
+    if (pageSize === null) return;
+    loadAssignments(pageSize);
+  }, [activeTab, dateFilter, statusFilter, storeNameFilter, page, pageSize]);
+
+  // Measures a hidden reference row (not a real data row, which may not exist yet or may
+  // currently be a loading/empty placeholder of a different height) so the page size is known
+  // before the very first fetch, instead of guessing then correcting after data arrives.
+  useLayoutEffect(() => {
+    const wrapper = tableWrapperRef.current;
+    const measureRow = measureRowRef.current;
+    if (!wrapper || !measureRow) return;
+
+    function recalculatePageSize() {
+      if (!wrapper || !measureRow) return;
+      const header = wrapper.querySelector("thead");
+      if (!header) return;
+
+      const rowHeight = measureRow.getBoundingClientRect().height;
+      if (rowHeight === 0) return;
+
+      const availableHeight =
+        wrapper.clientHeight - header.getBoundingClientRect().height;
+      const rows = Math.max(1, Math.floor(availableHeight / rowHeight));
+      setPageSize((prev) => (prev === rows ? prev : rows));
+    }
+
+    recalculatePageSize();
+    const observer = new ResizeObserver(recalculatePageSize);
+    observer.observe(wrapper);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     loadActiveAssignmentCount();
@@ -74,7 +107,7 @@ export default function RepStores() {
     }
   }, [selectedId, assignments]);
 
-  async function loadAssignments() {
+  async function loadAssignments(size: number) {
     try {
       setLoading(true);
       setError("");
@@ -84,7 +117,7 @@ export default function RepStores() {
         status: statusFilter,
         storeName: storeNameFilter,
         page,
-        size: REP_PAGE_SIZE,
+        size,
       });
       setAssignments(res.content);
       setTotalPages(res.totalPages);
@@ -132,23 +165,6 @@ export default function RepStores() {
 
       <div className="rep-layout">
         <section className="rep-main-panel" aria-label="Assigned stores">
-          <div className="rep-tabs" role="tablist" aria-label="Assignment view">
-            <button
-              className={`rep-tab ${activeTab === "active" ? "rep-tab-active" : ""}`}
-              onClick={() => setActiveTab("active")}
-              type="button"
-            >
-              Today's assignments
-            </button>
-            <button
-              className={`rep-tab ${activeTab === "history" ? "rep-tab-active" : ""}`}
-              onClick={() => setActiveTab("history")}
-              type="button"
-            >
-              History
-            </button>
-          </div>
-
           <div className="rep-filters" aria-label="Assignment filters">
             <label className="filter-field">
               <span>Store</span>
@@ -202,18 +218,43 @@ export default function RepStores() {
             </button>
           </div>
 
-          <div className="stores-table-wrapper rep-table-wrapper">
+          <div
+            className="stores-table-wrapper rep-table-wrapper"
+            ref={tableWrapperRef}
+          >
+            <table className="stores-table rep-table-measure" aria-hidden="true">
+              <tbody>
+                <tr ref={measureRowRef} className="store-row rep-store-row">
+                  <td>
+                    <div className="store-cell">
+                      <div className="store-avatar">XX</div>
+                      <div>
+                        <div className="store-name">Measure</div>
+                        <div className="store-id">Measure</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="col-centered">
+                    <span className="status-badge">Measure</span>
+                  </td>
+                  <td className="col-centered text-muted">Measure</td>
+                </tr>
+              </tbody>
+            </table>
+
             <table className="stores-table">
               <thead>
                 <tr>
                   <th>Store</th>
-                  {showAssignmentDate && <th>Assignment date</th>}
-                  <th>Status</th>
-                  <th>Last submission</th>
+                  {showAssignmentDate && (
+                    <th className="col-centered">Assignment date</th>
+                  )}
+                  <th className="col-centered">Status</th>
+                  <th className="col-centered">Last submission</th>
                 </tr>
               </thead>
               <tbody>
-                {loading ? (
+                {loading || pageSize === null ? (
                   <tr>
                     <td
                       colSpan={showAssignmentDate ? 4 : 3}
@@ -258,13 +299,13 @@ export default function RepStores() {
                         </div>
                       </td>
                       {showAssignmentDate && (
-                        <td>
+                        <td className="col-centered">
                           <div className="assignment-cell">
                             <strong>{assignment.assignmentDate}</strong>
                           </div>
                         </td>
                       )}
-                      <td>
+                      <td className="col-centered">
                         <span
                           className={`status-badge status-${assignmentStatusClass(
                             assignment.status,
@@ -273,7 +314,7 @@ export default function RepStores() {
                           {assignmentStatusLabel(assignment.status)}
                         </span>
                       </td>
-                      <td className="text-muted">
+                      <td className="col-centered text-muted">
                         {assignment.lastSubmittedAt ?? "No submission yet"}
                       </td>
                     </tr>
@@ -310,7 +351,7 @@ export default function RepStores() {
           <AssignmentDetail
             assignment={selectedAssignment}
             onSubmitted={() => {
-              loadAssignments();
+              if (pageSize !== null) loadAssignments(pageSize);
               loadActiveAssignmentCount();
             }}
           />
