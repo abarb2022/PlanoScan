@@ -16,7 +16,6 @@ public class RepAssignmentResponseDto {
   private UUID id;
   private RepAssignmentStoreDto store;
   private String assignmentDate;
-  private String dueWindow;
   private String status;
   private String lastSubmittedAt;
   private List<RepSubmissionResponseDto> submissions;

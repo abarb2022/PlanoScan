@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/changes/004-user-profile-fields.sql
   - include:
       file: db/changelog/changes/005-fix-role-check.sql
+  - include:
+      file: db/changelog/changes/006-drop-due-time.sql
