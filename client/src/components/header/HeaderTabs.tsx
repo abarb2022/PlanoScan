@@ -1,5 +1,6 @@
 import type { Company } from "../../types/manager";
 import type { UserRole } from "../../types/auth";
+import type { RepAssignmentTab } from "../../types/store";
 import CompanySelect from "./CompanySelect";
 import "./HeaderTabs.css";
 
@@ -18,10 +19,17 @@ const TABS: Tab[] = [
   { id: "companies", label: "Companies", roles: ["ADMIN"] },
 ];
 
+const REP_TABS: { id: RepAssignmentTab; label: string }[] = [
+  { id: "active", label: "Today's assignments" },
+  { id: "history", label: "History" },
+];
+
 interface Props {
   activeTab: TabId;
   role?: UserRole;
   onTabChange: (tab: TabId) => void;
+  repAssignmentTab?: RepAssignmentTab;
+  onRepAssignmentTabChange?: (tab: RepAssignmentTab) => void;
   onLogout?: () => void;
   companies?: Company[];
   selectedCompanyId?: string | null;
@@ -32,6 +40,8 @@ export default function HeaderTabs({
   activeTab,
   role,
   onTabChange,
+  repAssignmentTab,
+  onRepAssignmentTabChange,
   onLogout,
   companies,
   selectedCompanyId,
@@ -43,16 +53,27 @@ export default function HeaderTabs({
   return (
     <header className="header-tabs" aria-label="Primary navigation">
       <nav className="header-tabs__nav">
-        {visibleTabs.map((tab) => (
-          <button
-            key={tab.id}
-            className={`header-tabs__tab${activeTab === tab.id ? " header-tabs__tab--active" : ""}`}
-            type="button"
-            onClick={() => onTabChange(tab.id)}
-          >
-            {tab.label}
-          </button>
-        ))}
+        {role === "REP"
+          ? REP_TABS.map((tab) => (
+              <button
+                key={tab.id}
+                className={`header-tabs__tab${repAssignmentTab === tab.id ? " header-tabs__tab--active" : ""}`}
+                type="button"
+                onClick={() => onRepAssignmentTabChange?.(tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))
+          : visibleTabs.map((tab) => (
+              <button
+                key={tab.id}
+                className={`header-tabs__tab${activeTab === tab.id ? " header-tabs__tab--active" : ""}`}
+                type="button"
+                onClick={() => onTabChange(tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))}
       </nav>
 
       <div className="header-tabs__right">

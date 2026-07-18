@@ -28,7 +28,6 @@ async function convertHeicToPng(file: File): Promise<File | null> {
 }
 
 export default function PhotoUploadPanel({
-  canSubmit,
   submitting,
   error,
   selectedFiles,
@@ -37,7 +36,6 @@ export default function PhotoUploadPanel({
   onSubmit,
   submitHint,
 }: {
-  canSubmit: boolean;
   submitting: boolean;
   error: string;
   selectedFiles: File[];
@@ -104,14 +102,12 @@ export default function PhotoUploadPanel({
 
   function handleDragEnter(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
-    if (!canSubmit) return;
     e.dataTransfer.dropEffect = "copy";
     setIsDraggingOver(true);
   }
 
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
-    if (!canSubmit) return;
     e.dataTransfer.dropEffect = "copy";
     setIsDraggingOver(true);
   }
@@ -125,7 +121,6 @@ export default function PhotoUploadPanel({
   function handleDrop(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
     setIsDraggingOver(false);
-    if (!canSubmit) return;
     void addFiles(Array.from(e.dataTransfer.files));
   }
 
@@ -148,7 +143,7 @@ export default function PhotoUploadPanel({
         <div
           className={`upload-option upload-option--upload ${
             isDraggingOver ? "is-dragover" : ""
-          } ${!canSubmit ? "is-disabled" : ""}`}
+          }`}
           onDragEnter={handleDragEnter}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -174,12 +169,9 @@ export default function PhotoUploadPanel({
             <strong>{isDraggingOver ? "Drop to add" : "Upload photos"}</strong>
             <span>Drag & drop, or browse your files.</span>
           </div>
-          <label
-            className={`upload-option__action ${!canSubmit ? "is-disabled" : ""}`}
-          >
+          <label className="upload-option__action">
             Browse files
             <input
-              disabled={!canSubmit}
               type="file"
               accept="image/*"
               multiple
@@ -188,9 +180,7 @@ export default function PhotoUploadPanel({
           </label>
         </div>
 
-        <div
-          className={`upload-option upload-option--camera ${!canSubmit ? "is-disabled" : ""}`}
-        >
+        <div className="upload-option upload-option--camera">
           <div className="upload-option__icon" aria-hidden="true">
             <svg
               width="26"
@@ -213,7 +203,6 @@ export default function PhotoUploadPanel({
           <button
             type="button"
             className="upload-option__action"
-            disabled={!canSubmit}
             onClick={() => setIsCameraOpen(true)}
           >
             Open camera
@@ -260,7 +249,7 @@ export default function PhotoUploadPanel({
       <div className="upload-actions">
         <button
           className="btn btn-primary"
-          disabled={!canSubmit || selectedFiles.length === 0 || submitting}
+          disabled={selectedFiles.length === 0 || submitting}
           type="button"
           onClick={onSubmit}
         >
