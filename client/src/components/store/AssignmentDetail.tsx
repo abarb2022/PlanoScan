@@ -55,7 +55,7 @@ export default function AssignmentDetail({
   );
 
   const submitHint =
-    canSubmit && !submitting && selectedFiles.length === 0
+    !submitting && selectedFiles.length === 0
       ? "Choose at least one photo to enable submission."
       : null;
 
@@ -121,16 +121,17 @@ export default function AssignmentDetail({
         </div>
       </div>
 
-      <PhotoUploadPanel
-        canSubmit={canSubmit}
-        submitting={submitting}
-        error={error}
-        selectedFiles={selectedFiles}
-        onFilesChange={handleFilesChange}
-        onViewPhoto={setViewingPhoto}
-        onSubmit={handleSubmit}
-        submitHint={submitHint}
-      />
+      {canSubmit && (
+        <PhotoUploadPanel
+          submitting={submitting}
+          error={error}
+          selectedFiles={selectedFiles}
+          onFilesChange={handleFilesChange}
+          onViewPhoto={setViewingPhoto}
+          onSubmit={handleSubmit}
+          submitHint={submitHint}
+        />
+      )}
 
       <SubmissionsPanel
         submissions={assignment.submissions}

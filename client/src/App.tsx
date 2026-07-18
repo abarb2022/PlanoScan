@@ -9,16 +9,19 @@ import Stores from "./components/store/Stores";
 import { useAuth } from "./hooks/useAuth";
 import { getCompanies } from "./services/companyService";
 import type { Company } from "./types/manager";
+import type { RepAssignmentTab } from "./types/store";
 
 function App() {
   const { user, login, logout, changePassword, mustChangePassword, error, isSubmitting } =
     useAuth();
   const [activeTab, setActiveTab] = useState<TabId>("stores");
+  const [repAssignmentTab, setRepAssignmentTab] = useState<RepAssignmentTab>("active");
   const [companies, setCompanies] = useState<Company[]>([]);
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
 
   useEffect(() => {
     setActiveTab("stores");
+    setRepAssignmentTab("active");
     setSelectedCompanyId(null);
     if (user?.role === "ADMIN") {
       getCompanies().then(setCompanies).catch(() => setCompanies([]));
@@ -46,12 +49,20 @@ function App() {
         activeTab={activeTab}
         role={user.role}
         onTabChange={setActiveTab}
+        repAssignmentTab={repAssignmentTab}
+        onRepAssignmentTabChange={setRepAssignmentTab}
         onLogout={logout}
         companies={companies}
         selectedCompanyId={selectedCompanyId}
         onCompanyChange={setSelectedCompanyId}
       />
-      {activeTab === "stores" && <Stores userRole={user.role} companyId={selectedCompanyId} />}
+      {activeTab === "stores" && (
+        <Stores
+          userRole={user.role}
+          companyId={selectedCompanyId}
+          repAssignmentTab={repAssignmentTab}
+        />
+      )}
       {activeTab === "reps" && <Reps companyId={selectedCompanyId} />}
       {activeTab === "managers" && <Managers companyId={selectedCompanyId} />}
       {activeTab === "companies" && <Companies />}
