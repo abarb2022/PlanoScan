@@ -56,7 +56,6 @@ export type RepStoreAssignment = {
   id: string;
   store: Pick<Store, "id" | "name" | "address" | "companyName">;
   assignmentDate: string;
-  dueWindow: string;
   status: RepAssignmentStatus;
   lastSubmittedAt?: string | null;
   submissions: RepSubmission[];
