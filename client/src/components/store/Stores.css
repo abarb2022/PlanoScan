@@ -663,7 +663,7 @@
 
 .detail-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 
@@ -731,8 +731,17 @@
 
 .upload-error {
   margin: 0;
-  color: #b91c1c;
+  background: #fff1f1;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
   font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.upload-error + .upload-error {
+  margin-top: 8px;
 }
 
 .upload-hint {

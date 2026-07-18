@@ -23,13 +23,11 @@ public final class StoreAssignmentSpecifications {
     return (root, query, cb) -> cb.notEqual(root.get("status"), StoreAssignment.Status.CANCELLED);
   }
 
-  public static Specification<StoreAssignment> matchesTab(String tab) {
+  public static Specification<StoreAssignment> matchesTab(String tab, LocalDate today) {
     if ("history".equals(normalize(tab))) {
-      return (root, query, cb) ->
-          cb.or(isMissed(root, cb), isCompletedWithScoredSubmission(root, query, cb));
+      return (root, query, cb) -> cb.lessThan(root.get("assignmentDate"), today);
     }
-    return (root, query, cb) ->
-        cb.or(isDueToday(root, cb), isCompletedWithoutScoredSubmission(root, query, cb));
+    return (root, query, cb) -> cb.equal(root.get("assignmentDate"), today);
   }
 
   public static Specification<StoreAssignment> matchesDate(String date, LocalDate today) {
