@@ -49,6 +49,7 @@ export default function RepStores() {
   const selectedAssignment =
     assignments.find((assignment) => assignment.id === selectedId) ??
     assignments[0];
+  const showAssignmentDate = activeTab === "history";
 
   useEffect(() => {
     setPage(0);
@@ -137,7 +138,7 @@ export default function RepStores() {
               onClick={() => setActiveTab("active")}
               type="button"
             >
-              Assigned stores
+              Today's assignments
             </button>
             <button
               className={`rep-tab ${activeTab === "history" ? "rep-tab-active" : ""}`}
@@ -206,7 +207,7 @@ export default function RepStores() {
               <thead>
                 <tr>
                   <th>Store</th>
-                  <th>Assignment</th>
+                  {showAssignmentDate && <th>Assignment date</th>}
                   <th>Status</th>
                   <th>Last submission</th>
                 </tr>
@@ -214,13 +215,19 @@ export default function RepStores() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={4} className="table-state">
+                    <td
+                      colSpan={showAssignmentDate ? 4 : 3}
+                      className="table-state"
+                    >
                       <span className="spinner" /> Loading…
                     </td>
                   </tr>
                 ) : assignments.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="table-state">
+                    <td
+                      colSpan={showAssignmentDate ? 4 : 3}
+                      className="table-state"
+                    >
                       No assignments match these filters.
                     </td>
                   </tr>
@@ -250,12 +257,13 @@ export default function RepStores() {
                           </div>
                         </div>
                       </td>
-                      <td>
-                        <div className="assignment-cell">
-                          <strong>{assignment.assignmentDate}</strong>
-                          <span>{assignment.dueWindow}</span>
-                        </div>
-                      </td>
+                      {showAssignmentDate && (
+                        <td>
+                          <div className="assignment-cell">
+                            <strong>{assignment.assignmentDate}</strong>
+                          </div>
+                        </td>
+                      )}
                       <td>
                         <span
                           className={`status-badge status-${assignmentStatusClass(
