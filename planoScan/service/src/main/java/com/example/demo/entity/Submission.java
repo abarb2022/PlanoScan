@@ -32,7 +32,7 @@ public class Submission {
   private Store store;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "planogram_id", nullable = false)
+  @JoinColumn(name = "planogram_id")
   private Planogram planogram;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -46,6 +46,14 @@ public class Submission {
   @Column(nullable = false)
   @Builder.Default
   private Status status = Status.PENDING;
+
+  @Column(name = "flagged_for_review", nullable = false)
+  @Builder.Default
+  private boolean flaggedForReview = false;
+
+  @Column(name = "scoring_attempts", nullable = false)
+  @Builder.Default
+  private int scoringAttempts = 0;
 
   @CreationTimestamp
   @Column(name = "submitted_at", updatable = false)
