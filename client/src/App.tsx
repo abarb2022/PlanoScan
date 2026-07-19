@@ -4,7 +4,10 @@ import ChangePasswordModal from "./components/auth/ChangePasswordModal";
 import HeaderTabs, { type TabId } from "./components/header/HeaderTabs";
 import Companies from "./components/company/Companies";
 import Managers from "./components/manager/Managers";
+import Products from "./components/product/Products";
+import Planograms from "./components/planogram/Planograms";
 import Reps from "./components/rep/Reps";
+import FlaggedReviews from "./components/review/FlaggedReviews";
 import Stores from "./components/store/Stores";
 import { useAuth } from "./hooks/useAuth";
 import { getCompanies } from "./services/companyService";
@@ -75,6 +78,9 @@ function App() {
       {activeTab === "reps" && <Reps companyId={selectedCompanyId} />}
       {activeTab === "managers" && <Managers companyId={selectedCompanyId} />}
       {activeTab === "companies" && <Companies />}
+      {activeTab === "products" && <Products companyId={selectedCompanyId} />}
+      {activeTab === "planograms" && <Planograms role={user.role} />}
+      {activeTab === "reviews" && <FlaggedReviews companyId={selectedCompanyId} />}
     </div>
   );
 }

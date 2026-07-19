@@ -15,6 +15,7 @@ const ASSIGNMENT_STATUS_LABELS: Record<RepAssignmentStatus, string> = {
   DUE_TODAY: "Due today",
   SUBMITTED: "Submitted",
   NEEDS_REVIEW: "Needs review",
+  COMPLETED: "Completed",
   MISSED: "Missed",
   CANCELLED: "Cancelled",
 };
@@ -23,6 +24,7 @@ const FILTERABLE_STATUSES: RepAssignmentStatus[] = [
   "DUE_TODAY",
   "SUBMITTED",
   "NEEDS_REVIEW",
+  "COMPLETED",
   "MISSED",
 ];
 
@@ -61,6 +63,17 @@ export default function RepStores({ activeTab }: { activeTab: RepViewTab }) {
     if (pageSize === null || activeTab === "calendar") return;
     loadAssignments(activeTab, pageSize);
   }, [activeTab, dateFilter, statusFilter, storeNameFilter, page, pageSize]);
+
+  // Poll while any visible assignment has a submission still being scored
+  useEffect(() => {
+    if (activeTab === "calendar" || pageSize === null) return;
+    const hasPending = assignments.some(
+      (a) => a.status === "SUBMITTED" || a.status === "NEEDS_REVIEW"
+    );
+    if (!hasPending) return;
+    const id = setInterval(() => loadAssignments(activeTab, pageSize), 8000);
+    return () => clearInterval(id);
+  }, [assignments, activeTab, pageSize]);
 
   // Measures a hidden reference row (not a real data row, which may not exist yet or may
   // currently be a loading/empty placeholder of a different height) so the page size is known

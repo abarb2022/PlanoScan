@@ -4,7 +4,7 @@ import type { RepViewTab } from "../../types/store";
 import CompanySelect from "./CompanySelect";
 import "./HeaderTabs.css";
 
-export type TabId = "stores" | "reps" | "managers" | "companies";
+export type TabId = "stores" | "reps" | "managers" | "companies" | "products" | "planograms" | "reviews";
 
 interface Tab {
   id: TabId;
@@ -17,6 +17,9 @@ const TABS: Tab[] = [
   { id: "reps", label: "Reps", roles: ["ADMIN", "MANAGER"] },
   { id: "managers", label: "Managers", roles: ["ADMIN"] },
   { id: "companies", label: "Companies", roles: ["ADMIN"] },
+  { id: "products", label: "Products", roles: ["ADMIN", "MANAGER"] },
+  { id: "planograms", label: "Planograms", roles: ["ADMIN", "MANAGER"] },
+  { id: "reviews", label: "Reviews", roles: ["ADMIN", "MANAGER"] },
 ];
 
 const REP_TABS: { id: RepViewTab; label: string }[] = [

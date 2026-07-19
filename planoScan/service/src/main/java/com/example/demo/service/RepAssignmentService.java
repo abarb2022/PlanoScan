@@ -14,12 +14,8 @@ import com.example.demo.entity.Submission;
 import com.example.demo.entity.User;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.exception.ServerException;
-import com.example.demo.repository.PlanogramRepository;
-import com.example.demo.repository.StoreAssignmentRepository;
-import com.example.demo.repository.StoreAssignmentRuleRepository;
-import com.example.demo.repository.StoreAssignmentSpecifications;
-import com.example.demo.repository.SubmissionRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -53,6 +49,7 @@ public class RepAssignmentService {
   private final StoreAssignmentRepository assignmentRepository;
   private final StoreAssignmentRuleRepository assignmentRuleRepository;
   private final PlanogramRepository planogramRepository;
+  private final PlanogramAssignmentRepository planogramAssignmentRepository;
   private final SubmissionRepository submissionRepository;
   private final UserRepository userRepository;
   private final PhotoStorage photoStorage;
@@ -169,39 +166,27 @@ public class RepAssignmentService {
     }
 
     LocalDate today = LocalDate.now();
-    boolean multiplePhotos = photos.size() > 1;
 
-    List<String> photoUrls = new ArrayList<>();
-    List<Planogram> planograms = new ArrayList<>();
-    for (int i = 0; i < photos.size(); i++) {
-      String photoUrl = photoStorage.store(photos.get(i), "submissions");
-      String label =
-          assignment.getStore().getName()
-              + " — "
-              + today.format(DATE_FORMATTER)
-              + (multiplePhotos ? " (" + (i + 1) + ")" : "");
+    // Find the store's active planogram (manager-uploaded). If none exists, submissions
+    // are still created but will not be scored until a planogram is assigned.
+    Planogram activePlanogram =
+        planogramAssignmentRepository
+            .findActiveByStoreId(assignment.getStore().getId(), today)
+            .stream()
+            .findFirst()
+            .map(pa -> pa.getPlanogram())
+            .orElse(null);
 
-      photoUrls.add(photoUrl);
-      planograms.add(
-          Planogram.builder()
-              .company(assignment.getStore().getCompany())
-              .name(label)
-              .referenceImageUrl(photoUrl)
-              .isActive(true)
-              .validFrom(today)
-              .build());
-    }
-
-    List<Planogram> savedPlanograms = planogramRepository.saveAll(planograms);
     List<Submission> submissions = new ArrayList<>();
-    for (int i = 0; i < savedPlanograms.size(); i++) {
+    for (MultipartFile photo : photos) {
+      String photoUrl = photoStorage.store(photo, "submissions");
       submissions.add(
           Submission.builder()
               .rep(assignment.getAssignee())
               .store(assignment.getStore())
-              .planogram(savedPlanograms.get(i))
+              .planogram(activePlanogram)
               .assignment(assignment)
-              .photoUrl(photoUrls.get(i))
+              .photoUrl(photoUrl)
               .build());
     }
     submissionRepository.saveAll(submissions);
@@ -268,17 +253,17 @@ public class RepAssignmentService {
     return switch (assignment.getStatus()) {
       case ASSIGNED -> AssignmentDisplayStatus.DUE_TODAY;
       case MISSED -> AssignmentDisplayStatus.MISSED;
-      case COMPLETED ->
-          hasScoredSubmission(assignment)
-              ? AssignmentDisplayStatus.NEEDS_REVIEW
-              : AssignmentDisplayStatus.SUBMITTED;
+      case COMPLETED -> {
+        List<Submission> subs = sortedSubmissions(assignment);
+        boolean anyScored   = subs.stream().anyMatch(s -> s.getStatus() == Submission.Status.SCORED);
+        boolean anyReviewed = subs.stream().anyMatch(s -> s.getStatus() == Submission.Status.REVIEWED);
+        // SCORED means flagged and waiting for manager action → highest priority
+        if (anyScored)   yield AssignmentDisplayStatus.NEEDS_REVIEW;
+        if (anyReviewed) yield AssignmentDisplayStatus.COMPLETED;
+        yield AssignmentDisplayStatus.SUBMITTED;
+      }
       case CANCELLED -> AssignmentDisplayStatus.CANCELLED;
     };
-  }
-
-  private boolean hasScoredSubmission(StoreAssignment assignment) {
-    return sortedSubmissions(assignment).stream()
-        .anyMatch(submission -> submission.getStatus().equals(Submission.Status.SCORED));
   }
 
   private String formatAssignmentDate(LocalDate date, LocalDate today) {
