@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { getUpcomingAssignments } from "../../services/storeService";
 import type { RepUpcomingAssignment } from "../../types/store";
 import { useEscapeKey } from "../../hooks/useEscapeKey";
@@ -76,9 +76,31 @@ export default function RepCalendar() {
   const monthCacheRef = useRef(
     new Map<string, Record<string, RepUpcomingAssignment["store"][]>>(),
   );
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [rowHeight, setRowHeight] = useState<number | null>(null);
 
   useEscapeKey(() => setOpenDay(null), openDay !== null);
   const handleBackdropClick = dismissOnBackdropClick(() => setOpenDay(null));
+
+  useLayoutEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    function recalculate() {
+      if (!grid) return;
+      const height = grid.clientHeight;
+      if (height === 0) return;
+      const rowGap = parseFloat(getComputedStyle(grid).rowGap) || 0;
+
+      const availableHeight = height - rowGap * 5;
+      setRowHeight(Math.max(48, Math.floor(availableHeight / 6)));
+    }
+
+    recalculate();
+    const observer = new ResizeObserver(recalculate);
+    observer.observe(grid);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     loadMonth();
@@ -134,6 +156,7 @@ export default function RepCalendar() {
   }
 
   const cells = buildMonthGrid(year, month);
+  const rowCount = cells.length / 7;
   const openDayStores = openDay ? (occurrencesByDate[openDay] ?? []) : [];
 
   return (
@@ -175,7 +198,15 @@ export default function RepCalendar() {
         ))}
       </div>
 
-      <div className={`rep-calendar-grid ${loading ? "is-loading" : ""}`}>
+      <div
+        ref={gridRef}
+        className={`rep-calendar-grid ${loading ? "is-loading" : ""}`}
+        style={{
+          gridTemplateRows: `repeat(${rowCount}, ${
+            rowHeight !== null ? `${rowHeight}px` : "minmax(48px, 1fr)"
+          })`,
+        }}
+      >
         {cells.map((day, index) => {
           if (day === null) {
             return (

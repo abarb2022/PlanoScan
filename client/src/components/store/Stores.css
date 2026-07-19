@@ -1230,10 +1230,15 @@
 .rep-calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-auto-rows: 1fr;
+  /* Row height (repeat count + track size) is computed in JS as available-height / 6,
+     so it's always the same regardless of month — never recomputed as height/5 vs
+     height/6. align-content centers a 5-row month's block in the leftover space
+     instead of leaving it pinned to the top with a gap stuck at the bottom. */
+  align-content: center;
   gap: 6px;
   flex: 1;
   min-height: 0;
+  overflow-y: auto;
   transition: opacity 0.15s;
 }
 
@@ -1243,7 +1248,8 @@
 
 .rep-calendar-cell {
   position: relative;
-  min-height: 96px;
+  min-height: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 6px;
