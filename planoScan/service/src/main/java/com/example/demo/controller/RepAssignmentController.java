@@ -1,11 +1,14 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.rep.RepAssignmentPageResponseDto;
+import com.example.demo.dto.rep.RepUpcomingAssignmentDto;
 import com.example.demo.service.AssignmentGenerationService;
 import com.example.demo.service.RepAssignmentService;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -36,5 +39,13 @@ public class RepAssignmentController {
     assignmentGenerationService.ensureTodaysAssignments(principal.getName(), LocalDate.now());
     return ResponseEntity.ok(
         repAssignmentService.getAssignments(principal.getName(), tab, date, status, storeName, page, size));
+  }
+
+  @GetMapping("/upcoming")
+  public ResponseEntity<List<RepUpcomingAssignmentDto>> getUpcomingAssignments(
+      Principal principal,
+      @RequestParam(name = "from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+      @RequestParam(name = "to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+    return ResponseEntity.ok(repAssignmentService.getUpcomingAssignments(principal.getName(), from, to));
   }
 }

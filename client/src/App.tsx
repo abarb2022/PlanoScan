@@ -9,38 +9,47 @@ import Stores from "./components/store/Stores";
 import { useAuth } from "./hooks/useAuth";
 import { getCompanies } from "./services/companyService";
 import type { Company } from "./types/manager";
-import type { RepAssignmentTab } from "./types/store";
+import type { RepViewTab } from "./types/store";
 
 function App() {
-  const { user, login, logout, changePassword, mustChangePassword, error, isSubmitting } =
-    useAuth();
+  const {
+    user,
+    login,
+    logout,
+    changePassword,
+    mustChangePassword,
+    error,
+    isSubmitting,
+  } = useAuth();
   const [activeTab, setActiveTab] = useState<TabId>("stores");
-  const [repAssignmentTab, setRepAssignmentTab] = useState<RepAssignmentTab>("active");
+  const [repAssignmentTab, setRepAssignmentTab] =
+    useState<RepViewTab>("active");
   const [companies, setCompanies] = useState<Company[]>([]);
-  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     setActiveTab("stores");
     setRepAssignmentTab("active");
     setSelectedCompanyId(null);
     if (user?.role === "ADMIN") {
-      getCompanies().then(setCompanies).catch(() => setCompanies([]));
+      getCompanies()
+        .then(setCompanies)
+        .catch(() => setCompanies([]));
     } else {
       setCompanies([]);
     }
   }, [user]);
 
   if (!user) {
-    return <AuthPage onLogin={login} error={error} isSubmitting={isSubmitting} />;
+    return (
+      <AuthPage onLogin={login} error={error} isSubmitting={isSubmitting} />
+    );
   }
 
   if (mustChangePassword) {
-    return (
-      <ChangePasswordModal
-        onSave={changePassword}
-        onLogout={logout}
-      />
-    );
+    return <ChangePasswordModal onSave={changePassword} onLogout={logout} />;
   }
 
   return (
