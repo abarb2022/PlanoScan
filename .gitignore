@@ -54,3 +54,7 @@ client/node_modules/
 client/dist/
 client/.vite/
 client/tsconfig.tsbuildinfo
+
+
+*.jpg
+*.png
