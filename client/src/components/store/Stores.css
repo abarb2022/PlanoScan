@@ -1314,6 +1314,8 @@
   min-width: 0;
   padding: 3px 7px 3px 3px;
   border-radius: 6px;
+  box-sizing: border-box;
+  border: 1px solid transparent;
   background: linear-gradient(
     135deg,
     rgba(79, 110, 247, 0.32),
@@ -1351,15 +1353,32 @@
   border: 1px dashed var(--border);
 }
 
+.rep-calendar-probe {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  width: 160px;
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .rep-calendar-dialog {
   max-width: 420px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.rep-calendar-dialog .dialog-header {
+  flex-shrink: 0;
 }
 
 .rep-calendar-dialog-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-height: 420px;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
 }
 
