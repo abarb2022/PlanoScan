@@ -4,6 +4,7 @@ import com.example.demo.dto.request.ChangePasswordRequest;
 import com.example.demo.dto.request.LoginRequest;
 import com.example.demo.dto.request.RegisterRequest;
 import com.example.demo.dto.response.AuthResponse;
+import com.example.demo.dto.response.UserProfileDto;
 import com.example.demo.entity.User;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.exception.ServerException;
@@ -50,6 +51,19 @@ public class AuthService {
 
     String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
     return new AuthResponse(token, user.isMustChangePassword());
+  }
+
+  @Transactional(readOnly = true)
+  public UserProfileDto getProfile(String email) {
+    User user =
+        userRepository
+            .findByEmail(email)
+            .orElseThrow(() -> new ServerException(ErrorCode.USER_NOT_FOUND));
+    return UserProfileDto.builder()
+        .email(user.getEmail())
+        .role(user.getRole().name())
+        .companyName(user.getCompany() != null ? user.getCompany().getName() : null)
+        .build();
   }
 
   @Transactional

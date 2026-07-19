@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import type { Company } from "../../types/manager";
 import type { UserRole } from "../../types/auth";
 import type { RepViewTab } from "../../types/store";
@@ -28,9 +29,62 @@ const REP_TABS: { id: RepViewTab; label: string }[] = [
   { id: "calendar", label: "Calendar" },
 ];
 
+const ROLE_LABELS: Record<UserRole, string> = {
+  REP: "Sales Rep",
+  MANAGER: "Manager",
+  ADMIN: "Administrator",
+};
+
+function UserAvatar({ email, role, companyName }: { email?: string; role?: UserRole; companyName?: string | null }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const initial = email ? email[0].toUpperCase() : "?";
+
+  useEffect(() => {
+    if (!open) return;
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [open]);
+
+  return (
+    <div className="user-avatar-wrap" ref={ref}>
+      <button
+        className="user-avatar-btn"
+        onClick={() => setOpen((v) => !v)}
+        aria-label="Profile"
+        type="button"
+      >
+        {initial}
+      </button>
+      {open && (
+        <div className="user-profile-card">
+          <div className="user-profile-avatar">{initial}</div>
+          <div className="user-profile-info">
+            <span className="user-profile-email">{email}</span>
+            {role && (
+              <span className="user-profile-role">{ROLE_LABELS[role]}</span>
+            )}
+            {companyName && (
+              <span className="user-profile-company">{companyName}</span>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 interface Props {
   activeTab: TabId;
   role?: UserRole;
+  email?: string;
+  companyName?: string | null;
   onTabChange: (tab: TabId) => void;
   repAssignmentTab?: RepViewTab;
   onRepAssignmentTabChange?: (tab: RepViewTab) => void;
@@ -43,6 +97,8 @@ interface Props {
 export default function HeaderTabs({
   activeTab,
   role,
+  email,
+  companyName,
   onTabChange,
   repAssignmentTab,
   onRepAssignmentTabChange,
@@ -89,6 +145,7 @@ export default function HeaderTabs({
             onChange={(id) => onCompanyChange?.(id)}
           />
         )}
+        <UserAvatar email={email} role={role} companyName={companyName} />
         {onLogout && (
           <button
             className="header-tabs__logout"

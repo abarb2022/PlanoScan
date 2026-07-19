@@ -16,8 +16,13 @@ export function useAuth() {
       authService.clearMustChangePassword();
       return;
     }
-    setUser(getUserFromToken(token));
+    const base = getUserFromToken(token);
+    if (!base) return;
+    setUser(base);
     setMustChangePassword(authService.getMustChangePassword());
+    authService.getProfile()
+      .then((p) => setUser((prev) => prev ? { ...prev, companyName: p.companyName } : prev))
+      .catch(() => {});
   }, []);
 
   async function login(payload: LoginPayload): Promise<void> {
@@ -27,8 +32,14 @@ export function useAuth() {
       const response = await authService.login(payload);
       authService.saveToken(response.token);
       authService.saveMustChangePassword(response.mustChangePassword);
-      setUser(getUserFromToken(response.token));
+      const base = getUserFromToken(response.token);
+      setUser(base);
       setMustChangePassword(response.mustChangePassword);
+      if (base) {
+        authService.getProfile()
+          .then((p) => setUser((prev) => prev ? { ...prev, companyName: p.companyName } : prev))
+          .catch(() => {});
+      }
     } catch (currentError) {
       if (currentError instanceof ApiError) {
         setError(currentError.message);

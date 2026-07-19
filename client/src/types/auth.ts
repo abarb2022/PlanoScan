@@ -17,4 +17,5 @@ export interface AuthSession {
 export interface AuthUser {
   email: string;
   role?: UserRole;
+  companyName?: string | null;
 }
