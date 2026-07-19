@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import heic2any from "heic2any";
 import CameraCaptureModal from "./CameraCaptureModal";
 
 function formatFileSize(bytes: number): string {
@@ -14,53 +15,19 @@ function isHeic(file: File): boolean {
   return !type && /\.hei[cf]$/i.test(file.name);
 }
 
-function convertHeicToPng(file: File): Promise<File> {
-  return new Promise((resolve) => {
-    const objectUrl = URL.createObjectURL(file);
-    const img = new Image();
-
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        URL.revokeObjectURL(objectUrl);
-        resolve(file);
-        return;
-      }
-
-      ctx.drawImage(img, 0, 0);
-      canvas.toBlob(
-        (blob) => {
-          URL.revokeObjectURL(objectUrl);
-          if (!blob) {
-            resolve(file);
-            return;
-          }
-          resolve(
-            new File(
-              [blob],
-              file.name.replace(/\.\w+$/, "") + ".png",
-              { type: "image/png" },
-            ),
-          );
-        },
-        "image/png",
-      );
-    };
-
-    img.onerror = () => {
-      URL.revokeObjectURL(objectUrl);
-      resolve(file);
-    };
-
-    img.src = objectUrl;
-  });
+async function convertHeicToPng(file: File): Promise<File | null> {
+  try {
+    const result = await heic2any({ blob: file, toType: "image/png" });
+    const blob = Array.isArray(result) ? result[0] : result;
+    return new File([blob], file.name.replace(/\.\w+$/, "") + ".png", {
+      type: "image/png",
+    });
+  } catch {
+    return null;
+  }
 }
 
 export default function PhotoUploadPanel({
-  canSubmit,
   submitting,
   error,
   selectedFiles,
@@ -69,7 +36,6 @@ export default function PhotoUploadPanel({
   onSubmit,
   submitHint,
 }: {
-  canSubmit: boolean;
   submitting: boolean;
   error: string;
   selectedFiles: File[];
@@ -81,6 +47,7 @@ export default function PhotoUploadPanel({
   const [previews, setPreviews] = useState<{ file: File; url: string }[]>([]);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [conversionError, setConversionError] = useState("");
 
   useEffect(() => {
     const next = selectedFiles.map((file) => ({
@@ -91,38 +58,56 @@ export default function PhotoUploadPanel({
     return () => next.forEach((preview) => URL.revokeObjectURL(preview.url));
   }, [selectedFiles]);
 
-  async function addFiles(files: FileList | null) {
-    const picked = Array.from(files ?? []).filter(
+  async function addFiles(files: File[]) {
+    const picked = files.filter(
       (file) => file.type.startsWith("image/") || isHeic(file),
     );
     if (picked.length === 0) return;
 
-    const converted = await Promise.all(
-      picked.map((file) => (isHeic(file) ? convertHeicToPng(file) : file)),
+    const results = await Promise.all(
+      picked.map(async (file) => ({
+        name: file.name,
+        converted: isHeic(file) ? await convertHeicToPng(file) : file,
+      })),
     );
-    onFilesChange([...selectedFiles, ...converted]);
+
+    const succeeded = results
+      .map((r) => r.converted)
+      .filter((file): file is File => file !== null);
+    const failedNames = results
+      .filter((r) => r.converted === null)
+      .map((r) => r.name);
+
+    setConversionError(
+      failedNames.length > 0
+        ? `Couldn't process ${failedNames.join(", ")} — try a JPEG or PNG photo, or use the in-app camera.`
+        : "",
+    );
+
+    if (succeeded.length > 0) {
+      onFilesChange([...selectedFiles, ...succeeded]);
+    }
   }
 
   function handleFilesChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files;
+    const files = Array.from(e.target.files ?? []);
     e.target.value = "";
     void addFiles(files);
   }
 
   function removeSelectedFile(index: number) {
     onFilesChange(selectedFiles.filter((_, i) => i !== index));
+    setConversionError("");
   }
 
   function handleDragEnter(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
-    if (!canSubmit) return;
     e.dataTransfer.dropEffect = "copy";
     setIsDraggingOver(true);
   }
 
   function handleDragOver(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
-    if (!canSubmit) return;
     e.dataTransfer.dropEffect = "copy";
     setIsDraggingOver(true);
   }
@@ -136,8 +121,7 @@ export default function PhotoUploadPanel({
   function handleDrop(e: React.DragEvent<HTMLDivElement>) {
     e.preventDefault();
     setIsDraggingOver(false);
-    if (!canSubmit) return;
-    void addFiles(e.dataTransfer.files);
+    void addFiles(Array.from(e.dataTransfer.files));
   }
 
   return (
@@ -159,7 +143,7 @@ export default function PhotoUploadPanel({
         <div
           className={`upload-option upload-option--upload ${
             isDraggingOver ? "is-dragover" : ""
-          } ${!canSubmit ? "is-disabled" : ""}`}
+          }`}
           onDragEnter={handleDragEnter}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -185,12 +169,9 @@ export default function PhotoUploadPanel({
             <strong>{isDraggingOver ? "Drop to add" : "Upload photos"}</strong>
             <span>Drag & drop, or browse your files.</span>
           </div>
-          <label
-            className={`upload-option__action ${!canSubmit ? "is-disabled" : ""}`}
-          >
+          <label className="upload-option__action">
             Browse files
             <input
-              disabled={!canSubmit}
               type="file"
               accept="image/*"
               multiple
@@ -199,9 +180,7 @@ export default function PhotoUploadPanel({
           </label>
         </div>
 
-        <div
-          className={`upload-option upload-option--camera ${!canSubmit ? "is-disabled" : ""}`}
-        >
+        <div className="upload-option upload-option--camera">
           <div className="upload-option__icon" aria-hidden="true">
             <svg
               width="26"
@@ -224,7 +203,6 @@ export default function PhotoUploadPanel({
           <button
             type="button"
             className="upload-option__action"
-            disabled={!canSubmit}
             onClick={() => setIsCameraOpen(true)}
           >
             Open camera
@@ -265,12 +243,13 @@ export default function PhotoUploadPanel({
         </div>
       )}
 
+      {conversionError && <p className="upload-error">{conversionError}</p>}
       {error && <p className="upload-error">{error}</p>}
 
       <div className="upload-actions">
         <button
           className="btn btn-primary"
-          disabled={!canSubmit || selectedFiles.length === 0 || submitting}
+          disabled={selectedFiles.length === 0 || submitting}
           type="button"
           onClick={onSubmit}
         >
@@ -283,6 +262,7 @@ export default function PhotoUploadPanel({
         <CameraCaptureModal
           onCapture={(file) => {
             onFilesChange([...selectedFiles, file]);
+            setConversionError("");
             setIsCameraOpen(false);
           }}
           onClose={() => setIsCameraOpen(false)}

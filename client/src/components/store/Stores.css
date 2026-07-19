@@ -152,6 +152,20 @@
   border-bottom: 1px solid var(--border);
 }
 
+.stores-table th.col-centered,
+.stores-table td.col-centered {
+  text-align: center;
+}
+
+.rep-table-wrapper .stores-table {
+  table-layout: fixed;
+}
+
+.rep-table-wrapper .stores-table th:first-child,
+.rep-table-wrapper .stores-table td:first-child {
+  width: 42%;
+}
+
 .store-row:last-child td {
   border-bottom: none;
 }
@@ -360,39 +374,6 @@
   gap: 12px;
 }
 
-.rep-tabs {
-  display: inline-flex;
-  align-self: flex-start;
-  gap: 4px;
-  padding: 4px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-}
-
-.rep-tab {
-  min-height: 32px;
-  padding: 0 12px;
-  border: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  font: inherit;
-  font-size: 0.84rem;
-  font-weight: 700;
-}
-
-.rep-tab:hover {
-  background: var(--hover-bg);
-  color: var(--text-primary);
-}
-
-.rep-tab-active {
-  background: rgba(79, 110, 247, 0.1);
-  color: var(--accent);
-}
-
 .rep-filters {
   display: flex;
   align-items: flex-end;
@@ -469,6 +450,17 @@
 
 .rep-table-wrapper {
   flex: 1;
+  position: relative;
+}
+
+.rep-table-measure {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: -1;
 }
 
 .rep-store-row {
@@ -663,7 +655,7 @@
 
 .detail-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 
@@ -731,8 +723,17 @@
 
 .upload-error {
   margin: 0;
-  color: #b91c1c;
+  background: #fff1f1;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
   font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.upload-error + .upload-error {
+  margin-top: 8px;
 }
 
 .upload-hint {
@@ -778,10 +779,6 @@
 .upload-option--camera:hover {
   border-color: var(--accent-camera);
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-}
-
-.upload-option.is-disabled {
-  opacity: 0.55;
 }
 
 .upload-option__icon {
@@ -940,13 +937,6 @@
 
 .upload-option__action input {
   display: none;
-}
-
-.upload-option__action.is-disabled,
-.upload-option__action:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  pointer-events: none;
 }
 
 .camera-modal-backdrop {

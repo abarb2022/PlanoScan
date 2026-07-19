@@ -6,6 +6,8 @@ databaseChangeLog:
   - include:
       file: db/changelog/changes/005-fix-role-check.sql
   - include:
+      file: db/changelog/changes/006-drop-due-time.sql
+  - include:
       file: db/changelog/changes/006-store-assignment-due-time.sql
   - include:
       file: db/changelog/changes/007-products.sql
