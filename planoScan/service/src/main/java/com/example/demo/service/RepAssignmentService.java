@@ -11,7 +11,7 @@ import com.example.demo.entity.StoreAssignment;
 import com.example.demo.entity.Submission;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.exception.ServerException;
-import com.example.demo.repository.PlanogramRepository;
+import com.example.demo.repository.PlanogramAssignmentRepository;
 import com.example.demo.repository.StoreAssignmentRepository;
 import com.example.demo.repository.StoreAssignmentSpecifications;
 import com.example.demo.repository.SubmissionRepository;
@@ -47,7 +47,7 @@ public class RepAssignmentService {
   private static final int MAX_PAGE_SIZE = 100;
 
   private final StoreAssignmentRepository assignmentRepository;
-  private final PlanogramRepository planogramRepository;
+  private final PlanogramAssignmentRepository planogramAssignmentRepository;
   private final SubmissionRepository submissionRepository;
   private final PhotoStorage photoStorage;
 
@@ -109,42 +109,27 @@ public class RepAssignmentService {
     }
 
     LocalDate today = LocalDate.now();
-    boolean multiplePhotos = photos.size() > 1;
 
-    // The uploaded photo *is* the planogram record: there is no admin-curated catalog to pick
-    // from, so submitting a photo creates the planogram for it on the spot. Each photo in a
-    // batch gets its own planogram + submission, since a submission is exactly one photo.
-    List<String> photoUrls = new ArrayList<>();
-    List<Planogram> planograms = new ArrayList<>();
-    for (int i = 0; i < photos.size(); i++) {
-      String photoUrl = photoStorage.store(photos.get(i), "submissions");
-      String label =
-          assignment.getStore().getName()
-              + " — "
-              + today.format(DATE_FORMATTER)
-              + (multiplePhotos ? " (" + (i + 1) + ")" : "");
+    // Find the store's active planogram (manager-uploaded). If none exists, submissions
+    // are still created but will not be scored until a planogram is assigned.
+    Planogram activePlanogram =
+        planogramAssignmentRepository
+            .findActiveByStoreId(assignment.getStore().getId(), today)
+            .stream()
+            .findFirst()
+            .map(pa -> pa.getPlanogram())
+            .orElse(null);
 
-      photoUrls.add(photoUrl);
-      planograms.add(
-          Planogram.builder()
-              .company(assignment.getStore().getCompany())
-              .name(label)
-              .referenceImageUrl(photoUrl)
-              .isActive(true)
-              .validFrom(today)
-              .build());
-    }
-
-    List<Planogram> savedPlanograms = planogramRepository.saveAll(planograms);
     List<Submission> submissions = new ArrayList<>();
-    for (int i = 0; i < savedPlanograms.size(); i++) {
+    for (MultipartFile photo : photos) {
+      String photoUrl = photoStorage.store(photo, "submissions");
       submissions.add(
           Submission.builder()
               .rep(assignment.getAssignee())
               .store(assignment.getStore())
-              .planogram(savedPlanograms.get(i))
+              .planogram(activePlanogram)
               .assignment(assignment)
-              .photoUrl(photoUrls.get(i))
+              .photoUrl(photoUrl)
               .build());
     }
     submissionRepository.saveAll(submissions);
