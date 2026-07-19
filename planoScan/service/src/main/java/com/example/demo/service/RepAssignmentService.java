@@ -17,7 +17,6 @@ import com.example.demo.repository.StoreAssignmentSpecifications;
 import com.example.demo.repository.SubmissionRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -43,7 +42,6 @@ public class RepAssignmentService {
   private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM d");
   private static final DateTimeFormatter SUBMISSION_FORMATTER =
       DateTimeFormatter.ofPattern("MMM d, HH:mm");
-  private static final DateTimeFormatter DUE_TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a");
   private static final int MAX_PAGE_SIZE = 100;
 
   private final StoreAssignmentRepository assignmentRepository;
@@ -60,7 +58,7 @@ public class RepAssignmentService {
         Specification.allOf(
             StoreAssignmentSpecifications.assigneeEmail(repEmail),
             StoreAssignmentSpecifications.notCancelled(),
-            StoreAssignmentSpecifications.matchesTab(tab),
+            StoreAssignmentSpecifications.matchesTab(tab, today),
             StoreAssignmentSpecifications.matchesDate(date, today),
             StoreAssignmentSpecifications.matchesStatus(status),
             StoreAssignmentSpecifications.storeNameContains(storeName));
@@ -154,7 +152,6 @@ public class RepAssignmentService {
                 .companyName(assignment.getStore().getCompany().getName())
                 .build())
         .assignmentDate(formatAssignmentDate(assignment.getAssignmentDate(), today))
-        .dueWindow(formatDueWindow(assignment.getDueTime()))
         .status(deriveStatus(assignment).apiValue())
         .lastSubmittedAt(
             latestSubmission == null
@@ -249,10 +246,6 @@ public class RepAssignmentService {
     float value = score.getOverallScore();
     float percentage = value <= 1 ? value * 100 : value;
     return Math.round(percentage) + "%";
-  }
-
-  private String formatDueWindow(LocalTime dueTime) {
-    return dueTime == null ? "All day" : "Due by " + dueTime.format(DUE_TIME_FORMATTER);
   }
 
   private String photoName(String photoUrl) {

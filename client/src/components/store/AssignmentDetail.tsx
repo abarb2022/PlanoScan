@@ -55,9 +55,14 @@ export default function AssignmentDetail({
   );
 
   const submitHint =
-    canSubmit && !submitting && selectedFiles.length === 0
+    !submitting && selectedFiles.length === 0
       ? "Choose at least one photo to enable submission."
       : null;
+
+  function handleFilesChange(files: File[]) {
+    setSelectedFiles(files);
+    setError("");
+  }
 
   async function handleSubmit() {
     if (selectedFiles.length === 0) return;
@@ -71,7 +76,7 @@ export default function AssignmentDetail({
     } catch (err) {
       if (err instanceof ApiError && err.code === "VALIDATION_ERROR") {
         setError(
-          "One or more photos couldn't be uploaded — try a JPEG or PNG photo, or use the in-app camera.",
+          "One or more photos are in an unsupported format or couldn't be read — try a JPEG or PNG photo, or use the in-app camera.",
         );
       } else {
         setError("Failed to submit assignment.");
@@ -114,22 +119,19 @@ export default function AssignmentDetail({
           <span>Company</span>
           <strong>{assignment.store.companyName}</strong>
         </div>
-        <div>
-          <span>Due window</span>
-          <strong>{assignment.dueWindow}</strong>
-        </div>
       </div>
 
-      <PhotoUploadPanel
-        canSubmit={canSubmit}
-        submitting={submitting}
-        error={error}
-        selectedFiles={selectedFiles}
-        onFilesChange={setSelectedFiles}
-        onViewPhoto={setViewingPhoto}
-        onSubmit={handleSubmit}
-        submitHint={submitHint}
-      />
+      {canSubmit && (
+        <PhotoUploadPanel
+          submitting={submitting}
+          error={error}
+          selectedFiles={selectedFiles}
+          onFilesChange={handleFilesChange}
+          onViewPhoto={setViewingPhoto}
+          onSubmit={handleSubmit}
+          submitHint={submitHint}
+        />
+      )}
 
       <SubmissionsPanel
         submissions={assignment.submissions}
