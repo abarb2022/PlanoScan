@@ -59,6 +59,14 @@ export const authService = {
     return { token: response.token, mustChangePassword: response.mustChangePassword ?? false };
   },
 
+  async getProfile(): Promise<{ email: string; role: string; companyName: string | null }> {
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    return request<{ email: string; role: string; companyName: string | null }>(
+      "/planoscan/auth/me",
+      { headers: { Authorization: `Bearer ${token ?? ""}` } },
+    );
+  },
+
   async changePassword(currentPassword: string, newPassword: string): Promise<void> {
     const token = localStorage.getItem(AUTH_TOKEN_KEY);
     await request<void>("/planoscan/auth/change-password", {

@@ -60,6 +60,8 @@ function App() {
       <HeaderTabs
         activeTab={activeTab}
         role={user.role}
+        email={user.email}
+        companyName={user.companyName}
         onTabChange={setActiveTab}
         repAssignmentTab={repAssignmentTab}
         onRepAssignmentTabChange={setRepAssignmentTab}
