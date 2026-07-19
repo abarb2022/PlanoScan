@@ -4,6 +4,7 @@ public enum AssignmentDisplayStatus {
   DUE_TODAY("Due today"),
   SUBMITTED("Submitted"),
   NEEDS_REVIEW("Needs review"),
+  COMPLETED("Completed"),
   MISSED("Missed"),
   CANCELLED("Cancelled");
 

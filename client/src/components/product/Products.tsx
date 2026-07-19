@@ -100,7 +100,7 @@ export default function Products({ companyId }: Props) {
 
       {error && <p className="stores-error">{error}</p>}
 
-      <div className="stores-table-wrapper">
+      <div className="stores-table-wrapper" style={{ overflowY: "auto" }}>
         <table className="stores-table">
           <thead>
             <tr>

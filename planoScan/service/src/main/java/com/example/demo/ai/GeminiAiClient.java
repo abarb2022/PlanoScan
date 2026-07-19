@@ -223,8 +223,18 @@ public class GeminiAiClient implements AiScoringClient {
             .filter(p -> p.containsKey("text"))
             .map(p -> (String) p.get("text"))
             .toList();
-        log.debug("Gemini request — {} part(s) total, text prompts:\n{}",
-            parts.size(), String.join("\n---\n", textParts));
+        long imageCount = parts.stream().filter(p -> p.containsKey("inlineData")).count();
+        long totalImageKb = parts.stream()
+            .filter(p -> p.containsKey("inlineData"))
+            .mapToLong(p -> {
+              @SuppressWarnings("unchecked")
+              Map<String, Object> inline = (Map<String, Object>) p.get("inlineData");
+              String data = (String) inline.get("data");
+              return data != null ? data.length() * 3L / 4 / 1024 : 0;
+            })
+            .sum();
+        log.debug("Gemini request — {} part(s) total ({} image(s), ~{} KB), text prompts:\n{}",
+            parts.size(), imageCount, totalImageKb, String.join("\n---\n", textParts));
       } catch (Exception ignored) {}
     }
 

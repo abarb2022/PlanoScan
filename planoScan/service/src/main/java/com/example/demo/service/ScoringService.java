@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -141,54 +142,23 @@ public class ScoringService {
   }
 
   private List<ScoringRequest.ProductReference> buildProductRefs(Planogram planogram) {
-    if (planogram.getLayoutSpec() == null) return List.of();
-
-    List<String> productNames = extractProductNames(planogram.getLayoutSpec());
+    List<Product> products = productRepository.findByCompanyId(planogram.getCompany().getId());
     List<ScoringRequest.ProductReference> refs = new ArrayList<>();
 
-    for (String name : productNames) {
-      productRepository
-          .findByNameIgnoreCaseAndCompanyId(name, planogram.getCompany().getId())
-          .ifPresentOrElse(
-              product -> {
-                if (product.getReferenceImageUrl() != null) {
-                  try {
-                    byte[] imgBytes = readFile(product.getReferenceImageUrl());
-                    byte[] resized = imageResizeService.resizeForAi(imgBytes);
-                    refs.add(
-                        new ScoringRequest.ProductReference(
-                            product.getName(), resized, MIME_JPEG));
-                  } catch (IOException e) {
-                    log.warn("Could not read reference image for product {}: {}", name, e.getMessage());
-                  }
-                }
-              },
-              () -> log.debug("No exact product match found for '{}' in planogram", name));
-    }
-
-    return refs;
-  }
-
-  @SuppressWarnings("unchecked")
-  private List<String> extractProductNames(Map<String, Object> layoutSpec) {
-    List<String> names = new ArrayList<>();
-    Object shelves = layoutSpec.get("shelves");
-    if (!(shelves instanceof List<?> shelfList)) return names;
-
-    for (Object shelf : shelfList) {
-      if (!(shelf instanceof Map<?, ?> shelfMap)) continue;
-      Object sections = shelfMap.get("sections");
-      if (!(sections instanceof List<?> sectionList)) continue;
-
-      for (Object section : sectionList) {
-        if (!(section instanceof Map<?, ?> sectionMap)) continue;
-        Object productName = sectionMap.get("productName");
-        if (productName instanceof String name && !name.isBlank()) {
-          names.add(name);
-        }
+    for (Product product : products) {
+      if (product.getReferenceImageUrl() == null) continue;
+      try {
+        byte[] imgBytes = readFile(product.getReferenceImageUrl());
+        byte[] resized = imageResizeService.resizeForAi(imgBytes);
+        refs.add(new ScoringRequest.ProductReference(product.getName(), resized, MIME_JPEG));
+      } catch (IOException e) {
+        log.warn("Could not read reference image for product '{}': {}", product.getName(), e.getMessage());
       }
     }
-    return names;
+
+    log.debug("Sending {} product reference image(s) to Gemini ({} products have images)",
+        refs.size(), products.size());
+    return refs;
   }
 
   private byte[] readFile(String url) throws IOException {
