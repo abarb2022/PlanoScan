@@ -253,17 +253,17 @@ public class RepAssignmentService {
     return switch (assignment.getStatus()) {
       case ASSIGNED -> AssignmentDisplayStatus.DUE_TODAY;
       case MISSED -> AssignmentDisplayStatus.MISSED;
-      case COMPLETED ->
-          hasScoredSubmission(assignment)
-              ? AssignmentDisplayStatus.NEEDS_REVIEW
-              : AssignmentDisplayStatus.SUBMITTED;
+      case COMPLETED -> {
+        List<Submission> subs = sortedSubmissions(assignment);
+        boolean anyScored   = subs.stream().anyMatch(s -> s.getStatus() == Submission.Status.SCORED);
+        boolean anyReviewed = subs.stream().anyMatch(s -> s.getStatus() == Submission.Status.REVIEWED);
+        // SCORED means flagged and waiting for manager action → highest priority
+        if (anyScored)   yield AssignmentDisplayStatus.NEEDS_REVIEW;
+        if (anyReviewed) yield AssignmentDisplayStatus.COMPLETED;
+        yield AssignmentDisplayStatus.SUBMITTED;
+      }
       case CANCELLED -> AssignmentDisplayStatus.CANCELLED;
     };
-  }
-
-  private boolean hasScoredSubmission(StoreAssignment assignment) {
-    return sortedSubmissions(assignment).stream()
-        .anyMatch(submission -> submission.getStatus().equals(Submission.Status.SCORED));
   }
 
   private String formatAssignmentDate(LocalDate date, LocalDate today) {

@@ -35,6 +35,7 @@ export type RepAssignmentStatus =
   | "DUE_TODAY"
   | "SUBMITTED"
   | "NEEDS_REVIEW"
+  | "COMPLETED"
   | "MISSED"
   | "CANCELLED";
 

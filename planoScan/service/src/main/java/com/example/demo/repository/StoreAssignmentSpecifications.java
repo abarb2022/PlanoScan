@@ -56,9 +56,11 @@ public final class StoreAssignmentSpecifications {
     return switch (selectedStatus) {
       case DUE_TODAY -> (root, query, cb) -> isDueToday(root, cb);
       case SUBMITTED ->
-          (root, query, cb) -> isCompletedWithoutScoredSubmission(root, query, cb);
+          (root, query, cb) -> isCompletedWithoutScoredOrReviewedSubmission(root, query, cb);
       case NEEDS_REVIEW ->
           (root, query, cb) -> isCompletedWithScoredSubmission(root, query, cb);
+      case COMPLETED ->
+          (root, query, cb) -> isCompletedWithReviewedSubmission(root, query, cb);
       case MISSED -> (root, query, cb) -> isMissed(root, cb);
       case CANCELLED ->
           (root, query, cb) -> cb.equal(root.get("status"), StoreAssignment.Status.CANCELLED);
@@ -86,26 +88,35 @@ public final class StoreAssignmentSpecifications {
       Root<StoreAssignment> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
     return cb.and(
         cb.equal(root.get("status"), StoreAssignment.Status.COMPLETED),
-        hasScoredSubmission(root, query, cb));
+        hasSubmissionWithStatus(root, query, cb, Submission.Status.SCORED));
   }
 
-  private static Predicate isCompletedWithoutScoredSubmission(
+  private static Predicate isCompletedWithReviewedSubmission(
       Root<StoreAssignment> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
     return cb.and(
         cb.equal(root.get("status"), StoreAssignment.Status.COMPLETED),
-        cb.not(hasScoredSubmission(root, query, cb)));
+        cb.not(hasSubmissionWithStatus(root, query, cb, Submission.Status.SCORED)),
+        hasSubmissionWithStatus(root, query, cb, Submission.Status.REVIEWED));
   }
 
-  private static Predicate hasScoredSubmission(
+  private static Predicate isCompletedWithoutScoredOrReviewedSubmission(
       Root<StoreAssignment> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+    return cb.and(
+        cb.equal(root.get("status"), StoreAssignment.Status.COMPLETED),
+        cb.not(hasSubmissionWithStatus(root, query, cb, Submission.Status.SCORED)),
+        cb.not(hasSubmissionWithStatus(root, query, cb, Submission.Status.REVIEWED)));
+  }
+
+  private static Predicate hasSubmissionWithStatus(
+      Root<StoreAssignment> root, CriteriaQuery<?> query, CriteriaBuilder cb,
+      Submission.Status status) {
     Subquery<Long> subquery = query.subquery(Long.class);
     Root<Submission> submission = subquery.from(Submission.class);
     subquery
         .select(cb.literal(1L))
         .where(
             cb.equal(submission.get("assignment"), root),
-            cb.equal(submission.get("status"), Submission.Status.SCORED));
-
+            cb.equal(submission.get("status"), status));
     return cb.exists(subquery);
   }
 

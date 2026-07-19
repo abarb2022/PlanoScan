@@ -15,6 +15,7 @@ const ASSIGNMENT_STATUS_LABELS: Record<RepAssignmentStatus, string> = {
   DUE_TODAY: "Due today",
   SUBMITTED: "Submitted",
   NEEDS_REVIEW: "Needs review",
+  COMPLETED: "Completed",
   MISSED: "Missed",
   CANCELLED: "Cancelled",
 };

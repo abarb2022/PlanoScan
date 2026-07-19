@@ -32,7 +32,18 @@ public class SubmissionReviewService {
   private final UserRepository userRepository;
 
   @Transactional(readOnly = true)
-  public List<FlaggedSubmissionDto> getFlagged(UUID companyId) {
+  public List<FlaggedSubmissionDto> getFlagged(String callerEmail, UUID requestedCompanyId) {
+    User caller =
+        userRepository
+            .findByEmail(callerEmail)
+            .orElseThrow(() -> new ServerException(ErrorCode.USER_NOT_FOUND));
+
+    // ADMIN may optionally filter by companyId; MANAGER is always scoped to their own company
+    UUID companyId =
+        caller.getRole() == com.example.demo.entity.User.Role.ADMIN
+            ? requestedCompanyId
+            : caller.getCompany().getId();
+
     return submissionRepository.findFlaggedByCompany(companyId).stream()
         .map(this::toDto)
         .toList();

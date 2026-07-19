@@ -34,6 +34,14 @@ export default function Planograms({ role }: Props) {
     load();
   }, [page]);
 
+  // Poll while any planogram is still being parsed by AI
+  useEffect(() => {
+    const hasUnparsed = planograms.some((p) => !p.parsed);
+    if (!hasUnparsed) return;
+    const id = setInterval(load, 8000);
+    return () => clearInterval(id);
+  }, [planograms]);
+
   async function load() {
     try {
       setLoading(true);

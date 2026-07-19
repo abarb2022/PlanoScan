@@ -24,7 +24,7 @@ public class SubmissionReviewController {
   @GetMapping("/flagged")
   public ResponseEntity<List<FlaggedSubmissionDto>> getFlagged(
       @RequestParam(required = false) UUID companyId, Authentication auth) {
-    return ResponseEntity.ok(reviewService.getFlagged(companyId));
+    return ResponseEntity.ok(reviewService.getFlagged(auth.getName(), companyId));
   }
 
   @PostMapping("/{id}/review")
