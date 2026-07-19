@@ -21,7 +21,7 @@ const MONTH_LABELS = [
   "December",
 ];
 
-const MAX_VISIBLE_CHIPS = 2;
+const PROBE_CHIP_COUNT = 4;
 
 function toIsoDate(year: number, month: number, day: number): string {
   const mm = String(month + 1).padStart(2, "0");
@@ -78,6 +78,9 @@ export default function RepCalendar() {
   );
   const gridRef = useRef<HTMLDivElement>(null);
   const [rowHeight, setRowHeight] = useState<number | null>(null);
+  const probeCellRef = useRef<HTMLDivElement>(null);
+  const probeChipRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const [maxVisibleChips, setMaxVisibleChips] = useState(2);
 
   useEscapeKey(() => setOpenDay(null), openDay !== null);
   const handleBackdropClick = dismissOnBackdropClick(() => setOpenDay(null));
@@ -101,6 +104,30 @@ export default function RepCalendar() {
     observer.observe(grid);
     return () => observer.disconnect();
   }, []);
+
+  // How many chip rows actually fit inside a cell of this height is measured against
+  // a hidden probe cell (same markup, real chips), not assumed — a hardcoded chip
+  // count would silently get clipped by the cell's overflow:hidden once rowHeight
+  // shrinks on a shorter screen.
+  useLayoutEffect(() => {
+    if (rowHeight === null) return;
+    const probeCell = probeCellRef.current;
+    if (!probeCell) return;
+
+    const cellTop = probeCell.getBoundingClientRect().top;
+    let fit = 0;
+    for (let i = 0; i < PROBE_CHIP_COUNT; i++) {
+      const chip = probeChipRefs.current[i];
+      if (!chip) break;
+      const chipBottom = chip.getBoundingClientRect().bottom;
+      if (chipBottom - cellTop <= rowHeight) {
+        fit = i + 1;
+      } else {
+        break;
+      }
+    }
+    setMaxVisibleChips(fit);
+  }, [rowHeight]);
 
   useEffect(() => {
     loadMonth();
@@ -222,7 +249,13 @@ export default function RepCalendar() {
           const isToday = iso === todayIso;
           const isPast = iso < todayIso;
           const hasAssignment = stores.length > 0;
-          const visibleStores = stores.slice(0, MAX_VISIBLE_CHIPS);
+          // The "+N more" indicator takes one of the available chip slots itself,
+          // it doesn't get an extra row on top of what was measured to fit.
+          const hasOverflow = stores.length > maxVisibleChips;
+          const visibleCount = hasOverflow
+            ? Math.max(0, maxVisibleChips - 1)
+            : maxVisibleChips;
+          const visibleStores = stores.slice(0, visibleCount);
           const extraCount = stores.length - visibleStores.length;
 
           return (
@@ -254,7 +287,9 @@ export default function RepCalendar() {
                   ))}
                   {extraCount > 0 && (
                     <span className="rep-calendar-chip rep-calendar-chip-more">
-                      +{extraCount} more
+                      {visibleStores.length > 0
+                        ? `+${extraCount} more`
+                        : `${extraCount} more`}
                     </span>
                   )}
                 </div>
@@ -262,6 +297,28 @@ export default function RepCalendar() {
             </div>
           );
         })}
+      </div>
+
+      <div
+        ref={probeCellRef}
+        className="rep-calendar-cell rep-calendar-probe"
+        aria-hidden="true"
+      >
+        <span className="rep-calendar-day-number">30</span>
+        <div className="rep-calendar-chips">
+          {Array.from({ length: PROBE_CHIP_COUNT }).map((_, i) => (
+            <span
+              className="rep-calendar-chip"
+              key={i}
+              ref={(el) => {
+                probeChipRefs.current[i] = el;
+              }}
+            >
+              <span className="rep-calendar-chip-icon">XX</span>
+              <span className="rep-calendar-chip-label">Measure</span>
+            </span>
+          ))}
+        </div>
       </div>
 
       {openDay && (
