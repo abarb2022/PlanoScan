@@ -1,6 +1,6 @@
 import type { Company } from "../../types/manager";
 import type { UserRole } from "../../types/auth";
-import type { RepAssignmentTab } from "../../types/store";
+import type { RepViewTab } from "../../types/store";
 import CompanySelect from "./CompanySelect";
 import "./HeaderTabs.css";
 
@@ -22,17 +22,18 @@ const TABS: Tab[] = [
   { id: "reviews", label: "Reviews", roles: ["ADMIN", "MANAGER"] },
 ];
 
-const REP_TABS: { id: RepAssignmentTab; label: string }[] = [
+const REP_TABS: { id: RepViewTab; label: string }[] = [
   { id: "active", label: "Today's assignments" },
   { id: "history", label: "History" },
+  { id: "calendar", label: "Calendar" },
 ];
 
 interface Props {
   activeTab: TabId;
   role?: UserRole;
   onTabChange: (tab: TabId) => void;
-  repAssignmentTab?: RepAssignmentTab;
-  onRepAssignmentTabChange?: (tab: RepAssignmentTab) => void;
+  repAssignmentTab?: RepViewTab;
+  onRepAssignmentTabChange?: (tab: RepViewTab) => void;
   onLogout?: () => void;
   companies?: Company[];
   selectedCompanyId?: string | null;
@@ -51,7 +52,8 @@ export default function HeaderTabs({
   onCompanyChange,
 }: Props) {
   const visibleTabs = TABS.filter((t) => !role || t.roles.includes(role));
-  const showCompanyFilter = role === "ADMIN" && companies && companies.length > 0;
+  const showCompanyFilter =
+    role === "ADMIN" && companies && companies.length > 0;
 
   return (
     <header className="header-tabs" aria-label="Primary navigation">
@@ -88,7 +90,11 @@ export default function HeaderTabs({
           />
         )}
         {onLogout && (
-          <button className="header-tabs__logout" onClick={onLogout} type="button">
+          <button
+            className="header-tabs__logout"
+            onClick={onLogout}
+            type="button"
+          >
             Sign out
           </button>
         )}

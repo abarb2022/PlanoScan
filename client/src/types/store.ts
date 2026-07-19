@@ -41,6 +41,7 @@ export type RepAssignmentStatus =
 export type RepDateFilter = "all" | "today" | "yesterday" | "older";
 export type RepStatusFilter = "all" | RepAssignmentStatus;
 export type RepAssignmentTab = "active" | "history";
+export type RepViewTab = RepAssignmentTab | "calendar";
 
 export type RepSubmission = {
   id: string;
@@ -76,4 +77,9 @@ export type RepAssignmentPageResponse = {
   totalPages: number;
   totalElements: number;
   currentPage: number;
+};
+
+export type RepUpcomingAssignment = {
+  date: string;
+  store: Pick<Store, "id" | "name" | "address" | "companyName">;
 };

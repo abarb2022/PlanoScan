@@ -5,19 +5,21 @@ import com.example.demo.dto.rep.RepAssignmentPageResponseDto;
 import com.example.demo.dto.rep.RepAssignmentResponseDto;
 import com.example.demo.dto.rep.RepAssignmentStoreDto;
 import com.example.demo.dto.rep.RepSubmissionResponseDto;
+import com.example.demo.dto.rep.RepUpcomingAssignmentDto;
 import com.example.demo.entity.Planogram;
 import com.example.demo.entity.Score;
 import com.example.demo.entity.StoreAssignment;
+import com.example.demo.entity.StoreAssignmentRule;
 import com.example.demo.entity.Submission;
+import com.example.demo.entity.User;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.exception.ServerException;
-import com.example.demo.repository.PlanogramAssignmentRepository;
-import com.example.demo.repository.StoreAssignmentRepository;
-import com.example.demo.repository.StoreAssignmentSpecifications;
-import com.example.demo.repository.SubmissionRepository;
+import com.example.demo.repository.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -45,8 +47,11 @@ public class RepAssignmentService {
   private static final int MAX_PAGE_SIZE = 100;
 
   private final StoreAssignmentRepository assignmentRepository;
+  private final StoreAssignmentRuleRepository assignmentRuleRepository;
+  private final PlanogramRepository planogramRepository;
   private final PlanogramAssignmentRepository planogramAssignmentRepository;
   private final SubmissionRepository submissionRepository;
+  private final UserRepository userRepository;
   private final PhotoStorage photoStorage;
 
   @Transactional(readOnly = true)
@@ -80,6 +85,60 @@ public class RepAssignmentService {
 
     return new RepAssignmentPageResponseDto(
         content, matchingPage.getTotalPages(), matchingPage.getTotalElements(), matchingPage.getNumber());
+  }
+
+  /**
+   * Projects future visits directly from the rep's recurring {@link StoreAssignmentRule}s, since
+   * concrete {@link StoreAssignment} rows are only ever generated just-in-time for the current
+   * day — no real rows exist yet for future dates to query. Only strictly-future dates are
+   * returned; today and the past are covered by the "active"/"history" tabs instead, where actual
+   * outcomes (missed, cancelled, submitted) are known.
+   */
+  @Transactional(readOnly = true)
+  public List<RepUpcomingAssignmentDto> getUpcomingAssignments(
+      String repEmail, LocalDate from, LocalDate to) {
+    User rep =
+        userRepository
+            .findByEmail(repEmail)
+            .orElseThrow(() -> new ServerException(ErrorCode.USER_NOT_FOUND));
+
+    LocalDate today = LocalDate.now();
+    LocalDate rangeStart = from.isAfter(today) ? from : today.plusDays(1);
+    if (rangeStart.isAfter(to)) {
+      return List.of();
+    }
+
+    List<StoreAssignmentRule> rules = assignmentRuleRepository.findByAssigneeId(rep.getId());
+
+    List<RepUpcomingAssignmentDto> occurrences = new ArrayList<>();
+    for (StoreAssignmentRule rule : rules) {
+      LocalDate windowStart =
+          rule.getValidFrom().isAfter(rangeStart) ? rule.getValidFrom() : rangeStart;
+      LocalDate windowEnd =
+          rule.getValidUntil() != null && rule.getValidUntil().isBefore(to)
+              ? rule.getValidUntil()
+              : to;
+      if (windowStart.isAfter(windowEnd)) {
+        continue;
+      }
+
+      RepAssignmentStoreDto storeDto =
+          RepAssignmentStoreDto.builder()
+              .id(rule.getStore().getId())
+              .name(rule.getStore().getName())
+              .address(rule.getStore().getAddress())
+              .companyName(rule.getStore().getCompany().getName())
+              .build();
+
+      LocalDate occurrence = windowStart.with(TemporalAdjusters.nextOrSame(rule.getDayOfWeek()));
+      while (!occurrence.isAfter(windowEnd)) {
+        occurrences.add(
+            RepUpcomingAssignmentDto.builder().date(occurrence.toString()).store(storeDto).build());
+        occurrence = occurrence.plusWeeks(1);
+      }
+    }
+
+    return occurrences.stream().sorted(Comparator.comparing(RepUpcomingAssignmentDto::getDate)).toList();
   }
 
   @Transactional

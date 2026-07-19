@@ -7,6 +7,7 @@ import type {
   RepAssignmentPageResponse,
   RepAssignmentQuery,
   RepStoreAssignment,
+  RepUpcomingAssignment,
 } from "../types/store";
 
 const STORE_URL = "/api/admin/stores";
@@ -76,5 +77,15 @@ export function getRepAssignments(
 
   return apiRequest<RepAssignmentPageResponse>(
     `${REP_ASSIGNMENTS_URL}?${params.toString()}`,
+  );
+}
+
+export function getUpcomingAssignments(
+  from: string,
+  to: string,
+): Promise<RepUpcomingAssignment[]> {
+  const params = new URLSearchParams({ from, to });
+  return apiRequest<RepUpcomingAssignment[]>(
+    `${REP_ASSIGNMENTS_URL}/upcoming?${params.toString()}`,
   );
 }
