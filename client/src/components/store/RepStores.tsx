@@ -6,8 +6,10 @@ import type {
   RepDateFilter,
   RepStatusFilter,
   RepStoreAssignment,
+  RepViewTab,
 } from "../../types/store";
 import AssignmentDetail from "./AssignmentDetail";
+import RepCalendar from "./RepCalendar";
 
 const ASSIGNMENT_STATUS_LABELS: Record<RepAssignmentStatus, string> = {
   DUE_TODAY: "Due today",
@@ -32,11 +34,7 @@ function assignmentStatusClass(status: RepAssignmentStatus) {
   return status.toLowerCase().replace(/_/g, "-");
 }
 
-export default function RepStores({
-  activeTab,
-}: {
-  activeTab: RepAssignmentTab;
-}) {
+export default function RepStores({ activeTab }: { activeTab: RepViewTab }) {
   const [assignments, setAssignments] = useState<RepStoreAssignment[]>([]);
   const [selectedId, setSelectedId] = useState("");
   const [dateFilter, setDateFilter] = useState<RepDateFilter>("all");
@@ -60,8 +58,8 @@ export default function RepStores({
   }, [activeTab, dateFilter, statusFilter, storeNameFilter, pageSize]);
 
   useEffect(() => {
-    if (pageSize === null) return;
-    loadAssignments(pageSize);
+    if (pageSize === null || activeTab === "calendar") return;
+    loadAssignments(activeTab, pageSize);
   }, [activeTab, dateFilter, statusFilter, storeNameFilter, page, pageSize]);
 
   // Measures a hidden reference row (not a real data row, which may not exist yet or may
@@ -107,12 +105,12 @@ export default function RepStores({
     }
   }, [selectedId, assignments]);
 
-  async function loadAssignments(size: number) {
+  async function loadAssignments(tab: RepAssignmentTab, size: number) {
     try {
       setLoading(true);
       setError("");
       const res = await getRepAssignments({
-        tab: activeTab,
+        tab,
         date: dateFilter,
         status: statusFilter,
         storeName: storeNameFilter,
@@ -161,202 +159,215 @@ export default function RepStores({
         </div>
       </div>
 
-      {error && <p className="stores-error">{error}</p>}
+      {activeTab === "calendar" ? (
+        <RepCalendar />
+      ) : (
+        <>
+          {error && <p className="stores-error">{error}</p>}
 
-      <div className="rep-layout">
-        <section className="rep-main-panel" aria-label="Assigned stores">
-          <div className="rep-filters" aria-label="Assignment filters">
-            <label className="filter-field">
-              <span>Store</span>
-              <input
-                type="text"
-                placeholder="Filter by store name…"
-                value={storeNameFilter}
-                onChange={(e) => {
-                  setStoreNameFilter(e.target.value);
-                  setPage(0);
-                }}
-              />
-            </label>
+          <div className="rep-layout">
+            <section className="rep-main-panel" aria-label="Assigned stores">
+              <div className="rep-filters" aria-label="Assignment filters">
+                <label className="filter-field">
+                  <span>Store</span>
+                  <input
+                    type="text"
+                    placeholder="Filter by store name…"
+                    value={storeNameFilter}
+                    onChange={(e) => {
+                      setStoreNameFilter(e.target.value);
+                      setPage(0);
+                    }}
+                  />
+                </label>
 
-            <label className="filter-field">
-              <span>Date</span>
-              <select
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value as RepDateFilter)}
+                <label className="filter-field">
+                  <span>Date</span>
+                  <select
+                    value={dateFilter}
+                    onChange={(e) =>
+                      setDateFilter(e.target.value as RepDateFilter)
+                    }
+                  >
+                    <option value="all">All dates</option>
+                    <option value="today">Today</option>
+                    <option value="yesterday">Yesterday</option>
+                    <option value="older">Older</option>
+                  </select>
+                </label>
+
+                <label className="filter-field">
+                  <span>Status</span>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) =>
+                      setStatusFilter(e.target.value as RepStatusFilter)
+                    }
+                  >
+                    <option value="all">All statuses</option>
+                    {FILTERABLE_STATUSES.map((status) => (
+                      <option key={status} value={status}>
+                        {assignmentStatusLabel(status)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <button
+                  className="btn btn-ghost"
+                  onClick={clearFilters}
+                  type="button"
+                >
+                  Clear
+                </button>
+              </div>
+
+              <div
+                className="stores-table-wrapper rep-table-wrapper"
+                ref={tableWrapperRef}
               >
-                <option value="all">All dates</option>
-                <option value="today">Today</option>
-                <option value="yesterday">Yesterday</option>
-                <option value="older">Older</option>
-              </select>
-            </label>
-
-            <label className="filter-field">
-              <span>Status</span>
-              <select
-                value={statusFilter}
-                onChange={(e) =>
-                  setStatusFilter(e.target.value as RepStatusFilter)
-                }
-              >
-                <option value="all">All statuses</option>
-                {FILTERABLE_STATUSES.map((status) => (
-                  <option key={status} value={status}>
-                    {assignmentStatusLabel(status)}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <button
-              className="btn btn-ghost"
-              onClick={clearFilters}
-              type="button"
-            >
-              Clear
-            </button>
-          </div>
-
-          <div
-            className="stores-table-wrapper rep-table-wrapper"
-            ref={tableWrapperRef}
-          >
-            <table className="stores-table rep-table-measure" aria-hidden="true">
-              <tbody>
-                <tr ref={measureRowRef} className="store-row rep-store-row">
-                  <td>
-                    <div className="store-cell">
-                      <div className="store-avatar">XX</div>
-                      <div>
-                        <div className="store-name">Measure</div>
-                        <div className="store-id">Measure</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="col-centered">
-                    <span className="status-badge">Measure</span>
-                  </td>
-                  <td className="col-centered text-muted">Measure</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <table className="stores-table">
-              <thead>
-                <tr>
-                  <th>Store</th>
-                  {showAssignmentDate && (
-                    <th className="col-centered">Assignment date</th>
-                  )}
-                  <th className="col-centered">Status</th>
-                  <th className="col-centered">Last submission</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading || pageSize === null ? (
-                  <tr>
-                    <td
-                      colSpan={showAssignmentDate ? 4 : 3}
-                      className="table-state"
-                    >
-                      <span className="spinner" /> Loading…
-                    </td>
-                  </tr>
-                ) : assignments.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={showAssignmentDate ? 4 : 3}
-                      className="table-state"
-                    >
-                      No assignments match these filters.
-                    </td>
-                  </tr>
-                ) : (
-                  assignments.map((assignment) => (
-                    <tr
-                      key={assignment.id}
-                      className={`store-row rep-store-row ${
-                        selectedAssignment?.id === assignment.id
-                          ? "rep-store-row-selected"
-                          : ""
-                      }`}
-                      onClick={() => setSelectedId(assignment.id)}
-                    >
+                <table
+                  className="stores-table rep-table-measure"
+                  aria-hidden="true"
+                >
+                  <tbody>
+                    <tr ref={measureRowRef} className="store-row rep-store-row">
                       <td>
                         <div className="store-cell">
-                          <div className="store-avatar">
-                            {assignment.store.name.slice(0, 2).toUpperCase()}
-                          </div>
+                          <div className="store-avatar">XX</div>
                           <div>
-                            <div className="store-name">
-                              {assignment.store.name}
-                            </div>
-                            <div className="store-id">
-                              {assignment.store.address ?? "No address"}
-                            </div>
+                            <div className="store-name">Measure</div>
+                            <div className="store-id">Measure</div>
                           </div>
                         </div>
                       </td>
-                      {showAssignmentDate && (
-                        <td className="col-centered">
-                          <div className="assignment-cell">
-                            <strong>{assignment.assignmentDate}</strong>
-                          </div>
-                        </td>
-                      )}
                       <td className="col-centered">
-                        <span
-                          className={`status-badge status-${assignmentStatusClass(
-                            assignment.status,
-                          )}`}
-                        >
-                          {assignmentStatusLabel(assignment.status)}
-                        </span>
+                        <span className="status-badge">Measure</span>
                       </td>
-                      <td className="col-centered text-muted">
-                        {assignment.lastSubmittedAt ?? "No submission yet"}
-                      </td>
+                      <td className="col-centered text-muted">Measure</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  </tbody>
+                </table>
 
-          <div className="stores-pagination">
-            <span className="page-info">
-              Page {page + 1} of {totalPages || 1}
-            </span>
-            <div className="page-btns">
-              <button
-                className="btn btn-ghost"
-                disabled={page === 0}
-                onClick={() => setPage((p) => p - 1)}
-              >
-                ← Prev
-              </button>
-              <button
-                className="btn btn-ghost"
-                disabled={page + 1 >= totalPages}
-                onClick={() => setPage((p) => p + 1)}
-              >
-                Next →
-              </button>
-            </div>
-          </div>
-        </section>
+                <table className="stores-table">
+                  <thead>
+                    <tr>
+                      <th>Store</th>
+                      {showAssignmentDate && (
+                        <th className="col-centered">Assignment date</th>
+                      )}
+                      <th className="col-centered">Status</th>
+                      <th className="col-centered">Last submission</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading || pageSize === null ? (
+                      <tr>
+                        <td
+                          colSpan={showAssignmentDate ? 4 : 3}
+                          className="table-state"
+                        >
+                          <span className="spinner" /> Loading…
+                        </td>
+                      </tr>
+                    ) : assignments.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={showAssignmentDate ? 4 : 3}
+                          className="table-state"
+                        >
+                          No assignments match these filters.
+                        </td>
+                      </tr>
+                    ) : (
+                      assignments.map((assignment) => (
+                        <tr
+                          key={assignment.id}
+                          className={`store-row rep-store-row ${
+                            selectedAssignment?.id === assignment.id
+                              ? "rep-store-row-selected"
+                              : ""
+                          }`}
+                          onClick={() => setSelectedId(assignment.id)}
+                        >
+                          <td>
+                            <div className="store-cell">
+                              <div className="store-avatar">
+                                {assignment.store.name
+                                  .slice(0, 2)
+                                  .toUpperCase()}
+                              </div>
+                              <div>
+                                <div className="store-name">
+                                  {assignment.store.name}
+                                </div>
+                                <div className="store-id">
+                                  {assignment.store.address ?? "No address"}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          {showAssignmentDate && (
+                            <td className="col-centered">
+                              <div className="assignment-cell">
+                                <strong>{assignment.assignmentDate}</strong>
+                              </div>
+                            </td>
+                          )}
+                          <td className="col-centered">
+                            <span
+                              className={`status-badge status-${assignmentStatusClass(
+                                assignment.status,
+                              )}`}
+                            >
+                              {assignmentStatusLabel(assignment.status)}
+                            </span>
+                          </td>
+                          <td className="col-centered text-muted">
+                            {assignment.lastSubmittedAt ?? "No submission yet"}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
 
-        {selectedAssignment && (
-          <AssignmentDetail
-            assignment={selectedAssignment}
-            onSubmitted={() => {
-              if (pageSize !== null) loadAssignments(pageSize);
-              loadActiveAssignmentCount();
-            }}
-          />
-        )}
-      </div>
+              <div className="stores-pagination">
+                <span className="page-info">
+                  Page {page + 1} of {totalPages || 1}
+                </span>
+                <div className="page-btns">
+                  <button
+                    className="btn btn-ghost"
+                    disabled={page === 0}
+                    onClick={() => setPage((p) => p - 1)}
+                  >
+                    ← Prev
+                  </button>
+                  <button
+                    className="btn btn-ghost"
+                    disabled={page + 1 >= totalPages}
+                    onClick={() => setPage((p) => p + 1)}
+                  >
+                    Next →
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            {selectedAssignment && (
+              <AssignmentDetail
+                assignment={selectedAssignment}
+                onSubmitted={() => {
+                  if (pageSize !== null) loadAssignments(activeTab, pageSize);
+                  loadActiveAssignmentCount();
+                }}
+              />
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
