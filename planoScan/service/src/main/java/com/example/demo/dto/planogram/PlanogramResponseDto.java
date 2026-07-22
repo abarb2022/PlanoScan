@@ -11,6 +11,7 @@ import lombok.Value;
 @Builder
 public class PlanogramResponseDto {
   UUID id;
+  UUID companyId;
   String name;
   String productCategory;
   String referenceImageUrl;

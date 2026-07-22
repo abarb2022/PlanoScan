@@ -1,0 +1,55 @@
+.col-right {
+  text-align: right;
+}
+
+.sub-row {
+  cursor: pointer;
+}
+
+.sub-row:hover td {
+  background: var(--hover-bg, #f1f2f6);
+}
+
+.sub-score {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.sub-score-green {
+  color: #16a34a;
+}
+
+.sub-score-orange {
+  color: #d97706;
+}
+
+.sub-score-red {
+  color: #dc2626;
+}
+
+.sub-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.sub-badge-flagged {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+
+.sub-badge-reviewed {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+}
+
+.sub-badge-scored {
+  background: var(--surface-alt, #f7f8fa);
+  color: var(--text-secondary, #4a4e6a);
+  border: 1px solid var(--border, #e2e4ea);
+}
