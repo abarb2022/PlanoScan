@@ -135,7 +135,7 @@ export default function SubmissionDetail({ submissionId, onBack }: Props) {
             <h2 className="sd-card-title">AI Assessment</h2>
             <div className="sd-confidence">
               <span className="sd-confidence-label">Confidence</span>
-              <span className="sd-confidence-value">{Math.round(data.scoreDetail.confidence * 100)}%</span>
+              <span className="sd-confidence-value">{Math.round(data.scoreDetail.confidence)}%</span>
             </div>
             {data.scoreDetail.notes ? (
               <p className="sd-notes">{data.scoreDetail.notes}</p>

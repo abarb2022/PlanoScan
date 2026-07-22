@@ -1,7 +1,7 @@
 .star-rating {
   display: inline-flex;
   align-items: center;
-  gap: 1px;
+  gap: 2px;
 }
 
 .star-rating .star {
@@ -13,15 +13,15 @@
 }
 
 .star-rating-sm .star {
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 .star-rating-md .star {
-  font-size: 1.05rem;
+  font-size: 1.3rem;
 }
 
 .star-rating-lg .star {
-  font-size: 1.4rem;
+  font-size: 1.8rem;
 }
 
 .star-filled {

@@ -106,12 +106,6 @@ export default function Submissions({ companyId }: Props) {
     [storeId, repId, stars],
   );
 
-  function clearFilters() {
-    setStoreId("");
-    setRepId("");
-    setStars("");
-  }
-
   if (selectedId) {
     return <SubmissionDetail submissionId={selectedId} onBack={() => setSelectedId(null)} />;
   }
@@ -150,28 +144,34 @@ export default function Submissions({ companyId }: Props) {
           </select>
         </label>
 
-        <label className="filter-field">
+        <label className="filter-field sub-star-filter">
           <span>Rating</span>
-          <select value={stars} onChange={(e) => setStars(e.target.value)}>
-            <option value="">All ratings</option>
-            <option value="5">★★★★★ (5)</option>
-            <option value="4">★★★★☆ (4)</option>
-            <option value="3">★★★☆☆ (3)</option>
-            <option value="2">★★☆☆☆ (2)</option>
-            <option value="1">★☆☆☆☆ (1)</option>
-            <option value="0">☆☆☆☆☆ (0)</option>
-          </select>
+          <div className="sub-star-filter-row">
+            <StarRating
+              stars={0}
+              activeStars={stars !== "" ? Number(stars) : null}
+              size="lg"
+              onClick={(n) => setStars(stars === String(n) ? "" : String(n))}
+            />
+            {stars !== "" && (
+              <button
+                type="button"
+                className="sub-star-filter-clear"
+                onClick={() => setStars("")}
+                title="Clear rating filter"
+                aria-label="Clear rating filter"
+              >
+                ✕
+              </button>
+            )}
+          </div>
         </label>
-
-        {hasActiveFilters && (
-          <button className="btn btn-ghost" onClick={clearFilters}>Clear filters</button>
-        )}
       </div>
 
       {error && <p className="stores-error">{error}</p>}
 
       <div className="stores-table-wrapper">
-        <table className="stores-table">
+        <table className="stores-table submissions-table">
           <thead>
             <tr>
               <th>Rep</th>
@@ -179,8 +179,8 @@ export default function Submissions({ companyId }: Props) {
               <th>Planogram</th>
               <th>Submitted</th>
               <th>Status</th>
-              <th className="col-right">Score</th>
-              <th className="col-right">Rating</th>
+              <th>Score</th>
+              <th>Rating</th>
             </tr>
           </thead>
           <tbody>
@@ -226,11 +226,11 @@ export default function Submissions({ companyId }: Props) {
                   <td className="text-muted">{s.planogramName ?? "—"}</td>
                   <td className="text-muted" style={{ fontSize: "13px" }}>{s.submittedAt}</td>
                   <td>{statusBadge(s.status, s.flaggedForReview)}</td>
-                  <td className={`col-right sub-score ${scoreClass(s.overallScore)}`}>
+                  <td className={`sub-score ${scoreClass(s.overallScore)}`}>
                     {Math.round(s.overallScore)}
                   </td>
-                  <td className="col-right">
-                    <StarRating stars={s.stars} score={s.overallScore} size="sm" />
+                  <td>
+                    <StarRating stars={s.stars} score={s.overallScore} size="lg" />
                   </td>
                 </tr>
               ))

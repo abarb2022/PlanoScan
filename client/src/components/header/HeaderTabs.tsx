@@ -21,7 +21,7 @@ const TABS: Tab[] = [
   { id: "products", label: "Products", roles: ["ADMIN", "MANAGER"] },
   { id: "planograms", label: "Planograms", roles: ["ADMIN", "MANAGER"] },
   { id: "submissions", label: "Submissions", roles: ["ADMIN", "MANAGER"] },
-  { id: "reviews", label: "Reviews", roles: ["ADMIN", "MANAGER"] },
+  { id: "reviews", label: "Active Reviews", roles: ["ADMIN", "MANAGER"] },
 ];
 
 const REP_TABS: { id: RepViewTab; label: string }[] = [
