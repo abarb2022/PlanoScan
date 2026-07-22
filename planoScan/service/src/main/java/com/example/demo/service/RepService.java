@@ -44,6 +44,7 @@ public class RepService {
   private final StoreAssignmentRepository assignmentRepository;
   private final SubmissionRepository submissionRepository;
   private final PasswordEncoder passwordEncoder;
+  private final EmailService emailService;
 
   @Transactional
   public RepResponseDto createRep(RepRequestDto dto, String currentUserEmail) {
@@ -69,7 +70,9 @@ public class RepService {
             .mustChangePassword(true)
             .build();
 
-    return toDto(userRepository.save(rep));
+    RepResponseDto response = toDto(userRepository.save(rep));
+    emailService.sendTemporaryPassword(dto.getEmail(), dto.getName(), tempPassword);
+    return response;
   }
 
   @Transactional(readOnly = true)
