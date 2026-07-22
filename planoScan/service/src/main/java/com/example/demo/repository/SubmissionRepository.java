@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.entity.Submission;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -64,5 +65,8 @@ public interface SubmissionRepository extends JpaRepository<Submission, UUID> {
           + " LEFT JOIN FETCH s.planogram LEFT JOIN FETCH s.score"
           + " WHERE s.id = :id")
   Optional<Submission> findDetailById(@Param("id") UUID id);
+
+  @Query("SELECT s FROM Submission s LEFT JOIN FETCH s.score WHERE s.submittedAt < :cutoff")
+  List<Submission> findForRetentionCleanup(@Param("cutoff") LocalDateTime cutoff);
 }
 

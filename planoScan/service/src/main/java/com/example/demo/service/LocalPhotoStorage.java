@@ -74,6 +74,25 @@ public class LocalPhotoStorage implements PhotoStorage {
     }
   }
 
+  @Override
+  public void delete(String url) {
+    if (url == null || url.isBlank()) return;
+
+    String relativePath = url.startsWith("/uploads/") ? url.substring("/uploads/".length()) : url;
+    Path file = uploadRoot.resolve(relativePath).normalize();
+
+    if (!file.startsWith(uploadRoot)) {
+      log.warn("Refusing to delete path outside upload root: {}", url);
+      return;
+    }
+
+    try {
+      Files.deleteIfExists(file);
+    } catch (IOException e) {
+      log.warn("Failed to delete photo file {}: {}", url, e.getMessage());
+    }
+  }
+
   /**
    * Determines the file's real image format by sniffing its content and returns the
    * matching safe extension. Rejects anything that isn't a genuine, decodable raster image.
