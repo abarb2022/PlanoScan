@@ -188,14 +188,6 @@ export default function PlanogramDetail({ planogram, onBack, onUpdated }: Props)
           </div>
         ) : (
           <>
-            <div className="pd-notes pd-notes-hint">
-              <span>🔗</span>
-              <p>
-                Link each shelf section to a catalog product. The scoring AI only receives the
-                reference photos you link here — sections left unlinked won't be checked against
-                a specific product image.
-              </p>
-            </div>
 
             <div className="pd-shelves">
               {spec.shelves.map((shelf) => (
