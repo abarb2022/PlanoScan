@@ -10,7 +10,7 @@ import { resolveAssetUrl } from "../../services/apiClient";
 import ConfirmDialog from "../common/ConfirmDialog";
 import "../store/Stores.css";
 import PlanogramDialog from "./PlanogramDialog";
-import PlanogramLayoutDialog from "./PlanogramLayoutDialog";
+import PlanogramDetail from "./PlanogramDetail";
 
 const PAGE_SIZE = 20;
 
@@ -26,9 +26,7 @@ export default function Planograms({ role }: Props) {
   const [error, setError] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [confirmItem, setConfirmItem] = useState<Planogram | null>(null);
-  const [inspecting, setInspecting] = useState<Planogram | null>(null);
-
-  const isAdmin = role === "ADMIN";
+  const [selected, setSelected] = useState<Planogram | null>(null);
 
   useEffect(() => {
     load();
@@ -72,6 +70,19 @@ export default function Planograms({ role }: Props) {
     } catch (err: unknown) {
       setError((err instanceof Error ? err.message : "") || "Failed to delete planogram.");
     }
+  }
+
+  if (selected) {
+    return (
+      <PlanogramDetail
+        planogram={selected}
+        onBack={() => setSelected(null)}
+        onUpdated={(updated) => {
+          setSelected(updated);
+          setPlanograms((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+        }}
+      />
+    );
   }
 
   return (
@@ -119,7 +130,12 @@ export default function Planograms({ role }: Props) {
               </tr>
             ) : (
               planograms.map((p) => (
-                <tr key={p.id} className="store-row">
+                <tr
+                  key={p.id}
+                  className="store-row"
+                  style={p.parsed ? { cursor: "pointer" } : undefined}
+                  onClick={() => p.parsed && setSelected(p)}
+                >
                   <td>
                     <div className="store-cell">
                       {p.referenceImageUrl ? (
@@ -187,11 +203,14 @@ export default function Planograms({ role }: Props) {
                   </td>
                   <td>
                     <div className="row-actions">
-                      {isAdmin && p.parsed && (
+                      {p.parsed && (
                         <button
                           className="icon-btn"
-                          title="View parsed layout"
-                          onClick={() => setInspecting(p)}
+                          title="View & link products"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelected(p);
+                          }}
                         >
                           ☰
                         </button>
@@ -199,7 +218,10 @@ export default function Planograms({ role }: Props) {
                       <button
                         className="icon-btn icon-btn-danger"
                         title="Delete"
-                        onClick={() => setConfirmItem(p)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setConfirmItem(p);
+                        }}
                       >
                         ✕
                       </button>
@@ -236,13 +258,6 @@ export default function Planograms({ role }: Props) {
         onClose={() => setDialogOpen(false)}
         onSubmit={handleCreate}
       />
-
-      {inspecting && (
-        <PlanogramLayoutDialog
-          planogram={inspecting}
-          onClose={() => setInspecting(null)}
-        />
-      )}
 
       <ConfirmDialog
         open={confirmItem !== null}

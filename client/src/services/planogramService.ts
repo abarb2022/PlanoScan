@@ -1,5 +1,5 @@
 import { apiRequest } from "./apiClient";
-import type { Planogram, PlanogramRequest } from "../types/planogram";
+import type { Planogram, PlanogramRequest, SectionProductLink } from "../types/planogram";
 
 const BASE = "/api/manager/planograms";
 
@@ -17,4 +17,14 @@ export function createPlanogram(req: PlanogramRequest, image?: File | null): Pro
 
 export function deletePlanogram(id: string): Promise<null> {
   return apiRequest<null>(`${BASE}/${id}`, { method: "DELETE" });
+}
+
+export function linkPlanogramProducts(
+  planogramId: string,
+  links: SectionProductLink[],
+): Promise<Planogram> {
+  return apiRequest<Planogram>(`${BASE}/${planogramId}/product-links`, {
+    method: "PUT",
+    body: JSON.stringify(links),
+  });
 }

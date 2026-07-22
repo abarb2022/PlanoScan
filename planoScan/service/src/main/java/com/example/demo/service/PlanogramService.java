@@ -2,19 +2,31 @@ package com.example.demo.service;
 
 import com.example.demo.dto.planogram.PlanogramRequestDto;
 import com.example.demo.dto.planogram.PlanogramResponseDto;
+import com.example.demo.dto.planogram.SectionProductLinkDto;
 import com.example.demo.entity.Company;
 import com.example.demo.entity.Planogram;
 import com.example.demo.entity.PlanogramAssignment;
+import com.example.demo.entity.Product;
 import com.example.demo.entity.Store;
 import com.example.demo.entity.User;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.exception.ServerException;
 import com.example.demo.repository.PlanogramAssignmentRepository;
 import com.example.demo.repository.PlanogramRepository;
+import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.StoreRepository;
 import com.example.demo.repository.UserRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -34,8 +46,10 @@ public class PlanogramService {
   private final PlanogramAssignmentRepository assignmentRepository;
   private final StoreRepository storeRepository;
   private final UserRepository userRepository;
+  private final ProductRepository productRepository;
   private final PhotoStorage photoStorage;
   private final PlanogramParsingService parsingService;
+  private final ObjectMapper objectMapper;
 
   @Transactional(readOnly = true)
   public List<PlanogramResponseDto> getPlanograms(int page, int size, String currentUserEmail) {
@@ -96,6 +110,74 @@ public class PlanogramService {
   }
 
   @Transactional
+  public PlanogramResponseDto linkProducts(
+      UUID planogramId, List<SectionProductLinkDto> links, String currentUserEmail) {
+    User currentUser = getUser(currentUserEmail);
+    Planogram planogram =
+        planogramRepository
+            .findById(planogramId)
+            .orElseThrow(() -> new ServerException(ErrorCode.PLANOGRAM_NOT_FOUND));
+
+    ensureAccess(currentUser, planogram.getCompany());
+
+    Map<String, Object> layoutSpec = planogram.getLayoutSpec();
+    if (layoutSpec == null || layoutSpec.isEmpty()) {
+      throw new ServerException(ErrorCode.PLANOGRAM_NOT_PARSED);
+    }
+
+    Set<UUID> requestedProductIds =
+        links.stream()
+            .map(SectionProductLinkDto::getProductId)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+
+    if (!requestedProductIds.isEmpty()) {
+      Map<UUID, Product> productsById =
+          productRepository.findAllById(requestedProductIds).stream()
+              .collect(Collectors.toMap(Product::getId, p -> p));
+
+      for (UUID productId : requestedProductIds) {
+        Product product = productsById.get(productId);
+        if (product == null || !product.getCompany().getId().equals(planogram.getCompany().getId())) {
+          throw new ServerException(ErrorCode.PRODUCT_NOT_FOUND);
+        }
+      }
+    }
+
+    planogram.setLayoutSpec(applyProductLinks(layoutSpec, links));
+    Planogram saved = planogramRepository.save(planogram);
+    return toDto(saved);
+  }
+
+  private Map<String, Object> applyProductLinks(
+      Map<String, Object> layoutSpec, List<SectionProductLinkDto> links) {
+    ObjectNode root = objectMapper.valueToTree(layoutSpec);
+    ArrayNode shelves = root.withArray("shelves");
+
+    for (JsonNode shelfNode : shelves) {
+      int shelfNumber = shelfNode.path("number").asInt(-1);
+      ArrayNode sections = ((ObjectNode) shelfNode).withArray("sections");
+
+      for (JsonNode sectionNode : sections) {
+        ObjectNode section = (ObjectNode) sectionNode;
+        String position = section.path("position").asText("");
+
+        for (SectionProductLinkDto link : links) {
+          if (link.getShelfNumber() == shelfNumber && link.getPosition().equalsIgnoreCase(position)) {
+            if (link.getProductId() != null) {
+              section.put("productId", link.getProductId().toString());
+            } else {
+              section.remove("productId");
+            }
+          }
+        }
+      }
+    }
+
+    return objectMapper.convertValue(root, new TypeReference<Map<String, Object>>() {});
+  }
+
+  @Transactional
   public void deletePlanogram(UUID id, String currentUserEmail) {
     Planogram planogram =
         planogramRepository
@@ -122,6 +204,7 @@ public class PlanogramService {
 
     return PlanogramResponseDto.builder()
         .id(p.getId())
+        .companyId(p.getCompany().getId())
         .name(p.getName())
         .productCategory(p.getProductCategory())
         .referenceImageUrl(p.getReferenceImageUrl())

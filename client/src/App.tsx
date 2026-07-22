@@ -7,6 +7,7 @@ import Managers from "./components/manager/Managers";
 import Products from "./components/product/Products";
 import Planograms from "./components/planogram/Planograms";
 import Reps from "./components/rep/Reps";
+import Submissions from "./components/submission/Submissions";
 import FlaggedReviews from "./components/review/FlaggedReviews";
 import Stores from "./components/store/Stores";
 import { useAuth } from "./hooks/useAuth";
@@ -82,6 +83,7 @@ function App() {
       {activeTab === "companies" && <Companies />}
       {activeTab === "products" && <Products companyId={selectedCompanyId} />}
       {activeTab === "planograms" && <Planograms role={user.role} />}
+      {activeTab === "submissions" && <Submissions companyId={selectedCompanyId} />}
       {activeTab === "reviews" && <FlaggedReviews companyId={selectedCompanyId} />}
     </div>
   );

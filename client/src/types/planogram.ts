@@ -2,6 +2,7 @@ export interface PlanogramSection {
   position: string;
   productName: string;
   facings: number;
+  productId?: string | null;
 }
 
 export interface PlanogramShelf {
@@ -17,6 +18,7 @@ export interface PlanogramLayoutSpec {
 
 export interface Planogram {
   id: string;
+  companyId: string;
   name: string;
   productCategory: string | null;
   referenceImageUrl: string | null;
@@ -36,4 +38,10 @@ export interface PlanogramRequest {
   productCategory?: string;
   validFrom?: string;
   validUntil?: string;
+}
+
+export interface SectionProductLink {
+  shelfNumber: number;
+  position: string;
+  productId: string | null;
 }

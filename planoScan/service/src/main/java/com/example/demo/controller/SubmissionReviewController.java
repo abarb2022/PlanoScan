@@ -2,7 +2,10 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.review.FlaggedSubmissionDto;
 import com.example.demo.dto.review.ReviewRequestDto;
+import com.example.demo.dto.submission.SubmissionDetailDto;
+import com.example.demo.dto.submission.SubmissionPageResponseDto;
 import com.example.demo.service.SubmissionReviewService;
+import com.example.demo.service.SubmissionService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +23,26 @@ import org.springframework.web.bind.annotation.*;
 public class SubmissionReviewController {
 
   private final SubmissionReviewService reviewService;
+  private final SubmissionService submissionService;
+
+  @GetMapping
+  public ResponseEntity<SubmissionPageResponseDto> getSubmissions(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "20") int size,
+      @RequestParam(required = false) UUID companyId,
+      @RequestParam(required = false) UUID storeId,
+      @RequestParam(required = false) UUID repId,
+      @RequestParam(required = false) Integer stars,
+      Authentication auth) {
+    return ResponseEntity.ok(
+        submissionService.getSubmissions(page, size, companyId, storeId, repId, stars, auth.getName()));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<SubmissionDetailDto> getSubmission(
+      @PathVariable UUID id, Authentication auth) {
+    return ResponseEntity.ok(submissionService.getSubmissionDetail(id, auth.getName()));
+  }
 
   @GetMapping("/flagged")
   public ResponseEntity<List<FlaggedSubmissionDto>> getFlagged(

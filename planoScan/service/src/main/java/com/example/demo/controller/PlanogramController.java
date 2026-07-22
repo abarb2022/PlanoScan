@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.planogram.PlanogramRequestDto;
 import com.example.demo.dto.planogram.PlanogramResponseDto;
+import com.example.demo.dto.planogram.SectionProductLinkDto;
 import com.example.demo.service.PlanogramService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -39,6 +40,14 @@ public class PlanogramController {
       Authentication auth) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(planogramService.createPlanogram(dto, image, auth.getName()));
+  }
+
+  @PutMapping("/{id}/product-links")
+  public ResponseEntity<PlanogramResponseDto> linkProducts(
+      @PathVariable UUID id,
+      @RequestBody List<SectionProductLinkDto> links,
+      Authentication auth) {
+    return ResponseEntity.ok(planogramService.linkProducts(id, links, auth.getName()));
   }
 
   @DeleteMapping("/{id}")
