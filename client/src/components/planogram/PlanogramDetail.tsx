@@ -5,6 +5,7 @@ import { getProducts } from "../../services/productService";
 import { linkPlanogramProducts } from "../../services/planogramService";
 import { resolveAssetUrl } from "../../services/apiClient";
 import ProductPicker from "./ProductPicker";
+import BackButton from "../common/BackButton";
 import "../store/Stores.css";
 import "../store/StoreDialog.css";
 import "./PlanogramDetail.css";
@@ -125,7 +126,7 @@ export default function PlanogramDetail({ planogram, onBack, onUpdated }: Props)
   return (
     <div className="planogram-detail">
       <div className="pd-header">
-        <button className="pd-back-btn" onClick={onBack}>← Back to Planograms</button>
+        <BackButton label="Back to Planograms" onClick={onBack} />
 
         <div className="pd-header-main">
           <div
@@ -144,6 +145,7 @@ export default function PlanogramDetail({ planogram, onBack, onUpdated }: Props)
 
           <div className="pd-header-info">
             <h1 className="pd-title">{planogram.name}</h1>
+            {spec?.notes && <p className="pd-description">{spec.notes}</p>}
             <div className="pd-meta-row">
               {planogram.storeName && <span className="pd-badge">{planogram.storeName}</span>}
               {planogram.productCategory && <span className="pd-badge pd-badge-muted">{planogram.productCategory}</span>}
@@ -186,13 +188,6 @@ export default function PlanogramDetail({ planogram, onBack, onUpdated }: Props)
           </div>
         ) : (
           <>
-            {spec.notes && (
-              <div className="pd-notes">
-                <span>ℹ</span>
-                <p>{spec.notes}</p>
-              </div>
-            )}
-
             <div className="pd-notes pd-notes-hint">
               <span>🔗</span>
               <p>

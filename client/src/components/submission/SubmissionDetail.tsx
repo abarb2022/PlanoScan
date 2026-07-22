@@ -4,6 +4,7 @@ import type { SubmissionDetail as SubmissionDetailData, SubmissionStatus } from 
 import type { Violation } from "../../types/review";
 import { resolveAssetUrl } from "../../services/apiClient";
 import StarRating from "../common/StarRating";
+import BackButton from "../common/BackButton";
 import "../store/Stores.css";
 import "./Submissions.css";
 import "./SubmissionDetail.css";
@@ -62,7 +63,7 @@ export default function SubmissionDetail({ submissionId, onBack }: Props) {
     return (
       <div className="submission-detail">
         <div className="sd-header">
-          <button className="sd-back-btn" onClick={onBack}>← Back to Submissions</button>
+          <BackButton label="Back to Submissions" onClick={onBack} />
         </div>
         <div className="sd-loading"><span className="spinner" /> Loading…</div>
       </div>
@@ -73,7 +74,7 @@ export default function SubmissionDetail({ submissionId, onBack }: Props) {
     return (
       <div className="submission-detail">
         <div className="sd-header">
-          <button className="sd-back-btn" onClick={onBack}>← Back to Submissions</button>
+          <BackButton label="Back to Submissions" onClick={onBack} />
         </div>
         <p className="stores-error" style={{ margin: "24px 40px" }}>{error || "Submission not found."}</p>
       </div>
@@ -86,7 +87,7 @@ export default function SubmissionDetail({ submissionId, onBack }: Props) {
   return (
     <div className="submission-detail">
       <div className="sd-header">
-        <button className="sd-back-btn" onClick={onBack}>← Back to Submissions</button>
+        <BackButton label="Back to Submissions" onClick={onBack} />
 
         <div className="sd-header-main">
           <div className="sd-hero-photo" onClick={() => setLightboxOpen(true)}>

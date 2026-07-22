@@ -27,24 +27,6 @@
   border-bottom: 1px solid var(--border, #e2e4ea);
 }
 
-.sd-back-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-secondary, #4a4e6a);
-  padding: 0;
-  margin-bottom: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: color 0.15s;
-}
-
-.sd-back-btn:hover {
-  color: var(--accent, #4f6ef7);
-}
 
 .sd-header-main {
   display: flex;

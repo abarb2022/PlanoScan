@@ -17,25 +17,6 @@
   border-bottom: 1px solid var(--border, #e2e4ea);
 }
 
-.pd-back-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-secondary, #4a4e6a);
-  padding: 0;
-  margin-bottom: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: color 0.15s;
-}
-
-.pd-back-btn:hover {
-  color: var(--accent, #4f6ef7);
-}
-
 .pd-header-main {
   display: flex;
   align-items: center;
@@ -78,7 +59,15 @@
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--text-primary, #0f1117);
+  margin: 0 0 4px;
+}
+
+.pd-description {
   margin: 0 0 8px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary, #4a4e6a);
+  max-width: 640px;
 }
 
 .pd-meta-row {
