@@ -32,6 +32,7 @@ public class ManagerService {
   private final UserRepository userRepository;
   private final CompanyRepository companyRepository;
   private final PasswordEncoder passwordEncoder;
+  private final EmailService emailService;
 
   @Transactional
   public ManagerResponseDto createManager(ManagerRequestDto dto) {
@@ -59,7 +60,9 @@ public class ManagerService {
             .mustChangePassword(true)
             .build();
 
-    return toDto(userRepository.save(manager));
+    ManagerResponseDto response = toDto(userRepository.save(manager));
+    emailService.sendTemporaryPassword(dto.getEmail(), dto.getName(), tempPassword);
+    return response;
   }
 
   @Transactional(readOnly = true)
