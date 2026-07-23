@@ -29,6 +29,7 @@ public enum ErrorCode {
   PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "Product was not found"),
   PRODUCT_ALREADY_EXISTS(HttpStatus.CONFLICT, "A product with this name already exists in the company"),
   PLANOGRAM_NOT_FOUND(HttpStatus.NOT_FOUND, "Planogram was not found"),
+  PLANOGRAM_NOT_PARSED(HttpStatus.CONFLICT, "Planogram has not been parsed yet"),
   SUBMISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "Submission was not found"),
   EMAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send temporary password email");
 

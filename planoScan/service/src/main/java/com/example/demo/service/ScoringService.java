@@ -15,8 +15,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -142,11 +145,22 @@ public class ScoringService {
   }
 
   private List<ScoringRequest.ProductReference> buildProductRefs(Planogram planogram) {
-    List<Product> products = productRepository.findByCompanyId(planogram.getCompany().getId());
+    Set<UUID> linkedProductIds = extractLinkedProductIds(planogram.getLayoutSpec());
     List<ScoringRequest.ProductReference> refs = new ArrayList<>();
 
+    if (linkedProductIds.isEmpty()) {
+      log.warn(
+          "Planogram {} has no sections linked to catalog products; sending no reference images",
+          planogram.getId());
+      return refs;
+    }
+
+    List<Product> products = productRepository.findAllById(linkedProductIds);
     for (Product product : products) {
-      if (product.getReferenceImageUrl() == null) continue;
+      if (product.getReferenceImageUrl() == null) {
+        log.warn("Linked product '{}' has no reference image; skipping", product.getName());
+        continue;
+      }
       try {
         byte[] imgBytes = readFile(product.getReferenceImageUrl());
         byte[] resized = imageResizeService.resizeForAi(imgBytes);
@@ -156,9 +170,36 @@ public class ScoringService {
       }
     }
 
-    log.debug("Sending {} product reference image(s) to Gemini ({} products have images)",
-        refs.size(), products.size());
+    log.debug("Sending {} linked product reference image(s) to Gemini ({} sections linked)",
+        refs.size(), linkedProductIds.size());
     return refs;
+  }
+
+  private Set<UUID> extractLinkedProductIds(Map<String, Object> layoutSpec) {
+    Set<UUID> ids = new HashSet<>();
+    if (layoutSpec == null) return ids;
+
+    Object shelvesObj = layoutSpec.get("shelves");
+    if (!(shelvesObj instanceof List<?> shelves)) return ids;
+
+    for (Object shelfObj : shelves) {
+      if (!(shelfObj instanceof Map<?, ?> shelf)) continue;
+      Object sectionsObj = shelf.get("sections");
+      if (!(sectionsObj instanceof List<?> sections)) continue;
+
+      for (Object sectionObj : sections) {
+        if (!(sectionObj instanceof Map<?, ?> section)) continue;
+        Object productId = section.get("productId");
+        if (productId instanceof String s && !s.isBlank()) {
+          try {
+            ids.add(UUID.fromString(s));
+          } catch (IllegalArgumentException e) {
+            log.warn("Section has invalid productId '{}', ignoring", s);
+          }
+        }
+      }
+    }
+    return ids;
   }
 
   private byte[] readFile(String url) throws IOException {
