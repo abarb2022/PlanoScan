@@ -1,21 +1,20 @@
 import { apiRequest } from "./apiClient";
-import type { AssignmentRule, AssignmentRuleRequest } from "../types/assignmentRule";
+import type { AssignmentRule, AssignmentRuleCompanySyncRequest } from "../types/assignmentRule";
 
-export function getRulesForRep(repId: string): Promise<AssignmentRule[]> {
+export function getRulesForCompany(companyId?: string | null): Promise<AssignmentRule[]> {
+  const params = new URLSearchParams();
+  if (companyId) params.set("companyId", companyId);
+  const qs = params.toString();
   return apiRequest<AssignmentRule[]>(
-    `/api/manager/assignment-rules?repId=${repId}`,
+    `/api/manager/assignment-rules${qs ? `?${qs}` : ""}`,
   );
 }
 
-export function createRules(req: AssignmentRuleRequest): Promise<AssignmentRule[]> {
-  return apiRequest<AssignmentRule[]>("/api/manager/assignment-rules", {
-    method: "POST",
+export function syncCompanyRules(
+  req: AssignmentRuleCompanySyncRequest,
+): Promise<AssignmentRule[]> {
+  return apiRequest<AssignmentRule[]>("/api/manager/assignment-rules/sync", {
+    method: "PUT",
     body: JSON.stringify(req),
-  });
-}
-
-export function deleteRule(id: string): Promise<void> {
-  return apiRequest<void>(`/api/manager/assignment-rules/${id}`, {
-    method: "DELETE",
   });
 }

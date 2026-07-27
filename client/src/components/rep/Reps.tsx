@@ -7,7 +7,6 @@ import {
 } from "../../services/repService";
 import type { Rep, RepPageResponse, RepRequest } from "../../types/rep";
 import ConfirmDialog from "../common/ConfirmDialog";
-import RepAssignmentsModal from "./RepAssignmentsModal";
 import RepDialog from "./RepDialog";
 import "../store/Stores.css";
 import "./Reps.css";
@@ -28,7 +27,6 @@ export default function Reps({ companyId }: Props) {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingRep, setEditingRep] = useState<Rep | null>(null);
-  const [assignmentsRep, setAssignmentsRep] = useState<Rep | null>(null);
   const [confirmRep, setConfirmRep] = useState<Rep | null>(null);
 
   useEffect(() => {
@@ -174,20 +172,6 @@ export default function Reps({ companyId }: Props) {
                   <td>
                     <div className="row-actions">
                       <button
-                        className="icon-btn-manage"
-                        title="Manage store assignments"
-                        onClick={() => setAssignmentsRep(rep)}
-                      >
-                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <rect x="1.5" y="2.5" width="4" height="4" rx="1" stroke="currentColor" strokeWidth="1.5"/>
-                          <path d="M8 4.5h8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                          <rect x="1.5" y="7" width="4" height="4" rx="1" stroke="currentColor" strokeWidth="1.5"/>
-                          <path d="M8 9h8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                          <rect x="1.5" y="11.5" width="4" height="4" rx="1" stroke="currentColor" strokeWidth="1.5"/>
-                          <path d="M8 13.5h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                        </svg>
-                      </button>
-                      <button
                         className="icon-btn"
                         title="Edit"
                         onClick={() => openEdit(rep)}
@@ -238,13 +222,6 @@ export default function Reps({ companyId }: Props) {
         onClose={() => { setDialogOpen(false); setEditingRep(null); }}
         onSubmit={handleSave}
       />
-
-      {assignmentsRep && (
-        <RepAssignmentsModal
-          rep={assignmentsRep}
-          onClose={() => setAssignmentsRep(null)}
-        />
-      )}
 
       <ConfirmDialog
         open={confirmRep !== null}

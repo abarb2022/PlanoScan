@@ -1,0 +1,116 @@
+.ssel-wrap {
+  position: relative;
+}
+
+.ssel-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ssel-trigger--open {
+  border-color: var(--accent, #4f6ef7);
+  box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.12);
+  background: #fff;
+}
+
+.ssel-placeholder {
+  color: var(--text-muted, #8b8fa8);
+}
+
+.ssel-arrow {
+  flex-shrink: 0;
+  color: var(--text-muted, #8b8fa8);
+  transition: transform 0.15s;
+}
+
+.ssel-trigger--open .ssel-arrow {
+  transform: rotate(180deg);
+}
+
+.ssel-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--surface, #fff);
+  border: 1.5px solid var(--border, #e2e4ea);
+  border-radius: 10px;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.1),
+    0 2px 6px rgba(0, 0, 0, 0.06);
+  z-index: 200;
+  padding: 6px;
+}
+
+.ssel-search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border-radius: 7px;
+  border: 1.5px solid var(--border, #e2e4ea);
+  background: var(--input-bg, #f7f8fa);
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  margin-bottom: 6px;
+}
+
+.ssel-search:focus {
+  border-color: var(--accent, #4f6ef7);
+}
+
+.ssel-options {
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.ssel-empty {
+  padding: 12px;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-muted, #8b8fa8);
+}
+
+.ssel-option {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.1s;
+}
+
+.ssel-option:hover {
+  background: var(--hover-bg, #f1f2f6);
+}
+
+.ssel-option--selected {
+  background: rgba(79, 110, 247, 0.08);
+}
+
+.ssel-option--selected .ssel-option-label {
+  color: var(--accent, #4f6ef7);
+}
+
+.ssel-option-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary, #0f1117);
+}
+
+.ssel-option-sublabel {
+  font-size: 0.78rem;
+  color: var(--text-muted, #8b8fa8);
+}

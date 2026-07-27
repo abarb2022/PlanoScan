@@ -15,11 +15,8 @@ public enum ErrorCode {
   VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "Invalid request"),
   INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"),
   REP_NOT_FOUND(HttpStatus.NOT_FOUND, "Rep was not found"),
-  ASSIGNMENT_RULE_NOT_FOUND(HttpStatus.NOT_FOUND, "Assignment rule was not found"),
   INVALID_CURRENT_PASSWORD(HttpStatus.UNAUTHORIZED, "Current password is incorrect"),
   REP_HAS_SUBMISSIONS(HttpStatus.CONFLICT, "Cannot delete rep with existing submissions"),
-  DUPLICATE_ASSIGNMENT_RULE(
-      HttpStatus.CONFLICT, "A rule for this store, rep and day already exists"),
   MANAGER_NOT_FOUND(HttpStatus.NOT_FOUND, "Manager was not found"),
   COMPANY_ALREADY_EXISTS(HttpStatus.CONFLICT, "A company with this name already exists"),
   ASSIGNMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Assignment was not found"),
