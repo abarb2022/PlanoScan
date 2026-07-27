@@ -41,10 +41,15 @@ export interface AssignmentRule {
   createdAt: string | null;
 }
 
-export interface AssignmentRuleRequest {
+export interface StoreRepDaysRequest {
   storeId: string;
   repId: string;
   days: DayOfWeek[];
   validFrom: string;
-  validUntil?: string;
+  validUntil?: string | null;
+}
+
+export interface AssignmentRuleCompanySyncRequest {
+  companyId?: string | null;
+  assignments: StoreRepDaysRequest[];
 }

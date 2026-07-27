@@ -1,13 +1,12 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.assignment.AssignmentRuleRequestDto;
+import com.example.demo.dto.assignment.AssignmentRuleCompanySyncRequestDto;
 import com.example.demo.dto.assignment.AssignmentRuleResponseDto;
 import com.example.demo.service.StoreAssignmentRuleService;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -22,21 +21,15 @@ public class StoreAssignmentRuleController {
 
   private final StoreAssignmentRuleService ruleService;
 
-  @PostMapping
-  public ResponseEntity<List<AssignmentRuleResponseDto>> createRules(
-      @Valid @RequestBody AssignmentRuleRequestDto dto, Authentication auth) {
-    return ResponseEntity.status(HttpStatus.CREATED)
-        .body(ruleService.createRules(dto, auth.getName()));
-  }
-
   @GetMapping
-  public ResponseEntity<List<AssignmentRuleResponseDto>> getRulesForRep(@RequestParam UUID repId) {
-    return ResponseEntity.ok(ruleService.getRulesForRep(repId));
+  public ResponseEntity<List<AssignmentRuleResponseDto>> getRulesForCompany(
+      @RequestParam(required = false) UUID companyId, Authentication auth) {
+    return ResponseEntity.ok(ruleService.getRulesForCompany(companyId, auth.getName()));
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteRule(@PathVariable UUID id) {
-    ruleService.deleteRule(id);
-    return ResponseEntity.noContent().build();
+  @PutMapping("/sync")
+  public ResponseEntity<List<AssignmentRuleResponseDto>> syncRules(
+      @Valid @RequestBody AssignmentRuleCompanySyncRequestDto dto, Authentication auth) {
+    return ResponseEntity.ok(ruleService.syncRulesForCompany(dto, auth.getName()));
   }
 }

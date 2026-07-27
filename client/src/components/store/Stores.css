@@ -115,7 +115,7 @@
 .stores-table-wrapper {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow: auto;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -358,6 +358,7 @@
 .rep-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 380px;
+  grid-template-rows: minmax(0, 1fr);
   gap: 16px;
   flex: 1;
   min-height: 0;
@@ -451,16 +452,6 @@
 .rep-table-wrapper {
   flex: 1;
   position: relative;
-}
-
-.rep-table-measure {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  visibility: hidden;
-  pointer-events: none;
-  z-index: -1;
 }
 
 .rep-store-row {
@@ -1464,10 +1455,6 @@
   .search-input {
     width: 100%;
     box-sizing: border-box;
-  }
-
-  .stores-table-wrapper {
-    overflow: auto;
   }
 
   .stores-table {

@@ -44,25 +44,6 @@
   color: var(--text-muted);
 }
 
-.icon-btn-manage {
-  background: rgba(124, 58, 237, 0.1);
-  border: 1.5px solid rgba(124, 58, 237, 0.25);
-  border-radius: 9px;
-  padding: 9px 13px;
-  cursor: pointer;
-  color: #7c3aed;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.15s, border-color 0.15s, transform 0.1s;
-}
-
-.icon-btn-manage:hover {
-  background: rgba(124, 58, 237, 0.18);
-  border-color: rgba(124, 58, 237, 0.5);
-  transform: scale(1.05);
-}
-
 .reps-page .row-actions {
   opacity: 1;
 }

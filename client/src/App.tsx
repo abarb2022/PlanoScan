@@ -7,6 +7,7 @@ import Managers from "./components/manager/Managers";
 import Products from "./components/product/Products";
 import Planograms from "./components/planogram/Planograms";
 import Reps from "./components/rep/Reps";
+import VisitPlan from "./components/visitplan/VisitPlan";
 import Submissions from "./components/submission/Submissions";
 import FlaggedReviews from "./components/review/FlaggedReviews";
 import Stores from "./components/store/Stores";
@@ -79,6 +80,7 @@ function App() {
         />
       )}
       {activeTab === "reps" && <Reps companyId={selectedCompanyId} />}
+      {activeTab === "visitPlan" && <VisitPlan companyId={selectedCompanyId} />}
       {activeTab === "managers" && <Managers companyId={selectedCompanyId} />}
       {activeTab === "companies" && <Companies />}
       {activeTab === "products" && <Products companyId={selectedCompanyId} />}

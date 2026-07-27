@@ -1,7 +1,6 @@
 package com.example.demo.dto.assignment;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
@@ -13,12 +12,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AssignmentRuleRequestDto {
+public class StoreRepDaysDto {
   @NotNull private UUID storeId;
 
   @NotNull private UUID repId;
 
-  @NotNull @Size(min = 1, message = "At least one day must be selected") private List<DayOfWeek> days;
+  @NotNull private List<DayOfWeek> days;
 
   @NotNull private LocalDate validFrom;
 
