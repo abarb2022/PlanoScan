@@ -33,6 +33,7 @@ public class StoreAssignmentRuleService {
   private final StoreAssignmentRepository assignmentRepository;
   private final StoreRepository storeRepository;
   private final UserRepository userRepository;
+  private final NotificationService notificationService;
 
   @Transactional(readOnly = true)
   public List<AssignmentRuleResponseDto> getRulesForCompany(UUID companyId, String currentUserEmail) {
@@ -114,11 +115,12 @@ public class StoreAssignmentRuleService {
       }
     }
 
-    List<UUID> toDeleteIds =
+    List<StoreAssignmentRule> toDelete =
         existingByKey.entrySet().stream()
             .filter(e -> !desiredKeys.contains(e.getKey()))
-            .map(e -> e.getValue().getId())
+            .map(Map.Entry::getValue)
             .toList();
+    List<UUID> toDeleteIds = toDelete.stream().map(StoreAssignmentRule::getId).toList();
     for (UUID ruleId : toDeleteIds) {
       assignmentRepository.cancelAssignedByRuleId(ruleId);
       assignmentRepository.detachFromRule(ruleId);
@@ -126,6 +128,7 @@ public class StoreAssignmentRuleService {
     if (!toDeleteIds.isEmpty()) {
       ruleRepository.deleteAllByIdInBatch(toDeleteIds);
     }
+    notificationService.notifyRemovedAssignments(toDelete, currentUser);
 
     User assignedBy = currentUser;
     List<StoreAssignmentRule> toCreate =
@@ -146,6 +149,7 @@ public class StoreAssignmentRuleService {
                 })
             .toList();
     ruleRepository.saveAll(toCreate);
+    notificationService.notifyNewAssignments(toCreate, assignedBy);
 
     List<StoreAssignmentRule> toUpdate =
         desiredKeys.stream()

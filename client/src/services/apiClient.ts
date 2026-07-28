@@ -11,6 +11,10 @@ export function resolveAssetUrl(path: string): string {
   return `${API_BASE_URL}${path}`;
 }
 
+export function resolveWebSocketUrl(path: string): string {
+  return `${API_BASE_URL.replace(/^http/i, "ws")}${path}`;
+}
+
 type ApiErrorResponse = {
   code: string;
   message: string;
@@ -63,13 +67,13 @@ export async function apiRequest<T>(
       status: response.status,
     };
 
+    let errorBody: ApiErrorResponse;
     try {
-      const error = (await response.json()) as ApiErrorResponse;
-      throw new ApiError(error);
-    } catch (err) {
-      if (err instanceof ApiError) throw err;
+      errorBody = (await response.json()) as ApiErrorResponse;
+    } catch {
       throw new ApiError(fallbackError);
     }
+    throw new ApiError(errorBody);
   }
 
   if (response.status === 204) {

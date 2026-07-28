@@ -1,0 +1,42 @@
+.optional-date-add {
+  background: transparent;
+  border: 1.5px dashed var(--border);
+  border-radius: 7px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    border-color 0.12s,
+    color 0.12s;
+}
+
+.optional-date-add:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.optional-date-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.optional-date-clear {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.optional-date-clear:hover {
+  color: var(--text-primary);
+  background: var(--hover-bg);
+}

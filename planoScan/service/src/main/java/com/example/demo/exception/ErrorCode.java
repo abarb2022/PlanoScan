@@ -28,7 +28,8 @@ public enum ErrorCode {
   PLANOGRAM_NOT_FOUND(HttpStatus.NOT_FOUND, "Planogram was not found"),
   PLANOGRAM_NOT_PARSED(HttpStatus.CONFLICT, "Planogram has not been parsed yet"),
   SUBMISSION_NOT_FOUND(HttpStatus.NOT_FOUND, "Submission was not found"),
-  EMAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send temporary password email");
+  EMAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send temporary password email"),
+  NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "Notification was not found");
 
   private final HttpStatus status;
   private final String message;

@@ -3,6 +3,7 @@ import type { Store } from "../../types/store";
 import type { Rep } from "../../types/rep";
 import { ALL_DAYS, DAY_LABELS, type DayOfWeek } from "../../types/assignmentRule";
 import SearchableSelect from "../common/SearchableSelect";
+import OptionalDateInput from "../common/OptionalDateInput";
 import "../store/StoreDialog.css";
 import "./VisitPlan.css";
 
@@ -135,12 +136,11 @@ export default function AssignVisitDialog({ open, stores, reps, onClose, onSubmi
               <label className="dialog-label">
                 Valid Until <span className="avd-optional">(optional)</span>
               </label>
-              <input
-                className="dialog-input"
-                type="date"
-                value={validUntil}
+              <OptionalDateInput
+                value={validUntil || null}
+                onChange={(value) => setValidUntil(value ?? "")}
                 min={validFrom}
-                onChange={(e) => setValidUntil(e.target.value)}
+                inputClassName="dialog-input"
               />
             </div>
           </div>

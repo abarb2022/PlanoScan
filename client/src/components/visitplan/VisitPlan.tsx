@@ -6,6 +6,7 @@ import { ALL_DAYS, DAY_LABELS } from "../../types/assignmentRule";
 import type { Rep } from "../../types/rep";
 import type { Store } from "../../types/store";
 import AssignVisitDialog from "./AssignVisitDialog";
+import OptionalDateInput from "../common/OptionalDateInput";
 import "../store/Stores.css";
 import "./VisitPlan.css";
 
@@ -84,10 +85,11 @@ function daysEqual(a: Set<DayOfWeek>, b: Set<DayOfWeek>): boolean {
 function rowDirty(a: VisitRow | undefined, b: VisitRow | undefined): boolean {
   const aDays = a?.days ?? new Set<DayOfWeek>();
   const bDays = b?.days ?? new Set<DayOfWeek>();
-  if (!daysEqual(aDays, bDays)) return true;
-  if ((a?.validFrom ?? null) !== (b?.validFrom ?? null)) return true;
-  if ((a?.validUntil ?? null) !== (b?.validUntil ?? null)) return true;
-  return false;
+  return (
+    !daysEqual(aDays, bDays) ||
+    (a?.validFrom ?? null) !== (b?.validFrom ?? null) ||
+    (a?.validUntil ?? null) !== (b?.validUntil ?? null)
+  );
 }
 
 function formatDate(iso: string | null): string {
@@ -357,12 +359,11 @@ export default function VisitPlan({ companyId }: Props) {
                       />
                     </td>
                     <td>
-                      <input
-                        type="date"
-                        className="vp-date-input"
-                        value={row.validUntil ?? ""}
+                      <OptionalDateInput
+                        value={row.validUntil}
+                        onChange={(value) => updateRowDate(key, "validUntil", value ?? "")}
                         min={row.validFrom}
-                        onChange={(e) => updateRowDate(key, "validUntil", e.target.value)}
+                        inputClassName="vp-date-input"
                       />
                     </td>
                     <td className="vp-created">{formatDate(row.createdAt)}</td>

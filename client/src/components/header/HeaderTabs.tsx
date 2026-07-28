@@ -3,6 +3,7 @@ import type { Company } from "../../types/manager";
 import type { UserRole } from "../../types/auth";
 import type { RepViewTab } from "../../types/store";
 import CompanySelect from "./CompanySelect";
+import NotificationBell from "./NotificationBell";
 import "./HeaderTabs.css";
 
 export type TabId = "stores" | "reps" | "visitPlan" | "managers" | "companies" | "products" | "planograms" | "submissions" | "reviews";
@@ -147,6 +148,7 @@ export default function HeaderTabs({
             onChange={(id) => onCompanyChange?.(id)}
           />
         )}
+        {role === "REP" && <NotificationBell />}
         <UserAvatar email={email} role={role} companyName={companyName} />
         {onLogout && (
           <button
