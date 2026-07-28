@@ -7,6 +7,7 @@ import Managers from "./components/manager/Managers";
 import Products from "./components/product/Products";
 import Planograms from "./components/planogram/Planograms";
 import Reps from "./components/rep/Reps";
+import ManagerDashboard from "./components/dashboard/ManagerDashboard";
 import VisitPlan from "./components/visitplan/VisitPlan";
 import Submissions from "./components/submission/Submissions";
 import FlaggedReviews from "./components/review/FlaggedReviews";
@@ -72,6 +73,7 @@ function App() {
         selectedCompanyId={selectedCompanyId}
         onCompanyChange={setSelectedCompanyId}
       />
+      {activeTab === "dashboard" && <ManagerDashboard companyId={selectedCompanyId} />}
       {activeTab === "stores" && (
         <Stores
           userRole={user.role}

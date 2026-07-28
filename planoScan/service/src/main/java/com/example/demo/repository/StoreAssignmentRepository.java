@@ -19,6 +19,10 @@ public interface StoreAssignmentRepository
 
   List<StoreAssignment> findByStoreIdAndAssignmentDate(UUID storeId, LocalDate assignmentDate);
 
+  @EntityGraph(attributePaths = {"store", "assignee", "submissions", "submissions.score"})
+  List<StoreAssignment> findByAssignee_IdInAndAssignmentDateBetween(
+      List<UUID> assigneeIds, LocalDate start, LocalDate end);
+
   @Modifying
   @Query("DELETE FROM StoreAssignment a WHERE a.assignee.id = :assigneeId")
   void deleteAllByAssigneeId(@Param("assigneeId") UUID assigneeId);
