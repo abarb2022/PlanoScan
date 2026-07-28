@@ -1,11 +1,14 @@
 import { FormEvent, useEffect, useState } from "react";
 import type { Store, StoreRequest } from "../../types/store";
 import { dismissOnBackdropClick } from "../../utils/dom";
+import StoreLocationPicker from "./StoreLocationPicker";
 import "./StoreDialog.css";
 
 interface StoreForm {
   name: string;
   address: string;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 interface Props {
@@ -15,12 +18,19 @@ interface Props {
   onSubmit: (req: StoreRequest) => Promise<void>;
 }
 
-const emptyForm: StoreForm = { name: "", address: "" };
+const emptyForm: StoreForm = {
+  name: "",
+  address: "",
+  latitude: null,
+  longitude: null,
+};
 
 function toRequest(form: StoreForm): StoreRequest {
   return {
     name: form.name.trim(),
     address: form.address.trim(),
+    latitude: form.latitude,
+    longitude: form.longitude,
   };
 }
 
@@ -42,6 +52,8 @@ export default function StoreDialog({
           ? {
               name: editingStore.name,
               address: editingStore.address ?? "",
+              latitude: editingStore.latitude,
+              longitude: editingStore.longitude,
             }
           : emptyForm,
       );
@@ -111,6 +123,24 @@ export default function StoreDialog({
               onChange={(e) => updateField("address", e.target.value)}
               placeholder="Full street address"
               rows={3}
+            />
+          </div>
+
+          <div className="dialog-field">
+            <label className="dialog-label">Location</label>
+            <StoreLocationPicker
+              latitude={form.latitude}
+              longitude={form.longitude}
+              onChange={(lat, lng) =>
+                setForm((prev) => ({ ...prev, latitude: lat, longitude: lng }))
+              }
+              onClear={() =>
+                setForm((prev) => ({
+                  ...prev,
+                  latitude: null,
+                  longitude: null,
+                }))
+              }
             />
           </div>
 

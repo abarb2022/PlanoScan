@@ -38,7 +38,13 @@ public class StoreService {
     }
 
     Store store =
-        Store.builder().name(dto.getName()).address(dto.getAddress()).company(company).build();
+        Store.builder()
+            .name(dto.getName())
+            .address(dto.getAddress())
+            .latitude(dto.getLatitude())
+            .longitude(dto.getLongitude())
+            .company(company)
+            .build();
 
     return toDto(storeRepository.save(store));
   }
@@ -89,6 +95,8 @@ public class StoreService {
 
     store.setName(dto.getName());
     store.setAddress(dto.getAddress());
+    store.setLatitude(dto.getLatitude());
+    store.setLongitude(dto.getLongitude());
     store.setCompany(company);
     return toDto(storeRepository.save(store));
   }
@@ -125,6 +133,8 @@ public class StoreService {
         store.getId(),
         store.getName(),
         store.getAddress(),
+        store.getLatitude(),
+        store.getLongitude(),
         store.getCompany().getId(),
         store.getCompany().getName(),
         store.getCreatedAt());

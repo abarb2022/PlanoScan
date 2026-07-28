@@ -15,5 +15,7 @@ public class RepAssignmentStoreDto {
   private UUID id;
   private String name;
   private String address;
+  private Double latitude;
+  private Double longitude;
   private String companyName;
 }

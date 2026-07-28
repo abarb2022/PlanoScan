@@ -80,5 +80,5 @@ export async function apiRequest<T>(
     return null as T;
   }
 
-  return response.json() as Promise<T>;
+  return await (response.json() as Promise<T>);
 }
