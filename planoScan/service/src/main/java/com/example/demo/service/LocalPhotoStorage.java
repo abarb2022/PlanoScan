@@ -17,10 +17,12 @@ import javax.imageio.stream.ImageInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@ConditionalOnProperty(name = "app.photo-storage", havingValue = "local", matchIfMissing = true)
 public class LocalPhotoStorage implements PhotoStorage {
 
   private static final Logger log = LoggerFactory.getLogger(LocalPhotoStorage.class);

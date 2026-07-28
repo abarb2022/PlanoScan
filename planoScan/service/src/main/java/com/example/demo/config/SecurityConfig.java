@@ -3,8 +3,10 @@ package com.example.demo.config;
 import com.example.demo.security.AuthEntryPoint;
 import com.example.demo.security.CustomAccessDeniedHandler;
 import com.example.demo.security.JwtAuthFilter;
+import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -26,6 +28,9 @@ public class SecurityConfig {
   private final JwtAuthFilter jwtAuthFilter;
   private final AuthEntryPoint authEntryPoint;
   private final CustomAccessDeniedHandler accessDeniedHandler;
+
+  @Value("${app.cors.allowed-origins}")
+  private String allowedOrigins;
 
   @Bean
   public SecurityFilterChain filterChain(
@@ -55,8 +60,10 @@ public class SecurityConfig {
 
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
+    List<String> origins = Arrays.stream(allowedOrigins.split(",")).map(String::trim).toList();
+
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://127.0.0.1:5173"));
+    configuration.setAllowedOrigins(origins);
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(List.of("*"));
     configuration.setAllowCredentials(true);

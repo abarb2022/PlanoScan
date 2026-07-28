@@ -51,6 +51,7 @@ dependencies {
     runtimeOnly    'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
     implementation 'com.sendgrid:sendgrid-java:4.10.2'
+    implementation 'com.cloudinary:cloudinary-http44:1.39.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
