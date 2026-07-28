@@ -10,6 +10,7 @@ import { dismissOnBackdropClick } from "../../utils/dom";
 import PhotoUploadPanel from "./PhotoUploadPanel";
 import SubmissionsPanel from "./SubmissionsPanel";
 import PhotoLightbox from "./PhotoLightbox";
+import StoreLocationPicker from "./StoreLocationPicker";
 
 const ASSIGNMENT_STATUS_LABELS: Record<RepAssignmentStatus, string> = {
   DUE_TODAY: "Due today",
@@ -121,6 +122,12 @@ export default function AssignmentDetail({
           <strong>{assignment.store.companyName}</strong>
         </div>
       </div>
+
+      <StoreLocationPicker
+        latitude={assignment.store.latitude}
+        longitude={assignment.store.longitude}
+        readOnly
+      />
 
       {canSubmit && (
         <PhotoUploadPanel

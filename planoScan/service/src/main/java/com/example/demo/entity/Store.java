@@ -25,6 +25,10 @@ public class Store {
 
   @Column private String address;
 
+  @Column private Double latitude;
+
+  @Column private Double longitude;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "company_id", nullable = false)
   private Company company;

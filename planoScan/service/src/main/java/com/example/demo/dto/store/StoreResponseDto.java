@@ -16,6 +16,8 @@ public class StoreResponseDto {
   private UUID id;
   private String name;
   private String address;
+  private Double latitude;
+  private Double longitude;
   private UUID companyId;
   private String companyName;
   private LocalDateTime createdAt;

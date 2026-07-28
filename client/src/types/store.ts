@@ -2,6 +2,8 @@ export type Store = {
   id: string;
   name: string;
   address: string | null;
+  latitude: number | null;
+  longitude: number | null;
   companyId: string;
   companyName: string;
   createdAt: string | null;
@@ -10,12 +12,16 @@ export type Store = {
 export type StoreForm = {
   name: string;
   address: string;
+  latitude: number | null;
+  longitude: number | null;
   companyId: string;
 };
 
 export type StoreRequest = {
   name: string;
   address: string;
+  latitude: number | null;
+  longitude: number | null;
 };
 
 export type StorePageResponse = {
@@ -56,7 +62,10 @@ export type RepSubmission = {
 
 export type RepStoreAssignment = {
   id: string;
-  store: Pick<Store, "id" | "name" | "address" | "companyName">;
+  store: Pick<
+    Store,
+    "id" | "name" | "address" | "latitude" | "longitude" | "companyName"
+  >;
   assignmentDate: string;
   status: RepAssignmentStatus;
   lastSubmittedAt?: string | null;

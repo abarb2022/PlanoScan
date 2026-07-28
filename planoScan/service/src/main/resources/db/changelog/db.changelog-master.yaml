@@ -17,3 +17,5 @@ databaseChangeLog:
       file: db/changelog/changes/009-cleanup-stub-planograms.sql
   - include:
       file: db/changelog/changes/010-notifications.sql
+  - include:
+      file: db/changelog/changes/011-store-location.sql

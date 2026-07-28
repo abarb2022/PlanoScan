@@ -17,5 +17,9 @@ public class StoreRequestDto {
 
   private String address;
 
+  private Double latitude;
+
+  private Double longitude;
+
   private UUID companyId;
 }

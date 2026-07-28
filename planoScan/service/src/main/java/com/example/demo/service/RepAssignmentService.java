@@ -127,6 +127,8 @@ public class RepAssignmentService {
               .id(rule.getStore().getId())
               .name(rule.getStore().getName())
               .address(rule.getStore().getAddress())
+              .latitude(rule.getStore().getLatitude())
+              .longitude(rule.getStore().getLongitude())
               .companyName(rule.getStore().getCompany().getName())
               .build();
 
@@ -208,6 +210,8 @@ public class RepAssignmentService {
                 .id(assignment.getStore().getId())
                 .name(assignment.getStore().getName())
                 .address(assignment.getStore().getAddress())
+                .latitude(assignment.getStore().getLatitude())
+                .longitude(assignment.getStore().getLongitude())
                 .companyName(assignment.getStore().getCompany().getName())
                 .build())
         .assignmentDate(formatAssignmentDate(assignment.getAssignmentDate(), today))
