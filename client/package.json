@@ -10,6 +10,7 @@
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss}\""
   },
   "dependencies": {
+    "@stomp/stompjs": "^7.3.0",
     "heic2any": "^0.0.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
