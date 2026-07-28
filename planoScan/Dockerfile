@@ -16,4 +16,11 @@ WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 
 EXPOSE 8082
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Render's free plan caps the container at 512MB RAM. The default JVM (no
+# flags) can spike past that during startup — Hibernate's metamodel build is
+# the heaviest moment — and gets SIGKILL'd (exit 137) before it ever binds a
+# port. SerialGC has far lower baseline overhead than the default G1 on a
+# small heap; MaxRAMPercentage keeps the heap itself container-aware instead
+# of guessing; MaxMetaspaceSize stops class-metadata growth from being the
+# thing that tips it over.
+ENTRYPOINT ["java", "-XX:+UseSerialGC", "-XX:MaxRAMPercentage=60.0", "-XX:MaxMetaspaceSize=128m", "-jar", "app.jar"]
