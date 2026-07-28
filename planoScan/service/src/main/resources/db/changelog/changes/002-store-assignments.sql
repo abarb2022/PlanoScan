@@ -1,6 +1,8 @@
 --liquibase formatted sql
 
 --changeset system:002-store-assignments
+--preconditions onFail:MARK_RAN onError:MARK_RAN
+--precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'store_assignment_rules'
 CREATE TABLE store_assignment_rules
 (
     id                  UUID        NOT NULL,

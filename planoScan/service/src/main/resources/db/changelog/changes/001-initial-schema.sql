@@ -1,6 +1,8 @@
 --liquibase formatted sql
 
 --changeset system:001-initial-schema
+--preconditions onFail:MARK_RAN onError:MARK_RAN
+--precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'users'
 CREATE TABLE companies
 (
     id         UUID         NOT NULL,
