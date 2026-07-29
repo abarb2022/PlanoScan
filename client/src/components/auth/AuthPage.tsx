@@ -38,6 +38,15 @@ export function AuthPage({ onLogin, error, isSubmitting }: Props) {
         </p>
       </section>
 
+      <section className="auth-mobile-hero" aria-hidden="true">
+        <div className="auth-brand">
+          <span className="auth-logo-mark" />
+          <span className="auth-logo-text">PlanoScan</span>
+        </div>
+        <h2>Welcome back</h2>
+        <p>Sign in to review submissions and manage store visits.</p>
+      </section>
+
       <section className="auth-form-panel" aria-labelledby="auth-title">
         <div className="auth-form-inner">
           <h1 id="auth-title">Welcome</h1>
