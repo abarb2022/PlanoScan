@@ -8,7 +8,7 @@
   font-family: inherit;
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--text-secondary, #4a4e6a);
+  color: var(--accent, #5b3aa0);
   padding: 6px 12px 6px 8px;
   margin: 0 0 14px -8px;
   border-radius: 999px;
@@ -22,7 +22,7 @@
 
 .back-button:hover {
   background: var(--hover-bg, #f1f2f6);
-  color: var(--accent, #4f6ef7);
+  color: var(--accent-hover, #4a2f85);
 }
 
 .back-button:hover svg {

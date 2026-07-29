@@ -5,7 +5,7 @@
   flex: 1;
   min-height: 0;
   background: var(--surface-alt, #f7f8fa);
-  font-family: "DM Sans", "Geist", system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   overflow: hidden;
 }
 
@@ -22,7 +22,7 @@
 /* ── Header ───────────────────────────────────────────────────── */
 .sd-header {
   flex-shrink: 0;
-  padding: 20px 40px 18px;
+  padding: 48px 40px 28px;
   background: var(--surface, #fff);
   border-bottom: 1px solid var(--border, #e2e4ea);
 }
@@ -31,13 +31,14 @@
 .sd-header-main {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 22px;
+  margin-top: 24px;
 }
 
 .sd-hero-photo {
   position: relative;
-  width: 76px;
-  height: 76px;
+  width: 90px;
+  height: 90px;
   flex-shrink: 0;
   border-radius: var(--radius-lg, 12px);
   overflow: hidden;
@@ -77,7 +78,7 @@
 .sd-subtitle {
   margin: 0 0 8px;
   font-size: 0.82rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
 }
 
 .sd-meta-row {
@@ -93,8 +94,8 @@
   font-weight: 600;
   padding: 3px 10px;
   border-radius: 999px;
-  background: rgba(79, 110, 247, 0.1);
-  color: var(--accent, #4f6ef7);
+  background: rgba(91, 58, 160, 0.1);
+  color: var(--accent, #5b3aa0);
 }
 
 .sd-badge-muted {
@@ -116,7 +117,7 @@
 .sd-dates {
   margin: 0;
   font-size: 0.78rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
 }
 
 /* ── Score block ──────────────────────────────────────────────── */
@@ -126,7 +127,7 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  padding: 12px 22px;
+  padding: 20px 34px;
   border-radius: var(--radius-lg, 12px);
   border: 1.5px solid var(--border, #e2e4ea);
   min-width: 110px;
@@ -140,7 +141,7 @@
 
 .sd-score-max {
   font-size: 0.7rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
   margin-top: -4px;
 }
 
@@ -157,16 +158,16 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 22px 40px 40px;
+  padding: 28px 40px 40px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .sd-grid {
   display: grid;
   grid-template-columns: 1.3fr 1fr;
-  gap: 16px;
+  gap: 20px;
 }
 
 @media (max-width: 900px) {
@@ -179,11 +180,11 @@
   background: var(--surface, #fff);
   border: 1px solid var(--border, #e2e4ea);
   border-radius: var(--radius-lg, 12px);
-  padding: 18px 20px;
+  padding: 26px 28px;
 }
 
 .sd-card-title {
-  margin: 0 0 14px;
+  margin: 0 0 22px;
   font-size: 0.82rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -195,7 +196,7 @@
 .sd-meters {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 22px;
 }
 
 .sd-meter-labels {
@@ -204,7 +205,7 @@
   font-size: 0.82rem;
   font-weight: 600;
   color: var(--text-primary, #0f1117);
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 .sd-meter-value {
@@ -234,10 +235,10 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding: 10px 14px;
+  padding: 14px 18px;
   background: var(--surface-alt, #f7f8fa);
   border-radius: var(--radius-md, 8px);
-  margin-bottom: 12px;
+  margin-bottom: 18px;
 }
 
 .sd-confidence-label {
@@ -249,7 +250,7 @@
 .sd-confidence-value {
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--accent, #4f6ef7);
+  color: var(--accent, #5b3aa0);
 }
 
 .sd-notes {
@@ -260,7 +261,7 @@
 }
 
 .sd-notes-empty {
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
   font-style: italic;
 }
 
@@ -278,13 +279,13 @@
 .sd-violations {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 
 .sd-violation {
   display: flex;
-  gap: 12px;
-  padding: 12px 14px;
+  gap: 14px;
+  padding: 16px 18px;
   background: var(--surface-alt, #f7f8fa);
   border-radius: var(--radius-md, 8px);
   border: 1px solid var(--border, #e2e4ea);
@@ -311,8 +312,8 @@
 }
 
 .severity-low {
-  background: rgba(79, 110, 247, 0.12);
-  color: var(--accent, #4f6ef7);
+  background: rgba(91, 58, 160, 0.12);
+  color: var(--accent, #5b3aa0);
 }
 
 .sd-violation-body {
@@ -335,7 +336,7 @@
 
 .sd-violation-issue {
   font-size: 0.8rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
 }
 
 /* ── Full photo ───────────────────────────────────────────────── */

@@ -47,7 +47,7 @@ export default function ManagerStores({ companyId }: Props) {
       setTotalPages(res.totalPages);
       setTotalElements(res.totalElements);
     } catch {
-      setError("Failed to load stores.");
+      setError("Failed to load outlets.");
     } finally {
       setLoading(false);
     }
@@ -90,7 +90,7 @@ export default function ManagerStores({ companyId }: Props) {
         await loadStores();
       }
     } catch {
-      setError("Failed to delete store.");
+      setError("Failed to delete outlet.");
     }
   }
 
@@ -98,7 +98,7 @@ export default function ManagerStores({ companyId }: Props) {
     <div className="stores-page">
       <div className="stores-toolbar">
         <div className="toolbar-left">
-          <h1 className="stores-title">Stores</h1>
+          <h1 className="stores-title">Outlets</h1>
           {!loading && (
             <span className="stores-count">
               {totalElements} location{totalElements !== 1 ? "s" : ""}
@@ -108,7 +108,7 @@ export default function ManagerStores({ companyId }: Props) {
 
         <div className="toolbar-right">
           <button className="btn btn-primary" onClick={openCreate}>
-            <span>＋</span> Add Store
+            <span>＋</span> Add Outlet
           </button>
         </div>
       </div>
@@ -126,7 +126,7 @@ export default function ManagerStores({ companyId }: Props) {
           </colgroup>
           <thead>
             <tr>
-              <th>Store</th>
+              <th>Outlet</th>
               <th>Address</th>
               <th>Company</th>
               <th>Created</th>
@@ -143,49 +143,53 @@ export default function ManagerStores({ companyId }: Props) {
             ) : stores.length === 0 ? (
               <tr>
                 <td colSpan={5} className="table-state">
-                  No stores found.
+                  No outlets found.
                 </td>
               </tr>
             ) : (
               stores.map((store) => (
-                <tr key={store.id} className="store-row">
-                  <td>
-                    <div className="store-cell">
-                      <div className="store-avatar">
-                        {store.name.slice(0, 2).toUpperCase()}
+                  <tr key={store.id} className="store-row">
+                    <td>
+                      <div className="store-cell">
+                        <div className="store-avatar">
+                          {store.name.slice(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                          <div className="store-name">{store.name}</div>
+                          <div className="store-id">#{store.id.slice(0, 8)}</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="store-name">{store.name}</div>
-                        <div className="store-id">#{store.id.slice(0, 8)}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="text-muted">{store.address || "—"}</td>
-                  <td>
+                    </td>
+                    <td className="text-muted">{store.address || "—"}</td>
+                    <td>
                     <span className="company-badge">
                       {store.companyName ?? store.companyId}
                     </span>
-                  </td>
-                  <td className="text-muted">{store.createdAt ?? "—"}</td>
-                  <td>
-                    <div className="row-actions">
-                      <button
-                        className="icon-btn"
-                        title="Edit"
-                        onClick={() => openEdit(store)}
-                      >
-                        ✎
-                      </button>
-                      <button
-                        className="icon-btn icon-btn-danger"
-                        title="Delete"
-                        onClick={() => handleDelete(store)}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                    </td>
+                    <td className="text-muted">
+                      {store.createdAt
+                          ? new Date(store.createdAt).toLocaleDateString()
+                          : "—"}
+                    </td>
+                    <td>
+                      <div className="row-actions">
+                        <button
+                            className="icon-btn"
+                            title="Edit"
+                            onClick={() => openEdit(store)}
+                        >
+                          ✎
+                        </button>
+                        <button
+                            className="icon-btn icon-btn-danger"
+                            title="Delete"
+                            onClick={() => handleDelete(store)}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
               ))
             )}
           </tbody>

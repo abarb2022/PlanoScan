@@ -183,7 +183,7 @@ export default function PlanogramDetail({ planogram, onBack, onUpdated }: Props)
 
         {!spec ? (
           <div className="pd-empty">
-            <span className="pd-empty-icon">⏳</span>
+            <span className="pd-empty-icon"></span>
             <p>This planogram hasn't been parsed by AI yet. Once parsing finishes, its shelf sections will appear here for product linking.</p>
           </div>
         ) : (
@@ -291,7 +291,7 @@ function ShelfSectionCard({
                     )}
                     <div className="pd-link-text">
                       <span className="pd-link-name">{product.name}</span>
-                      {product.sku && <span className="pd-link-sku">SKU: {product.sku}</span>}
+                      {product.code && <span className="pd-link-sku">Code: {product.code}</span>}
                     </div>
                     <span className="pd-link-edit">Change</span>
                   </>

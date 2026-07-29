@@ -16,7 +16,7 @@ interface Tab {
 
 const TABS: Tab[] = [
   { id: "dashboard", label: "Dashboard", roles: ["ADMIN", "MANAGER"] },
-  { id: "stores", label: "Stores", roles: ["ADMIN", "MANAGER", "REP"] },
+  { id: "stores", label: "Outlets", roles: ["ADMIN", "MANAGER", "REP"] },
   { id: "reps", label: "Reps", roles: ["ADMIN", "MANAGER"] },
   { id: "visitPlan", label: "Visit Plan", roles: ["ADMIN", "MANAGER"] },
   { id: "managers", label: "Managers", roles: ["ADMIN"] },
@@ -117,7 +117,14 @@ export default function HeaderTabs({
 
   return (
     <header className="header-tabs" aria-label="Primary navigation">
-      <nav className="header-tabs__nav">
+      <div className="header-tabs__left">
+        <div className="header-tabs__brand">
+          <span className="header-tabs__logo" aria-hidden="true">
+            <span className="header-tabs__logo-mark" />
+          </span>
+          <span className="header-tabs__brand-name">PlanoScan</span>
+        </div>
+        <nav className="header-tabs__nav">
         {role === "REP"
           ? REP_TABS.map((tab) => (
               <button
@@ -139,7 +146,8 @@ export default function HeaderTabs({
                 {tab.label}
               </button>
             ))}
-      </nav>
+        </nav>
+      </div>
 
       <div className="header-tabs__right">
         {showCompanyFilter && (

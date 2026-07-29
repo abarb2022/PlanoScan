@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import type { Store } from "../../types/store";
 import { getStores } from "../../services/storeService";
+import SearchableSelect from "../common/SearchableSelect";
 import "../store/StoreDialog.css";
 
 interface Props {
@@ -88,20 +89,14 @@ export default function PlanogramDialog({ open, onClose, onSubmit }: Props) {
           </div>
 
           <div className="dialog-field">
-            <label className="dialog-label">Store</label>
-            <select
-              className="dialog-input"
+            <label className="dialog-label">Outlet</label>
+            <SearchableSelect
+              options={stores.map((s) => ({ value: s.id, label: s.name, sublabel: s.address }))}
               value={storeId}
-              onChange={(e) => setStoreId(e.target.value)}
-              required
-            >
-              <option value="">— select store —</option>
-              {stores.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}{s.address ? ` — ${s.address}` : ""}
-                </option>
-              ))}
-            </select>
+              onChange={setStoreId}
+              placeholder="Select an outlet"
+              searchPlaceholder="Search outlets…"
+            />
           </div>
 
           <div className="dialog-field">

@@ -121,7 +121,11 @@ export default function FlaggedReviews({ companyId }: Props) {
         <div style={{ display: "flex", alignItems: "center" }}>
           <h1 className="reviews-title">Flagged Reviews</h1>
           {!loading && (
-            <span className="reviews-count">
+            <span
+              className={`reviews-count${
+                submissions.length === 0 ? " reviews-count-empty" : ""
+              }`}
+            >
               {submissions.length} flagged
             </span>
           )}
@@ -135,10 +139,18 @@ export default function FlaggedReviews({ companyId }: Props) {
           <span className="spinner" /> Loading…
         </div>
       ) : submissions.length === 0 ? (
-        <div className="reviews-empty">
-          <div className="reviews-empty-icon">✓</div>
-          <p className="reviews-empty-title">No flagged submissions.</p>
-          <p className="reviews-empty-sub">All scores are within acceptable range.</p>
+        <div className="reviews-empty-card">
+          <div className="reviews-empty">
+            <div className="reviews-empty-icon">✓</div>
+            <p className="reviews-empty-title">All caught up</p>
+            <p className="reviews-empty-sub">
+              No submissions currently need manager review — every score this
+              week is within the acceptable range.
+            </p>
+            <p className="reviews-empty-hint">
+              New flags will appear here automatically as reps submit.
+            </p>
+          </div>
         </div>
       ) : (
         <div className="review-card-list">
@@ -242,7 +254,8 @@ export default function FlaggedReviews({ companyId }: Props) {
                       <strong>{s.planogramName ?? "Not specified"}</strong>
                     </div>
                     <div className="review-confidence">
-                      AI confidence: {Math.round(s.scoreDetail.confidence * 100)}%
+                      AI confidence:{" "}
+                      <strong>{Math.round(s.scoreDetail.confidence * 100)}%</strong>
                     </div>
                     {s.scoreDetail.notes && (
                       <div className="review-ai-notes">{s.scoreDetail.notes}</div>

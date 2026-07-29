@@ -71,7 +71,7 @@ export default function RepDialog({ open, editingRep, onClose, onSubmit }: Props
 
         {!editingRep && (
           <p className="rep-dialog-hint">
-            A temporary password will be generated and logged to the server console.
+            A temporary password will be generated.
             The rep must change it on first login.
           </p>
         )}

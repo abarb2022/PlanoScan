@@ -5,7 +5,7 @@
   flex: 1;
   min-height: 0;
   background: var(--surface-alt, #f7f8fa);
-  font-family: "DM Sans", "Geist", system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   overflow: hidden;
 }
 
@@ -82,8 +82,8 @@
   font-weight: 600;
   padding: 3px 10px;
   border-radius: 999px;
-  background: rgba(79, 110, 247, 0.1);
-  color: var(--accent, #4f6ef7);
+  background: rgba(91, 58, 160, 0.1);
+  color: var(--accent, #5b3aa0);
 }
 
 .pd-badge-muted {
@@ -100,7 +100,7 @@
 .pd-valid-period {
   margin: 8px 0 0;
   font-size: 0.8rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
 }
 
 .pd-header-actions {
@@ -160,8 +160,8 @@
 }
 
 .pd-notes-hint {
-  background: rgba(79, 110, 247, 0.06);
-  border-color: rgba(79, 110, 247, 0.2);
+  background: rgba(91, 58, 160, 0.06);
+  border-color: rgba(91, 58, 160, 0.2);
 }
 
 .pd-notes p {
@@ -198,7 +198,7 @@
 
 .pd-shelf-meta {
   font-size: 0.78rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
 }
 
 /* ── Section rows ─────────────────────────────────────────────── */
@@ -258,7 +258,7 @@
 
 .pd-section-sub {
   font-size: 0.72rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
 }
 
 /* ── Link slot (button showing linked product) ───────────────────*/
@@ -281,19 +281,19 @@
 }
 
 .pd-link-slot-filled:hover {
-  border-color: var(--accent, #4f6ef7);
+  border-color: var(--accent, #5b3aa0);
 }
 
 .pd-link-slot-empty {
   background: var(--surface-alt, #f7f8fa);
   border: 1.5px dashed var(--border, #e2e4ea);
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
   justify-content: center;
 }
 
 .pd-link-slot-empty:hover {
-  border-color: var(--accent, #4f6ef7);
-  color: var(--accent, #4f6ef7);
+  border-color: var(--accent, #5b3aa0);
+  color: var(--accent, #5b3aa0);
 }
 
 .pd-link-thumb {
@@ -345,13 +345,13 @@
 
 .pd-link-sku {
   font-size: 0.7rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
 }
 
 .pd-link-edit {
   font-size: 0.72rem;
   font-weight: 600;
-  color: var(--accent, #4f6ef7);
+  color: var(--accent, #5b3aa0);
   opacity: 0;
   transition: opacity 0.15s;
   flex-shrink: 0;
@@ -417,7 +417,7 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 0.95rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
   pointer-events: none;
 }
 
@@ -436,8 +436,8 @@
 }
 
 .picker-search-input:focus {
-  border-color: var(--accent, #4f6ef7);
-  box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.12);
+  border-color: var(--accent, #5b3aa0);
+  box-shadow: 0 0 0 3px rgba(91, 58, 160, 0.12);
 }
 
 .picker-body {
@@ -452,7 +452,7 @@
   justify-content: center;
   gap: 8px;
   padding: 40px 0;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
   font-size: 0.88rem;
 }
 
@@ -478,13 +478,13 @@
 }
 
 .picker-card:hover {
-  border-color: var(--accent, #4f6ef7);
+  border-color: var(--accent, #5b3aa0);
   transform: translateY(-1px);
 }
 
 .picker-card-selected {
-  border-color: var(--accent, #4f6ef7);
-  background: rgba(79, 110, 247, 0.06);
+  border-color: var(--accent, #5b3aa0);
+  background: rgba(91, 58, 160, 0.06);
 }
 
 .picker-thumb {
@@ -510,7 +510,7 @@
   align-items: center;
   justify-content: center;
   background: var(--surface-alt, #f7f8fa);
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
   font-size: 1.1rem;
 }
 
@@ -527,7 +527,7 @@
 
 .picker-card-sku {
   font-size: 0.68rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
 }
 
 .picker-card-check {
@@ -537,7 +537,7 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--accent, #4f6ef7);
+  background: var(--accent, #5b3aa0);
   color: #fff;
   font-size: 0.65rem;
   display: flex;

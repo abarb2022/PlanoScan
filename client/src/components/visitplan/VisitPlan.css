@@ -7,7 +7,7 @@
   overflow: hidden;
   background: var(--surface-alt);
   box-sizing: border-box;
-  font-family: "DM Sans", "Geist", system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
 }
 
 .vp-sync-badge {
@@ -61,14 +61,14 @@
 
 .vp-daybar-day:hover {
   border-color: var(--accent);
-  box-shadow: 0 2px 6px rgba(79, 110, 247, 0.15);
+  box-shadow: 0 2px 6px rgba(91, 58, 160, 0.15);
   transform: translateY(-1px);
 }
 
 .vp-daybar-day--active {
   background: var(--accent);
   border-color: var(--accent);
-  box-shadow: 0 2px 8px rgba(79, 110, 247, 0.3);
+  box-shadow: 0 2px 8px rgba(91, 58, 160, 0.3);
 }
 
 .vp-daybar-day--active:hover {

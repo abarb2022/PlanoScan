@@ -23,3 +23,5 @@ databaseChangeLog:
       file: db/changelog/changes/010-notifications.sql
   - include:
       file: db/changelog/changes/011-store-location.sql
+  - include:
+      file: db/changelog/changes/012-product-code-category.sql

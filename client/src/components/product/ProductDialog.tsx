@@ -12,7 +12,8 @@ interface Props {
 
 export default function ProductDialog({ open, editingProduct, onClose, onSubmit }: Props) {
   const [name, setName] = useState("");
-  const [sku, setSku] = useState("");
+  const [code, setCode] = useState("");
+  const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -26,11 +27,13 @@ export default function ProductDialog({ open, editingProduct, onClose, onSubmit 
       if (fileInputRef.current) fileInputRef.current.value = "";
       if (editingProduct) {
         setName(editingProduct.name);
-        setSku(editingProduct.sku ?? "");
+        setCode(editingProduct.code ?? "");
+        setCategory(editingProduct.category ?? "");
         setDescription(editingProduct.description ?? "");
       } else {
         setName("");
-        setSku("");
+        setCode("");
+        setCategory("");
         setDescription("");
       }
     }
@@ -42,7 +45,8 @@ export default function ProductDialog({ open, editingProduct, onClose, onSubmit 
     setSubmitting(true);
     try {
       const data: Record<string, string> = { name: name.trim() };
-      if (sku.trim()) data.sku = sku.trim();
+      if (code.trim()) data.code = code.trim();
+      if (category.trim()) data.category = category.trim();
       if (description.trim()) data.description = description.trim();
       const formData = new FormData();
       formData.append("data", new Blob([JSON.stringify(data)], { type: "application/json" }));
@@ -90,12 +94,22 @@ export default function ProductDialog({ open, editingProduct, onClose, onSubmit 
           </div>
 
           <div className="dialog-field">
-            <label className="dialog-label">SKU</label>
+            <label className="dialog-label">Code</label>
             <input
               className="dialog-input"
-              value={sku}
-              onChange={(e) => setSku(e.target.value)}
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
               placeholder="e.g. CC-500-RD"
+            />
+          </div>
+
+          <div className="dialog-field">
+            <label className="dialog-label">Category</label>
+            <input
+              className="dialog-input"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              placeholder="e.g. Beverages"
             />
           </div>
 

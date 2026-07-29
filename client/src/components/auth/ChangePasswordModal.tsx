@@ -40,7 +40,7 @@ export default function ChangePasswordModal({ onSave, onLogout }: Props) {
   return (
     <div className="cp-overlay">
       <div className="cp-card">
-        <div className="cp-icon">🔒</div>
+        <div className="cp-icon"></div>
         <h2 className="cp-title">Set Your Password</h2>
         <p className="cp-subtitle">
           Your account was created with a temporary password. Please set a new

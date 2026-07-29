@@ -10,7 +10,8 @@ import lombok.Value;
 public class ProductResponseDto {
   UUID id;
   String name;
-  String sku;
+  String code;
+  String category;
   String description;
   String referenceImageUrl;
   UUID companyId;
