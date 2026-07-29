@@ -10,4 +10,7 @@ public interface PhotoStorage {
    * either shape.
    */
   String store(MultipartFile file, String subdir);
+
+  /** Permanently removes a previously stored file. A missing/already-deleted file is not an error. */
+  void delete(String url);
 }
