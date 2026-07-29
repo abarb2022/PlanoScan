@@ -11,6 +11,10 @@ import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.ScoreRepository;
 import com.example.demo.repository.SubmissionRepository;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,6 +44,7 @@ public class ScoringService {
   private final ProductRepository productRepository;
   private final AiScoringClient aiClient;
   private final ImageResizeService imageResizeService;
+  private final HttpClient httpClient = HttpClient.newHttpClient();
 
   @Value("${app.upload.dir}")
   private String uploadDir;
@@ -203,10 +208,29 @@ public class ScoringService {
   }
 
   private byte[] readFile(String url) throws IOException {
-    // URL is "/uploads/subdir/filename" — resolve against upload dir
+    // PhotoStorage may return either a relative "/uploads/subdir/filename" path
+    // (LocalPhotoStorage) or an absolute URL (e.g. Cloudinary) — the two need
+    // completely different reads, so branch on which one this is.
+    if (url.startsWith("http://") || url.startsWith("https://")) {
+      return readRemoteFile(url);
+    }
     String relativePath = url.startsWith("/uploads/") ? url.substring("/uploads/".length()) : url;
     Path file = Paths.get(uploadDir).resolve(relativePath).normalize();
     return Files.readAllBytes(file);
+  }
+
+  private byte[] readRemoteFile(String url) throws IOException {
+    HttpRequest request = HttpRequest.newBuilder(URI.create(url)).GET().build();
+    try {
+      HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+      if (response.statusCode() >= 300) {
+        throw new IOException("Failed to download " + url + ": HTTP " + response.statusCode());
+      }
+      return response.body();
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new IOException("Interrupted while downloading " + url, e);
+    }
   }
 
   private String guessMime(String url) {
