@@ -11,6 +11,13 @@
   animation: backdrop-in 0.18s ease;
 }
 
+@media (max-width: 640px) {
+  .dialog-backdrop {
+    padding: 16px;
+    box-sizing: border-box;
+  }
+}
+
 @keyframes backdrop-in {
   from {
     opacity: 0;

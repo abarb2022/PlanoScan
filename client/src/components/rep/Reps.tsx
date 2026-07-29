@@ -149,11 +149,11 @@ export default function Reps({ companyId }: Props) {
                       </div>
                     </div>
                   </td>
-                  <td>
+                  <td data-label="Company">
                     <span className="company-badge">{rep.companyName}</span>
                   </td>
-                  <td className="text-muted">{rep.createdAt ?? "—"}</td>
-                  <td>
+                  <td className="text-muted" data-label="Created">{rep.createdAt ?? "—"}</td>
+                  <td data-label="Store Assignments">
                     {rep.assignedStores.length === 0 ? (
                       <span className="no-stores-hint">—</span>
                     ) : (
