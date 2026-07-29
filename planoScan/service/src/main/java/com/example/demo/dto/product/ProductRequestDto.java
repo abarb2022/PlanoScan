@@ -7,7 +7,8 @@ import lombok.Data;
 @Data
 public class ProductRequestDto {
   @NotBlank private String name;
-  private String sku;
+  private String code;
+  private String category;
   private String description;
   private UUID companyId;
 }

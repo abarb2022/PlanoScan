@@ -13,18 +13,18 @@
 }
 
 .ssel-trigger--open {
-  border-color: var(--accent, #4f6ef7);
-  box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.12);
+  border-color: var(--accent, #5b3aa0);
+  box-shadow: 0 0 0 3px rgba(91, 58, 160, 0.12);
   background: #fff;
 }
 
 .ssel-placeholder {
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
 }
 
 .ssel-arrow {
   flex-shrink: 0;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
   transition: transform 0.15s;
 }
 
@@ -61,7 +61,7 @@
 }
 
 .ssel-search:focus {
-  border-color: var(--accent, #4f6ef7);
+  border-color: var(--accent, #5b3aa0);
 }
 
 .ssel-options {
@@ -73,7 +73,7 @@
   padding: 12px;
   text-align: center;
   font-size: 0.82rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
 }
 
 .ssel-option {
@@ -97,11 +97,11 @@
 }
 
 .ssel-option--selected {
-  background: rgba(79, 110, 247, 0.08);
+  background: rgba(91, 58, 160, 0.08);
 }
 
 .ssel-option--selected .ssel-option-label {
-  color: var(--accent, #4f6ef7);
+  color: var(--accent, #5b3aa0);
 }
 
 .ssel-option-label {
@@ -112,5 +112,5 @@
 
 .ssel-option-sublabel {
   font-size: 0.78rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
 }

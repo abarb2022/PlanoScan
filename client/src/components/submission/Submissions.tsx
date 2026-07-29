@@ -125,9 +125,9 @@ export default function Submissions({ companyId }: Props) {
 
       <div className="rep-filters" aria-label="Submission filters">
         <label className="filter-field">
-          <span>Store</span>
+          <span>Outlet</span>
           <select value={storeId} onChange={(e) => setStoreId(e.target.value)}>
-            <option value="">All stores</option>
+            <option value="">All outlets</option>
             {stores.map((s) => (
               <option key={s.id} value={s.id}>{s.name}</option>
             ))}
@@ -168,6 +168,8 @@ export default function Submissions({ companyId }: Props) {
         </label>
       </div>
 
+      <div style={{height: "20px"}}></div>
+
       {error && <p className="stores-error">{error}</p>}
 
       <div className="stores-table-wrapper">
@@ -175,7 +177,7 @@ export default function Submissions({ companyId }: Props) {
           <thead>
             <tr>
               <th>Rep</th>
-              <th>Store</th>
+              <th>Outlet</th>
               <th>Planogram</th>
               <th>Submitted</th>
               <th>Status</th>
@@ -206,16 +208,16 @@ export default function Submissions({ companyId }: Props) {
                           src={resolveAssetUrl(s.photoUrl)}
                           alt=""
                           style={{
-                            width: "40px",
-                            height: "40px",
+                            width: "36px",
+                            height: "36px",
                             objectFit: "cover",
-                            borderRadius: "var(--radius-md)",
+                            borderRadius: "9px",
                             border: "1px solid var(--border)",
                             flexShrink: 0,
                           }}
                         />
                       ) : (
-                        <div className="store-avatar" style={{ background: "linear-gradient(135deg, #4f6ef7 0%, #7c93f7 100%)" }}>
+                        <div className="store-avatar">
                           {s.repName.slice(0, 2).toUpperCase()}
                         </div>
                       )}

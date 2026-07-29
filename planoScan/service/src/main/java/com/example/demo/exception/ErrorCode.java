@@ -3,10 +3,10 @@ package com.example.demo.exception;
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
-  STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "Store was not found"),
+  STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "Outlet was not found"),
   COMPANY_NOT_FOUND(HttpStatus.NOT_FOUND, "Company was not found"),
   STORE_ALREADY_EXISTS(
-      HttpStatus.BAD_REQUEST, "Store with this name already exists in the company"),
+      HttpStatus.BAD_REQUEST, "Outlet with this name already exists in the company"),
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User was not found"),
   EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "Email already registered"),
   INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "Invalid password"),
@@ -22,7 +22,7 @@ public enum ErrorCode {
   ASSIGNMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Assignment was not found"),
   ASSIGNMENT_ALREADY_SUBMITTED(HttpStatus.CONFLICT, "This assignment has already been submitted"),
   ASSIGNMENT_NOT_SUBMITTABLE(HttpStatus.CONFLICT, "This assignment is no longer accepting submissions"),
-  COMPANY_HAS_DEPENDENTS(HttpStatus.CONFLICT, "Cannot delete company that has managers, reps, or stores"),
+  COMPANY_HAS_DEPENDENTS(HttpStatus.CONFLICT, "Cannot delete company that has managers, reps, or outlets"),
   PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "Product was not found"),
   PRODUCT_ALREADY_EXISTS(HttpStatus.CONFLICT, "A product with this name already exists in the company"),
   PLANOGRAM_NOT_FOUND(HttpStatus.NOT_FOUND, "Planogram was not found"),

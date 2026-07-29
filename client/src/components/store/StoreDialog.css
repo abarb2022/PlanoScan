@@ -66,7 +66,7 @@
   border: none;
   cursor: pointer;
   font-size: 0.85rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
   width: 28px;
   height: 28px;
   border-radius: 6px;
@@ -112,7 +112,7 @@
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
 }
 
 .dialog-input,
@@ -133,8 +133,8 @@
 
 .dialog-input:focus,
 .dialog-textarea:focus {
-  border-color: var(--accent, #4f6ef7);
-  box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.12);
+  border-color: var(--accent, #5b3aa0);
+  box-shadow: 0 0 0 3px rgba(91, 58, 160, 0.12);
   background: #fff;
 }
 
@@ -172,12 +172,12 @@
 }
 
 .btn-primary {
-  background: var(--accent, #4f6ef7);
+  background: var(--accent, #5b3aa0);
   color: #fff;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--accent-hover, #3a57e0);
+  background: var(--accent-hover, #4a2f85);
 }
 
 .btn-ghost {

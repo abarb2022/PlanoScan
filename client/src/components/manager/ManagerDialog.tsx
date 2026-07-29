@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { getCompanies } from "../../services/companyService";
 import type { Company, Manager, ManagerRequest } from "../../types/manager";
+import SearchableSelect from "../common/SearchableSelect";
 import "../store/StoreDialog.css";
 
 interface Props {
@@ -45,6 +46,10 @@ export default function ManagerDialog({ open, editingManager, onClose, onSubmit 
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!form.companyId) {
+      setError("Please select a company.");
+      return;
+    }
     setError("");
     setSubmitting(true);
     try {
@@ -78,7 +83,7 @@ export default function ManagerDialog({ open, editingManager, onClose, onSubmit 
 
         {!editingManager && (
           <p className="rep-dialog-hint">
-            A temporary password will be generated and logged to the server console.
+            A temporary password will be generated.
             The manager must change it on first login.
           </p>
         )}
@@ -133,17 +138,13 @@ export default function ManagerDialog({ open, editingManager, onClose, onSubmit 
 
           <div className="dialog-field">
             <label className="dialog-label">Company</label>
-            <select
-              className="dialog-input"
+            <SearchableSelect
+              options={companies.map((c) => ({ value: c.id, label: c.name }))}
               value={form.companyId}
-              onChange={(e) => set("companyId", e.target.value)}
-              required
-            >
-              <option value="">Select a company…</option>
-              {companies.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
+              onChange={(value) => set("companyId", value)}
+              placeholder="Select a company"
+              searchPlaceholder="Search companies…"
+            />
           </div>
 
           <div className="dialog-actions">

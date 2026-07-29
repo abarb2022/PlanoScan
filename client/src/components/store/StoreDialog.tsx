@@ -76,8 +76,8 @@ export default function StoreDialog({
       setError(
         message ||
           (editingStore
-            ? "Failed to update store."
-            : "Failed to create store."),
+            ? "Failed to update outlet."
+            : "Failed to create outlet."),
       );
     } finally {
       setSubmitting(false);
@@ -93,7 +93,7 @@ export default function StoreDialog({
       <div className="dialog" role="dialog" aria-modal="true">
         <div className="dialog-header">
           <h2 className="dialog-title">
-            {editingStore ? "Edit Store" : "New Store"}
+            {editingStore ? "Edit Outlet" : "New Outlet"}
           </h2>
           <button className="dialog-close" onClick={onClose} aria-label="Close">
             ✕
@@ -104,7 +104,7 @@ export default function StoreDialog({
 
         <form className="dialog-form" onSubmit={handleSubmit}>
           <div className="dialog-field">
-            <label className="dialog-label">Store Name</label>
+            <label className="dialog-label">Outlet Name</label>
             <input
               className="dialog-input"
               value={form.name}

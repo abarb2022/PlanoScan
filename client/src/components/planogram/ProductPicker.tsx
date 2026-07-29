@@ -29,7 +29,7 @@ export default function ProductPicker({
     const q = query.trim().toLowerCase();
     if (!q) return products;
     return products.filter(
-      (p) => p.name.toLowerCase().includes(q) || (p.sku ?? "").toLowerCase().includes(q),
+      (p) => p.name.toLowerCase().includes(q) || (p.code ?? "").toLowerCase().includes(q),
     );
   }, [products, query]);
 
@@ -47,10 +47,10 @@ export default function ProductPicker({
         </div>
 
         <div className="picker-search-row">
-          <span className="picker-search-icon">🔍</span>
+          <span className="picker-search-icon"></span>
           <input
             className="picker-search-input"
-            placeholder="Search by product name or SKU…"
+            placeholder="Search by product name or code…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             autoFocus
@@ -90,7 +90,7 @@ export default function ProductPicker({
                     </div>
                   )}
                   <span className="picker-card-name">{p.name}</span>
-                  {p.sku && <span className="picker-card-sku">SKU: {p.sku}</span>}
+                  {p.code && <span className="picker-card-sku">Code: {p.code}</span>}
                   {selectedProductId === p.id && <span className="picker-card-check">✓</span>}
                 </button>
               ))}

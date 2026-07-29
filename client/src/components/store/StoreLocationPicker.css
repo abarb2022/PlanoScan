@@ -23,7 +23,7 @@
   height: 14px;
   margin-top: -7px;
   border: 2px solid var(--border, #e2e4ea);
-  border-top-color: var(--accent, #4f6ef7);
+  border-top-color: var(--accent, #5b3aa0);
   border-radius: 50%;
   animation: store-location-spin 0.7s linear infinite;
 }
@@ -71,18 +71,18 @@
 .store-location-no-results {
   padding: 8px 10px;
   font-size: 0.85rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
 }
 
 .store-location-hint {
   font-size: 0.8rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
   margin: 0;
 }
 
 .store-location-empty {
   font-size: 0.85rem;
-  color: var(--text-muted, #8b8fa8);
+  color: var(--text-muted, #70707d);
   margin: 0;
 }
 

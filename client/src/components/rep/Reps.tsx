@@ -118,7 +118,7 @@ export default function Reps({ companyId }: Props) {
               <th>Rep</th>
               <th>Company</th>
               <th>Created</th>
-              <th>Store Assignments</th>
+              <th>Outlet Assignments</th>
               <th></th>
             </tr>
           </thead>
@@ -152,8 +152,11 @@ export default function Reps({ companyId }: Props) {
                   <td>
                     <span className="company-badge">{rep.companyName}</span>
                   </td>
-                  <td className="text-muted">{rep.createdAt ?? "—"}</td>
-                  <td>
+                  <td className="text-muted">
+                    {rep.createdAt
+                        ? new Date(rep.createdAt).toLocaleDateString()
+                        : "—"}
+                  </td>                  <td>
                     {rep.assignedStores.length === 0 ? (
                       <span className="no-stores-hint">—</span>
                     ) : (

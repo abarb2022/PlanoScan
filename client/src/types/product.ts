@@ -1,7 +1,8 @@
 export interface Product {
   id: string;
   name: string;
-  sku: string | null;
+  code: string | null;
+  category: string | null;
   description: string | null;
   referenceImageUrl: string | null;
   companyId: string;
@@ -11,7 +12,8 @@ export interface Product {
 
 export interface ProductRequest {
   name: string;
-  sku?: string;
+  code?: string;
+  category?: string;
   description?: string;
   companyId?: string; // ADMIN only, managers auto-derive
 }

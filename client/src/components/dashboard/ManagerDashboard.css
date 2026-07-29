@@ -95,7 +95,7 @@
 
 .dash-rep-card:hover {
   border-color: var(--accent);
-  box-shadow: 0 4px 14px rgba(79, 110, 247, 0.16);
+  box-shadow: 0 4px 14px rgba(91, 58, 160, 0.16);
 }
 
 .dash-rep-card:active {
@@ -147,7 +147,7 @@
 .dash-rep-progress-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent) 0%, #7c9cff 100%);
+  background: linear-gradient(90deg, var(--accent) 0%, #a78bfa 100%);
   transition: width 0.2s;
 }
 

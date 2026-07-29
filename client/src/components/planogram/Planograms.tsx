@@ -110,7 +110,7 @@ export default function Planograms({ role }: Props) {
           <thead>
             <tr>
               <th>Planogram</th>
-              <th>Store</th>
+              <th>Outlet</th>
               <th>Category</th>
               <th>Valid Period</th>
               <th>AI Status</th>
@@ -143,19 +143,16 @@ export default function Planograms({ role }: Props) {
                           src={resolveAssetUrl(p.referenceImageUrl)}
                           alt={p.name}
                           style={{
-                            width: "40px",
-                            height: "40px",
+                            width: "36px",
+                            height: "36px",
                             objectFit: "cover",
-                            borderRadius: "var(--radius-md)",
+                            borderRadius: "9px",
                             border: "1px solid var(--border)",
                             flexShrink: 0,
                           }}
                         />
                       ) : (
-                        <div
-                          className="store-avatar"
-                          style={{ background: "linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%)" }}
-                        >
+                        <div className="store-avatar">
                           {p.name.slice(0, 2).toUpperCase()}
                         </div>
                       )}

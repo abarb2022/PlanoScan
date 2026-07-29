@@ -31,7 +31,10 @@ public class Product {
   private String name;
 
   @Column
-  private String sku;
+  private String code;
+
+  @Column
+  private String category;
 
   @Column(columnDefinition = "text")
   private String description;

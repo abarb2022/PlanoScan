@@ -7,11 +7,7 @@
   overflow: hidden;
   background: var(--surface-alt);
   box-sizing: border-box;
-  font-family: "DM Sans", "Geist", system-ui, sans-serif;
-}
-
-.rep-avatar {
-  background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%) !important;
+  font-family: "Inter", system-ui, sans-serif;
 }
 
 .store-pills {

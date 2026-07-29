@@ -172,15 +172,6 @@ export default function SubmissionDetail({ submissionId, onBack }: Props) {
           )}
         </div>
 
-        <div className="sd-card">
-          <h2 className="sd-card-title">Submitted Photo</h2>
-          <img
-            className="sd-full-photo"
-            src={resolveAssetUrl(data.photoUrl)}
-            alt="Submission"
-            onClick={() => setLightboxOpen(true)}
-          />
-        </div>
       </div>
 
       {lightboxOpen && (

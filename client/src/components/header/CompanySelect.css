@@ -28,7 +28,7 @@
 
 .cs-trigger--open {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.12);
+  box-shadow: 0 0 0 3px rgba(91, 58, 160, 0.12);
 }
 
 .cs-trigger__label {
@@ -94,11 +94,11 @@
 }
 
 .cs-option--active {
-  background: rgba(79, 110, 247, 0.08);
+  background: rgba(91, 58, 160, 0.08);
   color: var(--accent);
   font-weight: 600;
 }
 
 .cs-option--active:hover {
-  background: rgba(79, 110, 247, 0.13);
+  background: rgba(91, 58, 160, 0.13);
 }

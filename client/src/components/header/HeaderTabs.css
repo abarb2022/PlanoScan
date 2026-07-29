@@ -5,10 +5,50 @@
   flex: 0 0 58px;
   height: 58px;
   padding: 0 40px;
-  background: var(--surface);
+  background: var(--surface-alt);
   border-bottom: 1px solid var(--border);
   box-sizing: border-box;
-  font-family: "DM Sans", "Geist", system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.header-tabs__left {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  min-width: 0;
+}
+
+.header-tabs__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.header-tabs__logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, var(--accent) 0%, #805ddf 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-tabs__logo-mark {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.header-tabs__brand-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  white-space: nowrap;
 }
 
 .header-tabs__nav {
@@ -36,7 +76,7 @@
 }
 
 .header-tabs__tab--active {
-  background: rgba(79, 110, 247, 0.1);
+  background: rgba(91, 58, 160, 0.1);
   color: var(--accent);
 }
 

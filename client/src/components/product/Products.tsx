@@ -106,6 +106,7 @@ export default function Products({ companyId }: Props) {
             <tr>
               <th>Product</th>
               <th>Company</th>
+              <th>Category</th>
               <th>Description</th>
               <th>Reference Image</th>
               <th>Created</th>
@@ -115,80 +116,83 @@ export default function Products({ companyId }: Props) {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={6} className="table-state">
+                <td colSpan={7} className="table-state">
                   <span className="spinner" /> Loading…
                 </td>
               </tr>
             ) : products.length === 0 ? (
               <tr>
-                <td colSpan={6} className="table-state">No products found.</td>
+                <td colSpan={7} className="table-state">No products found.</td>
               </tr>
             ) : (
               products.map((p) => (
-                <tr key={p.id} className="store-row">
-                  <td>
-                    <div className="store-cell">
-                      <div
-                        className="store-avatar"
-                        style={{
-                          background: "linear-gradient(135deg, #059669 0%, #34d399 100%)",
-                        }}
-                      >
-                        {p.name.slice(0, 2).toUpperCase()}
+                  <tr key={p.id} className="store-row">
+                    <td>
+                      <div className="store-cell">
+                        <div className="store-avatar">
+                          {p.name.slice(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                          <div className="store-name">{p.name}</div>
+                          {p.code && <div className="store-id">Code: {p.code}</div>}
+                        </div>
                       </div>
-                      <div>
-                        <div className="store-name">{p.name}</div>
-                        {p.sku && <div className="store-id">SKU: {p.sku}</div>}
+                    </td>
+                    <td>
+                      <span className="company-badge">{p.companyName}</span>
+                    </td>
+                    <td className="text-muted">{p.category || "—"}</td>
+                    <td className="text-muted" style={{maxWidth: "220px"}}>
+                      {p.description
+                          ? p.description.length > 80
+                              ? `${p.description.slice(0, 80)}…`
+                              : p.description
+                          : "—"}
+                    </td>
+                    <td>
+                      {p.referenceImageUrl ? (
+                          <img
+                              src={resolveAssetUrl(p.referenceImageUrl)}
+                              alt={p.name}
+                              style={{
+                                width: "48px",
+                                height: "48px",
+                                objectFit: "cover",
+                                borderRadius: "var(--radius-md)",
+                                border: "1px solid var(--border)",
+                              }}
+                          />
+                      ) : (
+                          <span className="text-muted">—</span>
+                      )}
+                    </td>
+                    <td className="text-muted">
+                      {p.createdAt
+                          ? new Date(p.createdAt).toLocaleDateString()
+                          : "—"}
+                    </td>
+                    <td>
+                      <div className="row-actions">
+                        <button
+                            className="icon-btn"
+                            title="Edit"
+                            onClick={() => {
+                              setEditingProduct(p);
+                              setDialogOpen(true);
+                            }}
+                        >
+                          ✎
+                        </button>
+                        <button
+                            className="icon-btn icon-btn-danger"
+                            title="Delete"
+                            onClick={() => setConfirmProduct(p)}
+                        >
+                          ✕
+                        </button>
                       </div>
-                    </div>
-                  </td>
-                  <td>
-                    <span className="company-badge">{p.companyName}</span>
-                  </td>
-                  <td className="text-muted" style={{ maxWidth: "220px" }}>
-                    {p.description
-                      ? p.description.length > 80
-                        ? `${p.description.slice(0, 80)}…`
-                        : p.description
-                      : "—"}
-                  </td>
-                  <td>
-                    {p.referenceImageUrl ? (
-                      <img
-                        src={resolveAssetUrl(p.referenceImageUrl)}
-                        alt={p.name}
-                        style={{
-                          width: "48px",
-                          height: "48px",
-                          objectFit: "cover",
-                          borderRadius: "var(--radius-md)",
-                          border: "1px solid var(--border)",
-                        }}
-                      />
-                    ) : (
-                      <span className="text-muted">—</span>
-                    )}
-                  </td>
-                  <td className="text-muted">{p.createdAt ?? "—"}</td>
-                  <td>
-                    <div className="row-actions">
-                      <button
-                        className="icon-btn"
-                        title="Edit"
-                        onClick={() => { setEditingProduct(p); setDialogOpen(true); }}
-                      >
-                        ✎
-                      </button>
-                      <button
-                        className="icon-btn icon-btn-danger"
-                        title="Delete"
-                        onClick={() => setConfirmProduct(p)}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                    </td>
+                  </tr>
               ))
             )}
           </tbody>

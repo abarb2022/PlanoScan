@@ -183,7 +183,7 @@ export default function RepStores({ activeTab }: { activeTab: RepViewTab }) {
     <div className="stores-page">
       <div className="stores-toolbar">
         <div className="toolbar-left">
-          <h1 className="stores-title">My Stores</h1>
+          <h1 className="stores-title">My Outlets</h1>
           <span className="stores-count">
             {activeAssignmentCount} active assignment
             {activeAssignmentCount !== 1 ? "s" : ""}
@@ -198,13 +198,13 @@ export default function RepStores({ activeTab }: { activeTab: RepViewTab }) {
           {error && <p className="stores-error">{error}</p>}
 
           <div className="rep-layout">
-            <section className="rep-main-panel" aria-label="Assigned stores">
+            <section className="rep-main-panel" aria-label="Assigned outlets">
               <div className="rep-filters" aria-label="Assignment filters">
                 <label className="filter-field">
-                  <span>Store</span>
+                  <span>Outlet</span>
                   <input
                     type="text"
-                    placeholder="Filter by store name…"
+                    placeholder="Filter by outlet name…"
                     value={storeNameFilter}
                     onChange={(e) => setStoreNameFilter(e.target.value)}
                   />
@@ -259,7 +259,7 @@ export default function RepStores({ activeTab }: { activeTab: RepViewTab }) {
                 <table className="stores-table">
                   <thead>
                     <tr>
-                      <th>Store</th>
+                      <th>Outlet</th>
                       {showAssignmentDate && (
                         <th className="col-centered">Assignment date</th>
                       )}

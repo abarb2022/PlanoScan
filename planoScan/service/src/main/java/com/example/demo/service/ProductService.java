@@ -65,7 +65,8 @@ public class ProductService {
     Product product =
         Product.builder()
             .name(dto.getName())
-            .sku(dto.getSku())
+            .code(dto.getCode())
+            .category(dto.getCategory())
             .description(dto.getDescription())
             .referenceImageUrl(imageUrl)
             .company(company)
@@ -88,7 +89,8 @@ public class ProductService {
     }
 
     product.setName(dto.getName());
-    product.setSku(dto.getSku());
+    product.setCode(dto.getCode());
+    product.setCategory(dto.getCategory());
     product.setDescription(dto.getDescription());
 
     if (referenceImage != null && !referenceImage.isEmpty()) {
@@ -140,7 +142,8 @@ public class ProductService {
     return ProductResponseDto.builder()
         .id(p.getId())
         .name(p.getName())
-        .sku(p.getSku())
+        .code(p.getCode())
+        .category(p.getCategory())
         .description(p.getDescription())
         .referenceImageUrl(p.getReferenceImageUrl())
         .companyId(p.getCompany().getId())
