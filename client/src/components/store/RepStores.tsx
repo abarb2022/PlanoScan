@@ -204,7 +204,7 @@ export default function RepStores({ activeTab }: { activeTab: RepViewTab }) {
         <>
           {error && <p className="stores-error">{error}</p>}
 
-          <div className="rep-layout"> data-mobile-view={mobileView}>
+          <div className="rep-layout" data-mobile-view={mobileView}>
             <section className="rep-main-panel" aria-label="Assigned outlets">
               <div className="rep-filters" aria-label="Assignment filters">
                 <label className="filter-field">
@@ -366,6 +366,9 @@ export default function RepStores({ activeTab }: { activeTab: RepViewTab }) {
             {selectedAssignment && (
               <AssignmentDetail
                 assignment={selectedAssignment}
+                onBack={() => setMobileView("list")}
+                isFullscreen={isFullscreen}
+                onFullscreenChange={setIsFullscreen}
                 onSubmitted={() => {
                   refreshLoaded(activeTab);
                   loadActiveAssignmentCount();

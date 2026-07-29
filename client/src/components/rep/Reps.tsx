@@ -157,12 +157,7 @@ export default function Reps({ companyId }: Props) {
                           ? new Date(rep.createdAt).toLocaleDateString()
                           : "—"}
                   </td>
-                  <td data-label="Store Assignments">
-                  <td className="text-muted">
-                    {rep.createdAt
-                        ? new Date(rep.createdAt).toLocaleDateString()
-                        : "—"}
-                  </td>                  <td>
+                  <td data-label="Outlet Assignments">
                     {rep.assignedStores.length === 0 ? (
                       <span className="no-stores-hint">—</span>
                     ) : (
