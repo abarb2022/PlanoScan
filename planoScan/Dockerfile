@@ -16,11 +16,24 @@ WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 
 EXPOSE 8082
-# Render's free plan caps the container at 512MB RAM. The default JVM (no
-# flags) can spike past that during startup — Hibernate's metamodel build is
-# the heaviest moment — and gets SIGKILL'd (exit 137) before it ever binds a
-# port. SerialGC has far lower baseline overhead than the default G1 on a
-# small heap; MaxRAMPercentage keeps the heap itself container-aware instead
-# of guessing; MaxMetaspaceSize stops class-metadata growth from being the
-# thing that tips it over.
-ENTRYPOINT ["java", "-XX:+UseSerialGC", "-XX:MaxRAMPercentage=60.0", "-XX:MaxMetaspaceSize=128m", "-jar", "app.jar"]
+# Render's free plan hard-caps the container at 512MB RAM — an instant kill on
+# breach, not a soft target. A percentage-of-container heap (MaxRAMPercentage)
+# wasn't tight enough once the app was doing real work (multiple requests,
+# Hibernate entity graphs, image bytes in memory for uploads/scoring), not
+# just idling at boot — so every major memory region is capped explicitly.
+#
+# These exact numbers were verified locally, not guessed: a first attempt at
+# -XX:MaxMetaspaceSize=96m threw a real `OutOfMemoryError: Metaspace` on the
+# very first HTTP request (Spring lazily loads a lot of MVC/Jackson/Security
+# classes on first use) — capping metaspace too tight is a hard crash with no
+# fallback, unlike heap, so it gets the bigger, safer share here. This
+# combination was load-tested against login + create company + list
+# companies/stores and stayed around ~290MB RSS, leaving real headroom under
+# 512MB instead of running right up against it.
+ENTRYPOINT ["java", \
+  "-Xms96m", "-Xmx192m", \
+  "-XX:+UseSerialGC", \
+  "-XX:MaxMetaspaceSize=200m", \
+  "-XX:ReservedCodeCacheSize=48m", \
+  "-Xss512k", \
+  "-jar", "app.jar"]
