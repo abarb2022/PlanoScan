@@ -30,6 +30,13 @@ EXPOSE 8082
 # combination was load-tested against login + create company + list
 # companies/stores and stayed around ~290MB RSS, leaving real headroom under
 # 512MB instead of running right up against it.
+# glibc gives each native thread its own malloc arena (~20-64MB) by default.
+# With ~20+ threads (Tomcat pool + Hikari + GC + JIT + HTTP client), that's
+# native RSS the -Xmx/-XX:MaxMetaspaceSize flags above never account for, but
+# it counts fully against Render's 512MB container cap. Capping arenas is the
+# standard fix for "JVM heap looks fine but the container still gets OOM-killed."
+ENV MALLOC_ARENA_MAX=2
+
 ENTRYPOINT ["java", \
   "-Xms96m", "-Xmx192m", \
   "-XX:+UseSerialGC", \
