@@ -68,6 +68,15 @@ interface Props {
   readOnly?: boolean;
 }
 
+function InvalidateSizeOnMount() {
+  const map = useMap();
+  useEffect(() => {
+    const id = requestAnimationFrame(() => map.invalidateSize());
+    return () => cancelAnimationFrame(id);
+  }, [map]);
+  return null;
+}
+
 function ClickHandler({
   onPick,
 }: {
@@ -161,7 +170,7 @@ export default function StoreLocationPicker({
 
   if (readOnly) {
     if (!position) {
-      return <p className="store-location-empty">Location not set.</p>;
+      return null;
     }
     return (
       <div className="store-location-map store-location-map-readonly">
@@ -173,6 +182,7 @@ export default function StoreLocationPicker({
           style={{ height: "100%", width: "100%" }}
         >
           <TileLayer url={TILE_URL} />
+          <InvalidateSizeOnMount />
           <Marker position={position} icon={pinIcon} />
         </MapContainer>
       </div>
@@ -221,6 +231,7 @@ export default function StoreLocationPicker({
           style={{ height: "100%", width: "100%" }}
         >
           <TileLayer url={TILE_URL} />
+          <InvalidateSizeOnMount />
           <RecenterOnChange position={flyTarget} />
           <ClickHandler onPick={(lat, lng) => onChange?.(lat, lng)} />
           {position && (

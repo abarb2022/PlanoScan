@@ -80,12 +80,6 @@
   margin: 0;
 }
 
-.store-location-empty {
-  font-size: 0.85rem;
-  color: var(--text-muted, #8b8fa8);
-  margin: 0;
-}
-
 /* ── Map container ────────────────────────────────────────────── */
 .store-location-map {
   position: relative;

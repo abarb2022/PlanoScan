@@ -1,4 +1,4 @@
-import { mapApiErrorMessage, mapAuthResponse } from "../mappers/authMapper";
+import { mapApiErrorMessage } from "../mappers/authMapper";
 import type { AuthSession, LoginPayload, RegisterPayload } from "../types/auth";
 
 const API_BASE_URL =
