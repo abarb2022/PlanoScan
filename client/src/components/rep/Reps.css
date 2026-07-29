@@ -47,3 +47,91 @@
 .reps-page .row-actions {
   opacity: 1;
 }
+
+@media (max-width: 720px) {
+  .reps-page {
+    padding: 18px 20px;
+  }
+
+  .reps-page .stores-pagination {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .reps-page .page-btns {
+    justify-content: space-between;
+  }
+}
+
+/* ── Card layout for narrow screens ──────────────────────────────
+   The table markup is reused as-is; on small screens each row is
+   rendered as a stacked card instead of a horizontally-scrolled table. */
+@media (max-width: 640px) {
+  .reps-page .stores-table-wrapper {
+    overflow: visible;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  .reps-page .stores-table {
+    min-width: 0;
+    width: 100%;
+    table-layout: auto;
+  }
+
+  .reps-page .stores-table thead {
+    display: none;
+  }
+
+  .reps-page .stores-table,
+  .reps-page .stores-table tbody,
+  .reps-page .stores-table tr,
+  .reps-page .stores-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .reps-page .store-row {
+    box-sizing: border-box;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 12px;
+    padding: 14px 16px;
+  }
+
+  .reps-page .store-row td {
+    border-bottom: none;
+    padding: 6px 0;
+  }
+
+  .reps-page .store-row td:first-child {
+    padding-top: 0;
+  }
+
+  .reps-page td[data-label] {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .reps-page td[data-label]::before {
+    content: attr(data-label);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+
+  .reps-page .row-actions {
+    justify-content: flex-end;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+    padding-top: 10px !important;
+  }
+}

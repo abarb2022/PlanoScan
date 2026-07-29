@@ -153,3 +153,47 @@
     padding: 0 20px;
   }
 }
+
+/* Mobile: tabs wrap onto their own row instead of scrolling or getting
+   clipped by the app shell's overflow: hidden. */
+@media (max-width: 640px) {
+  .header-tabs {
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 58px;
+    padding: 10px 16px;
+    row-gap: 8px;
+  }
+
+  .header-tabs__nav {
+    order: 2;
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+  }
+
+  .header-tabs__right {
+    order: 1;
+    flex: 1 1 100%;
+    justify-content: flex-start;
+  }
+
+  .user-avatar-wrap {
+    order: 1;
+  }
+
+  .notification-bell-wrap {
+    order: 2;
+  }
+
+  .header-tabs__logout {
+    order: 3;
+    margin-left: auto;
+  }
+
+  .header-tabs__tab {
+    font-size: 0.82rem;
+    min-height: 32px;
+    padding: 0 10px;
+  }
+}

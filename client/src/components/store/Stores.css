@@ -572,6 +572,10 @@
   color: var(--text-primary);
 }
 
+.assignment-back-btn {
+  display: none;
+}
+
 /* .assignment-fullscreen-backdrop, .photo-lightbox-backdrop and .camera-modal-backdrop
    (further below) are used together with the shared `.dialog-backdrop` class from
    StoreDialog.css and only override its padding/z-index/opacity deltas. */
@@ -1420,10 +1424,73 @@
   color: var(--accent) !important;
 }
 
+@media (max-width: 640px) {
+  .rep-calendar {
+    padding: 14px;
+  }
+
+  .rep-calendar-header {
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .rep-calendar-header h2 {
+    font-size: 0.92rem;
+    min-width: 0;
+  }
+
+  .rep-calendar-legend {
+    font-size: 0.7rem;
+    margin-bottom: 10px;
+  }
+
+  .rep-calendar-weekday {
+    font-size: 0.62rem;
+    padding: 2px 0;
+  }
+
+  .rep-calendar-cell {
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+  }
+
+  .rep-calendar-day-number {
+    font-size: 0.8rem;
+  }
+
+  .rep-calendar-chips {
+    display: none;
+  }
+
+  .rep-calendar-cell.has-assignment::after {
+    content: attr(data-count);
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    min-width: 14px;
+    height: 14px;
+    padding: 0 3px;
+    border-radius: 7px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.58rem;
+    font-weight: 800;
+    line-height: 14px;
+    text-align: center;
+    box-sizing: border-box;
+  }
+}
+
 @media (max-width: 980px) {
   .rep-layout {
-    grid-template-columns: 1fr;
-    overflow: auto;
+    display: block;
+    overflow: visible;
+  }
+
+  .rep-main-panel {
+    min-height: 0;
+    margin-bottom: 16px;
   }
 
   .stores-page {
@@ -1432,6 +1499,262 @@
 
   .assignment-detail {
     overflow: visible;
+  }
+
+  .rep-layout[data-mobile-view="list"] .assignment-detail {
+    display: none;
+  }
+
+  .rep-layout[data-mobile-view="detail"] .rep-main-panel {
+    display: none;
+  }
+
+  .assignment-back-btn {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 6px;
+    margin-bottom: 4px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface-alt);
+    color: var(--text-secondary);
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .assignment-back-btn:hover {
+    background: var(--hover-bg);
+    color: var(--text-primary);
+  }
+}
+
+/* Mobile: shrink the rep's store list and the assignment-detail side panel
+   so both read as compact, phone-sized content instead of a scaled-down
+   desktop layout. Scoped to classes exclusive to the rep view (or prefixed
+   with .rep-table-wrapper) so the manager/admin store tables are untouched. */
+@media (max-width: 640px) {
+  .rep-filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    gap: 8px 10px;
+    padding: 12px;
+    background: var(--surface);
+  }
+
+  .rep-filters .filter-field:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .filter-field {
+    min-width: 0;
+    gap: 4px;
+  }
+
+  .filter-field span {
+    font-size: 0.64rem;
+  }
+
+  .filter-field input,
+  .filter-field select {
+    min-height: 34px;
+    padding: 6px 10px;
+    font-size: 0.82rem;
+  }
+
+  .rep-filters .btn-ghost {
+    grid-column: 1 / -1;
+    justify-self: end;
+    height: 30px;
+    padding: 0 12px;
+    font-size: 0.78rem;
+  }
+
+  .assignment-expand-btn {
+    display: none;
+  }
+
+  .rep-table-wrapper .store-avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 0.72rem;
+  }
+
+  .rep-table-wrapper .store-name {
+    font-size: 0.84rem;
+  }
+
+  .rep-table-wrapper .store-id {
+    font-size: 0.72rem;
+  }
+
+  .rep-table-wrapper .status-badge {
+    min-height: 20px;
+    padding: 0 7px;
+    font-size: 0.68rem;
+  }
+
+  /* Card layout: each row becomes a stacked card instead of a table row that
+     needs horizontal scrolling to reach the Status/Last submission columns. */
+  .rep-table-wrapper {
+    overflow: visible;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  .rep-table-wrapper .stores-table {
+    min-width: 0;
+    width: 100%;
+    table-layout: auto;
+  }
+
+  .rep-table-wrapper .stores-table thead {
+    display: none;
+  }
+
+  .rep-table-wrapper .stores-table,
+  .rep-table-wrapper .stores-table tbody,
+  .rep-table-wrapper .stores-table tr,
+  .rep-table-wrapper .stores-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .rep-table-wrapper .store-row {
+    box-sizing: border-box;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 10px;
+    padding: 12px 14px;
+  }
+
+  .rep-table-wrapper .store-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .rep-table-wrapper .store-row td {
+    border-bottom: none;
+    padding: 6px 0;
+    text-align: left;
+  }
+
+  .rep-table-wrapper .store-row td:first-child {
+    padding-top: 0;
+  }
+
+  .rep-table-wrapper .rep-store-row-selected {
+    border-color: var(--accent);
+    background: #eef3ff;
+  }
+
+  .rep-table-wrapper .rep-store-row-selected td {
+    background: transparent;
+  }
+
+  .rep-table-wrapper td[data-label] {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .rep-table-wrapper td[data-label]::before {
+    content: attr(data-label);
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .rep-table-wrapper .assignment-cell {
+    align-items: flex-end;
+  }
+
+  .assignment-detail {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .assignment-detail-header {
+    padding-bottom: 12px;
+  }
+
+  .assignment-detail-header h2 {
+    font-size: 1rem;
+  }
+
+  .assignment-detail-header p {
+    font-size: 0.78rem;
+  }
+
+  .detail-eyebrow {
+    font-size: 0.68rem !important;
+  }
+
+  .detail-grid div {
+    padding: 10px;
+  }
+
+  .detail-grid span {
+    font-size: 0.68rem;
+  }
+
+  .detail-grid strong {
+    font-size: 0.8rem;
+  }
+
+  .upload-panel,
+  .submissions-panel {
+    padding: 12px;
+  }
+
+  .upload-panel__header h3 {
+    font-size: 0.94rem;
+  }
+
+  .upload-option {
+    min-height: 0;
+    padding: 12px;
+  }
+
+  .upload-option__icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .upload-option__body strong {
+    font-size: 0.86rem;
+  }
+
+  .upload-option__body span {
+    font-size: 0.74rem;
+  }
+
+  .upload-option__action {
+    min-height: 32px;
+    padding: 0 12px;
+    font-size: 0.78rem;
+  }
+
+  .submission-thumb {
+    width: 36px;
+    height: 36px;
+  }
+
+  .submission-item strong {
+    font-size: 0.8rem;
+  }
+
+  .submission-item span {
+    font-size: 0.74rem;
   }
 }
 

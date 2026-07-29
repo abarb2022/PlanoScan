@@ -31,13 +31,18 @@ function assignmentStatusClass(status: RepAssignmentStatus) {
 
 export default function AssignmentDetail({
   assignment,
+  onBack,
+  isFullscreen,
+  onFullscreenChange,
   onSubmitted,
 }: {
   assignment: RepStoreAssignment;
+  onBack: () => void;
+  isFullscreen: boolean;
+  onFullscreenChange: (fullscreen: boolean) => void;
   onSubmitted: (updated: RepStoreAssignment) => void;
 }) {
   const canSubmit = assignment.status === "DUE_TODAY";
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -51,10 +56,15 @@ export default function AssignmentDetail({
     setError("");
   }, [assignment.id]);
 
-  useEscapeKey(() => setIsFullscreen(false), isFullscreen);
+  useEscapeKey(() => onFullscreenChange(false), isFullscreen);
   const handleBackdropClick = dismissOnBackdropClick(() =>
-    setIsFullscreen(false),
+    onFullscreenChange(false),
   );
+
+  function handleBack() {
+    onFullscreenChange(false);
+    onBack();
+  }
 
   const submitHint =
     !submitting && selectedFiles.length === 0
@@ -74,7 +84,7 @@ export default function AssignmentDetail({
       const updated = await submitAssignment(assignment.id, selectedFiles);
       onSubmitted(updated);
       setSelectedFiles([]);
-      setIsFullscreen(false);
+      onFullscreenChange(false);
     } catch (err) {
       if (err instanceof ApiError && err.code === "VALIDATION_ERROR") {
         setError(
@@ -90,6 +100,14 @@ export default function AssignmentDetail({
 
   const content = (
     <>
+      <button
+        className="assignment-back-btn"
+        type="button"
+        onClick={handleBack}
+      >
+        ← Stores
+      </button>
+
       <div className="assignment-detail-header">
         <div>
           <p className="detail-eyebrow">{assignment.assignmentDate}</p>
@@ -107,7 +125,7 @@ export default function AssignmentDetail({
           <button
             className="assignment-expand-btn"
             type="button"
-            onClick={() => setIsFullscreen((prev) => !prev)}
+            onClick={() => onFullscreenChange(!isFullscreen)}
             aria-label={isFullscreen ? "Exit fullscreen" : "Expand fullscreen"}
             title={isFullscreen ? "Exit fullscreen" : "Expand fullscreen"}
           >
