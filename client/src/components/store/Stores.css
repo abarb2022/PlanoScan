@@ -1757,6 +1757,7 @@
 
   .assignment-detail {
     padding: 14px;
+    padding-bottom: 32px;
     gap: 12px;
   }
 
