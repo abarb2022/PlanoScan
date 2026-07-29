@@ -22,7 +22,6 @@ body,
 }
 
 body {
-  overflow: hidden;
   background: var(--surface-alt);
 }
 
@@ -30,6 +29,5 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100dvh;
-  overflow: hidden;
+  min-height: 100vh;
 }

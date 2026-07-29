@@ -2,18 +2,14 @@
 .planogram-detail {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
   background: var(--surface-alt, #f7f8fa);
   font-family: "Inter", system-ui, sans-serif;
-  overflow: hidden;
 }
 
 /* ── Header ───────────────────────────────────────────────────── */
 .pd-header {
   flex-shrink: 0;
   padding: 20px 40px 18px;
-  background: var(--surface, #fff);
   border-bottom: 1px solid var(--border, #e2e4ea);
 }
 
@@ -119,9 +115,6 @@
 
 /* ── Body ─────────────────────────────────────────────────────── */
 .pd-body {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
   padding: 22px 40px 40px;
   display: flex;
   flex-direction: column;

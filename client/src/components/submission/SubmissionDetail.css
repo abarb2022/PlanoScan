@@ -2,11 +2,8 @@
 .submission-detail {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
   background: var(--surface-alt, #f7f8fa);
   font-family: "Inter", system-ui, sans-serif;
-  overflow: hidden;
 }
 
 .sd-loading {
@@ -23,7 +20,6 @@
 .sd-header {
   flex-shrink: 0;
   padding: 48px 40px 28px;
-  background: var(--surface, #fff);
   border-bottom: 1px solid var(--border, #e2e4ea);
 }
 
@@ -155,9 +151,6 @@
 
 /* ── Body ─────────────────────────────────────────────────────── */
 .sd-body {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
   padding: 28px 40px 40px;
   display: flex;
   flex-direction: column;
