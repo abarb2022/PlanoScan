@@ -18,12 +18,12 @@ export function AuthForm({ isSubmitting, onLogin }: Props) {
   return (
     <form className="auth-form" onSubmit={handleSubmit}>
       <label className="field">
-        <span>Email</span>
+        <span>Work email</span>
         <input
           autoComplete="email"
           name="email"
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
+          placeholder="you@company.com"
           required
           type="email"
           value={email}
