@@ -70,7 +70,6 @@ export default function Submissions({ companyId }: Props) {
           setReps(repRes.content);
         }
       } catch {
-        // filter dropdowns are non-critical; leave empty on failure
       }
     }
     loadFilters();
