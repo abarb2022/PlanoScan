@@ -55,6 +55,17 @@
   overflow: hidden;
 }
 
+@media (max-width: 640px) {
+  .notification-panel {
+    position: fixed;
+    top: 100px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-height: calc(100vh - 120px);
+  }
+}
+
 .notification-panel__header {
   display: flex;
   align-items: center;

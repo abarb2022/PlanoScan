@@ -269,6 +269,7 @@ export default function RepCalendar() {
                   ? { backgroundImage: workloadBackground(stores.length) }
                   : undefined
               }
+              data-count={stores.length}
               onClick={() => hasAssignment && setOpenDay(iso)}
             >
               <span className="rep-calendar-day-number">{day}</span>

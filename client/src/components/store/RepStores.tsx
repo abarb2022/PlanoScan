@@ -45,6 +45,8 @@ const LOAD_MORE_THRESHOLD_PX = 200;
 export default function RepStores({ activeTab }: { activeTab: RepViewTab }) {
   const [assignments, setAssignments] = useState<RepStoreAssignment[]>([]);
   const [selectedId, setSelectedId] = useState("");
+  const [mobileView, setMobileView] = useState<"list" | "detail">("list");
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [dateFilter, setDateFilter] = useState<RepDateFilter>("all");
   const [statusFilter, setStatusFilter] = useState<RepStatusFilter>("all");
   const [storeNameFilter, setStoreNameFilter] = useState("");
@@ -66,6 +68,11 @@ export default function RepStores({ activeTab }: { activeTab: RepViewTab }) {
     if (scrollRef.current) scrollRef.current.scrollTop = 0;
     loadInitial(activeTab);
   }, [activeTab, dateFilter, statusFilter, storeNameFilter]);
+
+  useEffect(() => {
+    setMobileView("list");
+    setIsFullscreen(false);
+  }, [activeTab]);
 
   // Poll while any loaded assignment has a submission still being scored
   useEffect(() => {
@@ -197,14 +204,14 @@ export default function RepStores({ activeTab }: { activeTab: RepViewTab }) {
         <>
           {error && <p className="stores-error">{error}</p>}
 
-          <div className="rep-layout">
+          <div className="rep-layout"> data-mobile-view={mobileView}>
             <section className="rep-main-panel" aria-label="Assigned outlets">
               <div className="rep-filters" aria-label="Assignment filters">
                 <label className="filter-field">
-                  <span>Outlet</span>
+                  <span>Store</span>
                   <input
                     type="text"
-                    placeholder="Filter by outlet name…"
+                    placeholder="Filter by store name…"
                     value={storeNameFilter}
                     onChange={(e) => setStoreNameFilter(e.target.value)}
                   />
@@ -296,7 +303,10 @@ export default function RepStores({ activeTab }: { activeTab: RepViewTab }) {
                                 ? "rep-store-row-selected"
                                 : ""
                             }`}
-                            onClick={() => setSelectedId(assignment.id)}
+                            onClick={() => {
+                              setSelectedId(assignment.id);
+                              setMobileView("detail");
+                            }}
                           >
                             <td>
                               <div className="store-cell">
@@ -316,13 +326,13 @@ export default function RepStores({ activeTab }: { activeTab: RepViewTab }) {
                               </div>
                             </td>
                             {showAssignmentDate && (
-                              <td className="col-centered">
+                              <td className="col-centered" data-label="Assignment date">
                                 <div className="assignment-cell">
                                   <strong>{assignment.assignmentDate}</strong>
                                 </div>
                               </td>
                             )}
-                            <td className="col-centered">
+                            <td className="col-centered" data-label="Status">
                               <span
                                 className={`status-badge status-${assignmentStatusClass(
                                   assignment.status,
@@ -331,7 +341,7 @@ export default function RepStores({ activeTab }: { activeTab: RepViewTab }) {
                                 {assignmentStatusLabel(assignment.status)}
                               </span>
                             </td>
-                            <td className="col-centered text-muted">
+                            <td className="col-centered text-muted" data-label="Last submission">
                               {assignment.lastSubmittedAt ?? "No submission yet"}
                             </td>
                           </tr>

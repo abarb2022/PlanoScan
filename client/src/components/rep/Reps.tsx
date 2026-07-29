@@ -149,9 +149,15 @@ export default function Reps({ companyId }: Props) {
                       </div>
                     </div>
                   </td>
-                  <td>
+                  <td data-label="Company">
                     <span className="company-badge">{rep.companyName}</span>
                   </td>
+                  <td className="text-muted" data-label="Created">
+                      {rep.createdAt
+                          ? new Date(rep.createdAt).toLocaleDateString()
+                          : "—"}
+                  </td>
+                  <td data-label="Store Assignments">
                   <td className="text-muted">
                     {rep.createdAt
                         ? new Date(rep.createdAt).toLocaleDateString()
